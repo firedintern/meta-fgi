@@ -3,8 +3,21 @@ import axios from 'axios';
 let cache = { data: null, timestamp: null };
 const CACHE_TTL = 600000;
 
-const getStatus = (s) => s < 20 ? 'EXTREME FEAR' : s < 40 ? 'FEAR' : s < 60 ? 'NEUTRAL' : s < 80 ? 'GREED' : 'EXTREME GREED';
-const getDegen = (s) => s < 20 ? '🔥 FIRE SALE' : s < 40 ? '💎 Accumulate' : s < 60 ? '🤷 Neutral' : s < 80 ? '🚀 Take profits' : '⚠️ TOP SIGNAL';
+const getStatus = (s) => {
+    if (s < 20) return 'BLOOD IN THE STREETS';
+    if (s < 40) return 'PAPER HANDS EVERYWHERE';
+    if (s < 60) return 'CRAB MARKET';
+    if (s < 80) return 'FOMO KICKING IN';
+    return 'EUPHORIA - TOP IS IN';
+};
+
+const getDegen = (s) => {
+    if (s < 20) return '🔥 FIRE SALE';
+    if (s < 40) return '💎 Accumulate';
+    if (s < 60) return '🦀 Touch Grass';
+    if (s < 80) return '🚀 Take Profits';
+    return '⚠️ GET OUT';
+};
 
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
