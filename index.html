@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta F&G Index</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container { text-align: center; max-width: 600px; width: 100%; }
+        .title {
+            font-size: 2.5em;
+            background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcf7f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        .gauge {
+            width: 250px;
+            height: 250px;
+            margin: 30px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.2);
+        }
+        .score { font-size: 4em; font-weight: bold; }
+        .status { font-size: 1.2em; margin-top: 10px; }
+        .degen { font-size: 0.9em; color: #888; margin: 20px; }
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1em;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            margin: 20px;
+        }
+        .btn:hover { transform: scale(1.05); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">Meta F&G Index</div>
+        <div id="content">Loading...</div>
+    </div>
+    <script>
+        async function fetchData() {
+            try {
+                const res = await fetch('/api/fgi');
+                const data = await res.json();
+                const color = data.meta_score < 20 ? '#ff4444' : data.meta_score < 40 ? '#ff8844' : data.meta_score < 60 ? '#ffd700' : data.meta_score < 80 ? '#88ff44' : '#44ff88';
+                document.getElementById('content').innerHTML = `
+                    <div class="gauge">
+                        <div class="score" style="color: ${color}">${data.meta_score}</div>
+                        <div class="status">${data.status}</div>
+                    </div>
+                    <div class="degen">${data.degen_status}</div>
+                    <button class="btn" onclick="fetchData()">⟳ Refresh</button>
+                    <div style="color: #666; font-size: 0.8em;">${new Date(data.timestamp).toLocaleTimeString()}</div>
+                `;
+            } catch (err) {
+                document.getElementById('content').innerHTML = `<div style="color: #ff6b6b;">Error: ${err.message}</div>`;
+            }
+        }
+        fetchData();
+    </script>
+</body>
+</html>
