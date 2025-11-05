@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Internet Capital Market Fear/Greed Index</title>
+    <title>Internet Capital Markets Fear & Greed Index</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -17,6 +17,47 @@
             padding: 20px;
         }
         .container { text-align: center; max-width: 600px; width: 100%; }
+        
+        .btc-ticker {
+            background: linear-gradient(135deg, #f7931a 0%, #ffb74d 100%);
+            padding: 15px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(247, 147, 26, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 5px 20px rgba(247, 147, 26, 0.3); }
+            50% { transform: scale(1.02); box-shadow: 0 8px 30px rgba(247, 147, 26, 0.5); }
+        }
+        
+        .btc-label {
+            font-size: 0.9em;
+            color: #000;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+        
+        .btc-price {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #000;
+            margin: 5px 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .btc-change {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
+        .positive { color: #00ff00; }
+        .negative { color: #ff0000; }
+        
         .title {
             font-size: 2em;
             background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcf7f);
@@ -64,15 +105,40 @@
         @media (max-width: 768px) {
             .title { font-size: 1.5em; }
             .degen { font-size: 2em; }
+            .btc-price { font-size: 2em; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="title">Internet Capital Market<br>Fear/Greed Index</div>
+        <div class="btc-ticker" id="btcTicker">
+            <div class="btc-label">₿ Bitcoin</div>
+            <div class="btc-price" id="btcPrice">Loading...</div>
+            <div class="btc-change" id="btcChange"></div>
+        </div>
+        
+        <div class="title">Internet Capital Markets<br>Fear & Greed Index</div>
         <div id="content">Loading...</div>
     </div>
     <script>
+        async function fetchBTCPrice() {
+            try {
+                const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true');
+                const data = await res.json();
+                const price = data.bitcoin.usd;
+                const change = data.bitcoin.usd_24h_change;
+                
+                document.getElementById('btcPrice').textContent = '$' + price.toLocaleString('en-US', {maximumFractionDigits: 0});
+                
+                const changeElement = document.getElementById('btcChange');
+                const changeText = (change > 0 ? '+' : '') + change.toFixed(2) + '% (24h)';
+                changeElement.textContent = changeText;
+                changeElement.className = 'btc-change ' + (change > 0 ? 'positive' : 'negative');
+            } catch (err) {
+                console.error('BTC price fetch error:', err);
+            }
+        }
+        
         async function fetchData() {
             try {
                 const res = await fetch('/api/fgi');
@@ -84,14 +150,25 @@
                         <div class="status">${data.status}</div>
                     </div>
                     <div class="degen" style="color: ${color}">${data.degen_status}</div>
-                    <button class="btn" onclick="fetchData()">⟳ Refresh</button>
+                    <button class="btn" onclick="refreshAll()">⟳ Refresh</button>
                     <div style="color: #666; font-size: 0.8em;">${new Date(data.timestamp).toLocaleTimeString()}</div>
                 `;
             } catch (err) {
                 document.getElementById('content').innerHTML = `<div style="color: #ff6b6b;">Error: ${err.message}</div>`;
             }
         }
+        
+        function refreshAll() {
+            fetchData();
+            fetchBTCPrice();
+        }
+        
+        // Load everything on page load
         fetchData();
+        fetchBTCPrice();
+        
+        // Refresh BTC price every 30 seconds
+        setInterval(fetchBTCPrice, 30000);
     </script>
 </body>
 </html>
