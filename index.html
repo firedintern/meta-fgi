@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>> FEAR_GREED_PROTOCOL <</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -44,7 +45,7 @@
     <canvas id="matrix-canvas"></canvas>
     <audio id="bgMusic" loop></audio>
     <div class="controls">
-        <button class="control-btn active" id="soundToggle" data-tooltip="Toggle Music">🔊</button>
+        <button class="control-btn" id="soundToggle" data-tooltip="Toggle Music">🔊</button>
         <button class="control-btn active" id="particlesToggle" data-tooltip="Toggle Matrix">✨</button>
         <button class="control-btn" id="notifyToggle" data-tooltip="Extreme alerts">🔔</button>
     </div>
@@ -56,26 +57,36 @@
         <button class="btn share-btn" onclick="shareToX()">Share on <span style="font-size:1.3em">𝕏</span></button>
     </div>
     <script>
-        let currentScore=0,soundEnabled=true,particlesEnabled=true,notificationsEnabled=false,lastNotificationScore=null;
+        let currentScore=0,soundEnabled=false,particlesEnabled=true,notificationsEnabled=false,lastNotificationScore=null;
         const bgMusic=document.getElementById('bgMusic');
         let currentState='';
         
-        // Royalty-free music tracks (YouTube Audio Library)
+        // Royalty-free music URLs (Incompetech - Creative Commons)
         const musicTracks={
-            extreme_fear:'https://www.youtube.com/watch?v=BrnDlRmW5hs',
-            fear:'https://www.youtube.com/watch?v=4_Cn_L_2j64',
-            neutral:'https://www.youtube.com/watch?v=1-wMxnLuaoibo',
-            greed:'https://www.youtube.com/watch?v=x6jrF-BU5JM',
-            extreme_greed:'https://www.youtube.com/watch?v=ZnHmskwqCCQ'
+            extreme_fear:'https://incompetech.com/music/royalty-free/mp3-royaltyfree/Eternal%20Terminal.mp3',
+            fear:'https://incompetech.com/music/royalty-free/mp3-royaltyfree/Myst%20on%20the%20Moor.mp3',
+            neutral:'https://incompetech.com/music/royalty-free/mp3-royaltyfree/Interloper.mp3',
+            greed:'https://incompetech.com/music/royalty-free/mp3-royaltyfree/Martian%20Cowboy.mp3',
+            extreme_greed:'https://incompetech.com/music/royalty-free/mp3-royaltyfree/Rocket.mp3'
         };
         
         function playMusicForState(state){
-            if(!soundEnabled||state===currentState)return;
+            if(!soundEnabled)return;
+            if(state===currentState&&!bgMusic.paused)return;
+            
             currentState=state;
             const url=musicTracks[state];
             if(url){
-                window.open(url,'_blank','width=800,height=600');
+                bgMusic.src=url;
+                bgMusic.volume=0.3;
+                bgMusic.play().catch(e=>console.log('Music play failed:',e));
             }
+        }
+        
+        function stopMusic(){
+            bgMusic.pause();
+            bgMusic.currentTime=0;
+            currentState='';
         }
         
         function getSoundStateForScore(s){
@@ -117,8 +128,11 @@
             soundEnabled=!soundEnabled;
             this.classList.toggle('active');
             this.textContent=soundEnabled?'🔊':'🔇';
+            
             if(soundEnabled&&currentScore>0){
                 playMusicForState(getSoundStateForScore(currentScore));
+            }else{
+                stopMusic();
             }
         });
         
@@ -156,50 +170,33 @@
         
         async function fetchHistoricalData(){
             try{
-                console.log('Fetching historical data from API...');
+                console.log('Fetching 30-day historical data...');
                 const r=await fetch('/api/fgi?history=true');
-                console.log('Response status:',r.status);
+                
+                if(!r.ok){
+                    throw new Error('API returned '+r.status);
+                }
+                
                 const d=await r.json();
-                console.log('Historical data received:',d);
+                console.log('Historical response:',d);
                 
                 if(d.history&&Array.isArray(d.history)&&d.history.length>0){
-                    console.log('Rendering chart with',d.history.length,'data points');
+                    console.log('Rendering chart with '+d.history.length+' real data points');
                     renderChart(d.history);
                 }else{
-                    console.error('No valid history data. Using mock data for demo.');
-                    renderChart(generateMockData());
+                    console.error('No history data in API response');
+                    document.querySelector('.chart-title').innerHTML='📊 30-Day History - Data unavailable';
                 }
             }catch(e){
-                console.error('Chart fetch error:',e);
-                console.log('Using mock data as fallback');
-                renderChart(generateMockData());
+                console.error('Failed to fetch historical data:',e);
+                document.querySelector('.chart-title').innerHTML='📊 30-Day History - Unable to load';
             }
-        }
-        
-        function generateMockData(){
-            const data=[];
-            const today=new Date();
-            for(let i=29;i>=0;i--){
-                const date=new Date(today);
-                date.setDate(date.getDate()-i);
-                data.push({
-                    date:date.toLocaleDateString('en-US',{month:'short',day:'numeric'}),
-                    score:Math.floor(Math.random()*40)+20,
-                    timestamp:date.getTime()
-                });
-            }
-            return data;
         }
         
         function renderChart(h){
             const canvasEl=document.getElementById('historyChart');
-            if(!canvasEl){
-                console.error('Canvas element not found');
-                return;
-            }
-            
-            if(typeof Chart==='undefined'){
-                console.error('Chart.js not loaded');
+            if(!canvasEl||typeof Chart==='undefined'){
+                console.error('Canvas or Chart.js not available');
                 return;
             }
             
@@ -208,7 +205,7 @@
                 window.chartInstance.destroy();
             }
             
-            console.log('Creating chart with',h.length,'points');
+            console.log('Creating chart...');
             
             try{
                 window.chartInstance=new Chart(ctx,{
@@ -216,7 +213,7 @@
                     data:{
                         labels:h.map(d=>d.date),
                         datasets:[{
-                            label:'Fear & Greed',
+                            label:'Fear & Greed Score',
                             data:h.map(d=>d.score),
                             borderColor:'#00ff00',
                             backgroundColor:'rgba(0,255,0,0.1)',
@@ -258,9 +255,9 @@
                         }
                     }
                 });
-                console.log('Chart rendered successfully!');
+                console.log('Chart rendered successfully with real data!');
             }catch(e){
-                console.error('Error creating chart:',e);
+                console.error('Chart rendering error:',e);
             }
         }
         
@@ -273,7 +270,8 @@
                 const c=getColorForScore(currentScore);
                 const e=currentScore<=20||currentScore>=80;
                 
-                if(prevScore!==0&&prevScore!==currentScore){
+                // Change music when state changes
+                if(prevScore!==0&&prevScore!==currentScore&&soundEnabled){
                     const state=getSoundStateForScore(currentScore);
                     playMusicForState(state);
                 }
