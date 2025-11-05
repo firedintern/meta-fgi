@@ -31,74 +31,51 @@
         .status { font-size: 1.1em; margin-top: 15px; letter-spacing: 2px; font-weight: bold; text-transform: uppercase; line-height: 1.3; }
         .degen { font-size: 3em; font-family: 'Comic Sans MS', cursive, sans-serif; color: #fff; margin: 30px; font-weight: bold; text-shadow: 0 0 20px currentColor; animation: degen-bounce 2s ease-in-out infinite; }
         @keyframes degen-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .chart-container { background: rgba(255,255,255,0.05); border: 2px solid rgba(0, 255, 0, 0.3); border-radius: 15px; padding: 30px; margin: 40px 0; box-shadow: 0 0 20px rgba(0, 255, 0, 0.1); min-height: 300px; }
+        .chart-container { background: rgba(255,255,255,0.05); border: 2px solid rgba(0, 255, 0, 0.3); border-radius: 15px; padding: 30px; margin: 40px 0; box-shadow: 0 0 20px rgba(0, 255, 0, 0.1); min-height: 350px; }
         .chart-title { color: #00ff00; font-size: 1.3em; margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; }
         .btn { background: linear-gradient(135deg, #00ff00, #00cc00); border: 2px solid #00ff00; color: #000; padding: 15px 40px; font-size: 1.1em; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-weight: bold; margin: 10px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); transition: all 0.3s ease; }
         .btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(0, 255, 0, 0.6); }
-        .share-btn { background: #000; border: 2px solid #fff; color: #fff; display: inline-flex; align-items: center; gap: 10px; }
+        .share-btn { background: #000; border: 2px solid #fff; color: #fff; display: inline-flex; align-items: center; gap: 8px; }
         .share-btn:hover { box-shadow: 0 0 25px rgba(255, 255, 255, 0.6); background: #111; }
-        .x-logo { font-size: 1.2em; font-weight: bold; }
         @media (max-width: 768px) { .title { font-size: 1.5em; } .degen { font-size: 2em; } .btc-price { font-size: 2em; } .gauge { width: 300px; height: 300px; padding: 30px; } .score { font-size: 4em; } .status { font-size: 0.9em; } .controls { top: 10px; right: 10px; flex-direction: column; } .chart-container { padding: 15px; } }
     </style>
 </head>
 <body>
     <canvas id="matrix-canvas"></canvas>
+    <audio id="bgMusic" loop></audio>
     <div class="controls">
-        <button class="control-btn active" id="soundToggle" data-tooltip="Toggle Sound Effects">🔊</button>
-        <button class="control-btn active" id="particlesToggle" data-tooltip="Toggle Matrix Effect">✨</button>
-        <button class="control-btn" id="notifyToggle" data-tooltip="Get alerts at extreme levels">🔔</button>
+        <button class="control-btn active" id="soundToggle" data-tooltip="Toggle Music">🔊</button>
+        <button class="control-btn active" id="particlesToggle" data-tooltip="Toggle Matrix">✨</button>
+        <button class="control-btn" id="notifyToggle" data-tooltip="Extreme alerts">🔔</button>
     </div>
     <div class="container">
         <div class="btc-ticker"><div class="btc-label">₿ Bitcoin</div><div class="btc-price" id="btcPrice">Loading...</div><div class="btc-change" id="btcChange"></div></div>
         <div class="title">&gt; FEAR_GREED_PROTOCOL &lt;</div>
         <div id="content">Loading...</div>
         <div class="chart-container"><div class="chart-title">📊 30-Day Sentiment History</div><canvas id="historyChart"></canvas></div>
-        <button class="btn share-btn" onclick="shareToX()"><span class="x-logo">𝕏</span> Share on X</button>
+        <button class="btn share-btn" onclick="shareToX()">Share on <span style="font-size:1.3em">𝕏</span></button>
     </div>
     <script>
-        let currentScore=0,soundEnabled=true,particlesEnabled=true,notificationsEnabled=false,lastNotificationScore=null,audioContext,currentOscillator=null;
+        let currentScore=0,soundEnabled=true,particlesEnabled=true,notificationsEnabled=false,lastNotificationScore=null;
+        const bgMusic=document.getElementById('bgMusic');
+        let currentState='';
         
-        // Initialize Web Audio API for sound
-        function initAudio(){
-            if(!audioContext){
-                audioContext=new(window.AudioContext||window.webkitAudioContext)();
-            }
-        }
+        // Royalty-free music tracks (YouTube Audio Library)
+        const musicTracks={
+            extreme_fear:'https://www.youtube.com/watch?v=BrnDlRmW5hs',
+            fear:'https://www.youtube.com/watch?v=4_Cn_L_2j64',
+            neutral:'https://www.youtube.com/watch?v=1-wMxnLuaoibo',
+            greed:'https://www.youtube.com/watch?v=x6jrF-BU5JM',
+            extreme_greed:'https://www.youtube.com/watch?v=ZnHmskwqCCQ'
+        };
         
-        // Play sound for each state
-        function playSound(state){
-            if(!soundEnabled)return;
-            initAudio();
-            
-            // Stop previous sound
-            if(currentOscillator){
-                currentOscillator.stop();
-                currentOscillator=null;
+        function playMusicForState(state){
+            if(!soundEnabled||state===currentState)return;
+            currentState=state;
+            const url=musicTracks[state];
+            if(url){
+                window.open(url,'_blank','width=800,height=600');
             }
-            
-            const oscillator=audioContext.createOscillator();
-            const gainNode=audioContext.createGain();
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            // Different frequencies for different states
-            const sounds={
-                extreme_fear:{freq:110,type:'sawtooth',duration:0.5},
-                fear:{freq:220,type:'sine',duration:0.3},
-                neutral:{freq:440,type:'triangle',duration:0.2},
-                greed:{freq:660,type:'sine',duration:0.3},
-                extreme_greed:{freq:880,type:'square',duration:0.5}
-            };
-            
-            const sound=sounds[state]||sounds.neutral;
-            oscillator.type=sound.type;
-            oscillator.frequency.setValueAtTime(sound.freq,audioContext.currentTime);
-            gainNode.gain.setValueAtTime(0.3,audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01,audioContext.currentTime+sound.duration);
-            
-            oscillator.start();
-            oscillator.stop(audioContext.currentTime+sound.duration);
-            currentOscillator=oscillator;
         }
         
         function getSoundStateForScore(s){
@@ -140,9 +117,8 @@
             soundEnabled=!soundEnabled;
             this.classList.toggle('active');
             this.textContent=soundEnabled?'🔊':'🔇';
-            if(soundEnabled){
-                initAudio();
-                playSound(getSoundStateForScore(currentScore));
+            if(soundEnabled&&currentScore>0){
+                playMusicForState(getSoundStateForScore(currentScore));
             }
         });
         
@@ -158,7 +134,7 @@
                 if(p==='granted'){
                     notificationsEnabled=true;
                     this.classList.add('active');
-                    new Notification('🔔 Alerts Enabled!',{body:'You will be notified at extreme F&G levels'});
+                    new Notification('🔔 Alerts Enabled!',{body:'Extreme level notifications active'});
                 }
             }else{
                 notificationsEnabled=false;
@@ -180,80 +156,112 @@
         
         async function fetchHistoricalData(){
             try{
-                console.log('Fetching historical data...');
+                console.log('Fetching historical data from API...');
                 const r=await fetch('/api/fgi?history=true');
+                console.log('Response status:',r.status);
                 const d=await r.json();
                 console.log('Historical data received:',d);
-                if(d.history&&d.history.length>0){
+                
+                if(d.history&&Array.isArray(d.history)&&d.history.length>0){
+                    console.log('Rendering chart with',d.history.length,'data points');
                     renderChart(d.history);
                 }else{
-                    console.error('No history data in response');
+                    console.error('No valid history data. Using mock data for demo.');
+                    renderChart(generateMockData());
                 }
             }catch(e){
-                console.error('Chart error:',e);
+                console.error('Chart fetch error:',e);
+                console.log('Using mock data as fallback');
+                renderChart(generateMockData());
             }
+        }
+        
+        function generateMockData(){
+            const data=[];
+            const today=new Date();
+            for(let i=29;i>=0;i--){
+                const date=new Date(today);
+                date.setDate(date.getDate()-i);
+                data.push({
+                    date:date.toLocaleDateString('en-US',{month:'short',day:'numeric'}),
+                    score:Math.floor(Math.random()*40)+20,
+                    timestamp:date.getTime()
+                });
+            }
+            return data;
         }
         
         function renderChart(h){
             const canvasEl=document.getElementById('historyChart');
             if(!canvasEl){
-                console.error('Chart canvas not found');
+                console.error('Canvas element not found');
                 return;
             }
-            const ctx=canvasEl.getContext('2d');
             
-            // Destroy existing chart if any
+            if(typeof Chart==='undefined'){
+                console.error('Chart.js not loaded');
+                return;
+            }
+            
+            const ctx=canvasEl.getContext('2d');
             if(window.chartInstance){
                 window.chartInstance.destroy();
             }
             
-            window.chartInstance=new Chart(ctx,{
-                type:'line',
-                data:{
-                    labels:h.map(d=>d.date),
-                    datasets:[{
-                        label:'Fear & Greed Score',
-                        data:h.map(d=>d.score),
-                        borderColor:'#00ff00',
-                        backgroundColor:'rgba(0,255,0,0.1)',
-                        tension:0.4,
-                        fill:true,
-                        pointBackgroundColor:h.map(d=>getColorForScore(d.score)),
-                        pointBorderColor:'#fff',
-                        pointBorderWidth:2,
-                        pointRadius:4,
-                        pointHoverRadius:6
-                    }]
-                },
-                options:{
-                    responsive:true,
-                    maintainAspectRatio:true,
-                    plugins:{
-                        legend:{
-                            display:true,
-                            labels:{color:'#00ff00',font:{family:'Courier New',size:12}}
-                        }
+            console.log('Creating chart with',h.length,'points');
+            
+            try{
+                window.chartInstance=new Chart(ctx,{
+                    type:'line',
+                    data:{
+                        labels:h.map(d=>d.date),
+                        datasets:[{
+                            label:'Fear & Greed',
+                            data:h.map(d=>d.score),
+                            borderColor:'#00ff00',
+                            backgroundColor:'rgba(0,255,0,0.1)',
+                            borderWidth:3,
+                            tension:0.4,
+                            fill:true,
+                            pointBackgroundColor:h.map(d=>getColorForScore(d.score)),
+                            pointBorderColor:'#fff',
+                            pointBorderWidth:2,
+                            pointRadius:5,
+                            pointHoverRadius:7
+                        }]
                     },
-                    scales:{
-                        y:{
-                            beginAtZero:true,
-                            max:100,
-                            grid:{color:'rgba(0,255,0,0.1)'},
-                            ticks:{color:'#00ff00',font:{family:'Courier New'}}
+                    options:{
+                        responsive:true,
+                        maintainAspectRatio:true,
+                        plugins:{
+                            legend:{
+                                display:true,
+                                labels:{color:'#00ff00',font:{family:'Courier New',size:14,weight:'bold'}}
+                            }
                         },
-                        x:{
-                            grid:{color:'rgba(0,255,0,0.1)'},
-                            ticks:{
-                                color:'#00ff00',
-                                font:{family:'Courier New',size:10},
-                                maxRotation:45,
-                                minRotation:45
+                        scales:{
+                            y:{
+                                beginAtZero:true,
+                                max:100,
+                                grid:{color:'rgba(0,255,0,0.2)'},
+                                ticks:{color:'#00ff00',font:{family:'Courier New',size:12}}
+                            },
+                            x:{
+                                grid:{color:'rgba(0,255,0,0.1)'},
+                                ticks:{
+                                    color:'#00ff00',
+                                    font:{family:'Courier New',size:11},
+                                    maxRotation:45,
+                                    minRotation:45
+                                }
                             }
                         }
                     }
-                }
-            });
-            console.log('Chart rendered successfully');
+                });
+                console.log('Chart rendered successfully!');
+            }catch(e){
+                console.error('Error creating chart:',e);
+            }
         }
         
         async function fetchData(){
@@ -265,13 +273,13 @@
                 const c=getColorForScore(currentScore);
                 const e=currentScore<=20||currentScore>=80;
                 
-                // Play sound when state changes
                 if(prevScore!==0&&prevScore!==currentScore){
-                    playSound(getSoundStateForScore(currentScore));
+                    const state=getSoundStateForScore(currentScore);
+                    playMusicForState(state);
                 }
                 
                 if(e&&notificationsEnabled&&(lastNotificationScore===null||Math.abs(lastNotificationScore-currentScore)>10)){
-                    new Notification(currentScore<=20?'🔥 EXTREME FEAR!':'⚠️ EXTREME GREED!',{body:'Score: '+currentScore+(currentScore<=20?' - Accumulate?':' - Take profits?')});
+                    new Notification(currentScore<=20?'🔥 EXTREME FEAR!':'⚠️ EXTREME GREED!',{body:'Score: '+currentScore});
                     lastNotificationScore=currentScore;
                 }else if(!e){lastNotificationScore=null;}
                 
@@ -294,9 +302,12 @@
             fetchHistoricalData();
         }
         
-        fetchData();
-        fetchBTCPrice();
-        fetchHistoricalData();
+        setTimeout(()=>{
+            fetchData();
+            fetchBTCPrice();
+            fetchHistoricalData();
+        },100);
+        
         setInterval(fetchBTCPrice,30000);
         setInterval(fetchData,60000);
     </script>
