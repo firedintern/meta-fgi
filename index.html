@@ -11,8 +11,9 @@
         #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.15; }
         .container { text-align: center; max-width: 900px; width: 100%; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
         .controls { position: fixed; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 100; }
-        .control-btn { background: rgba(0, 255, 0, 0.2); border: 2px solid #00ff00; color: #00ff00; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 1.2em; transition: all 0.3s ease; }
+        .control-btn { background: rgba(0, 255, 0, 0.2); border: 2px solid #00ff00; color: #00ff00; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 1.2em; transition: all 0.3s ease; position: relative; }
         .control-btn:hover { background: rgba(0, 255, 0, 0.4); transform: scale(1.1); }
+        .control-btn:hover::after { content: attr(data-tooltip); position: absolute; bottom: -40px; right: 0; background: rgba(0, 255, 0, 0.9); color: #000; padding: 5px 10px; border-radius: 5px; font-size: 0.7em; white-space: nowrap; z-index: 1000; }
         .control-btn.active { background: #00ff00; color: #000; box-shadow: 0 0 15px #00ff00; }
         .btc-ticker { background: linear-gradient(135deg, #f7931a 0%, #ffb74d 100%); padding: 15px 30px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 5px 20px rgba(247, 147, 26, 0.3); animation: pulse 2s ease-in-out infinite; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
@@ -30,46 +31,83 @@
         .status { font-size: 1.1em; margin-top: 15px; letter-spacing: 2px; font-weight: bold; text-transform: uppercase; line-height: 1.3; }
         .degen { font-size: 3em; font-family: 'Comic Sans MS', cursive, sans-serif; color: #fff; margin: 30px; font-weight: bold; text-shadow: 0 0 20px currentColor; animation: degen-bounce 2s ease-in-out infinite; }
         @keyframes degen-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .chart-container { background: rgba(255,255,255,0.05); border: 2px solid rgba(0, 255, 0, 0.3); border-radius: 15px; padding: 30px; margin: 40px 0; box-shadow: 0 0 20px rgba(0, 255, 0, 0.1); }
+        .chart-container { background: rgba(255,255,255,0.05); border: 2px solid rgba(0, 255, 0, 0.3); border-radius: 15px; padding: 30px; margin: 40px 0; box-shadow: 0 0 20px rgba(0, 255, 0, 0.1); min-height: 300px; }
         .chart-title { color: #00ff00; font-size: 1.3em; margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; }
         .btn { background: linear-gradient(135deg, #00ff00, #00cc00); border: 2px solid #00ff00; color: #000; padding: 15px 40px; font-size: 1.1em; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-weight: bold; margin: 10px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); transition: all 0.3s ease; }
         .btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(0, 255, 0, 0.6); }
-        .share-btn { background: #000; border-color: #fff; color: #fff; display: inline-flex; align-items: center; gap: 10px; }
-        .share-btn:hover { box-shadow: 0 0 25px rgba(255, 255, 255, 0.6); }
-        .x-logo { width: 20px; height: 20px; filter: invert(1); }
+        .share-btn { background: #000; border: 2px solid #fff; color: #fff; display: inline-flex; align-items: center; gap: 10px; }
+        .share-btn:hover { box-shadow: 0 0 25px rgba(255, 255, 255, 0.6); background: #111; }
+        .x-logo { font-size: 1.2em; font-weight: bold; }
         @media (max-width: 768px) { .title { font-size: 1.5em; } .degen { font-size: 2em; } .btc-price { font-size: 2em; } .gauge { width: 300px; height: 300px; padding: 30px; } .score { font-size: 4em; } .status { font-size: 0.9em; } .controls { top: 10px; right: 10px; flex-direction: column; } .chart-container { padding: 15px; } }
     </style>
 </head>
 <body>
     <canvas id="matrix-canvas"></canvas>
     <div class="controls">
-        <button class="control-btn active" id="soundToggle" title="Toggle Music">🔊</button>
-        <button class="control-btn active" id="particlesToggle" title="Toggle Matrix Effect">✨</button>
-        <button class="control-btn" id="notifyToggle" title="Enable Browser Notifications (Alerts at Extreme Levels)">🔔</button>
+        <button class="control-btn active" id="soundToggle" data-tooltip="Toggle Sound Effects">🔊</button>
+        <button class="control-btn active" id="particlesToggle" data-tooltip="Toggle Matrix Effect">✨</button>
+        <button class="control-btn" id="notifyToggle" data-tooltip="Get alerts at extreme levels">🔔</button>
     </div>
     <div class="container">
         <div class="btc-ticker"><div class="btc-label">₿ Bitcoin</div><div class="btc-price" id="btcPrice">Loading...</div><div class="btc-change" id="btcChange"></div></div>
         <div class="title">&gt; FEAR_GREED_PROTOCOL &lt;</div>
         <div id="content">Loading...</div>
         <div class="chart-container"><div class="chart-title">📊 30-Day Sentiment History</div><canvas id="historyChart"></canvas></div>
-        <button class="btn share-btn" onclick="shareToX()">
-            <svg class="x-logo" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            Share on X
-        </button>
+        <button class="btn share-btn" onclick="shareToX()"><span class="x-logo">𝕏</span> Share on X</button>
     </div>
-    <audio id="bgMusic" loop></audio>
     <script>
-        let currentScore=0,soundEnabled=true,particlesEnabled=true,notificationsEnabled=false,lastNotificationScore=null;
-        const bgMusic=document.getElementById('bgMusic');
+        let currentScore=0,soundEnabled=true,particlesEnabled=true,notificationsEnabled=false,lastNotificationScore=null,audioContext,currentOscillator=null;
         
-        // Music tracks for each state (YouTube embeds or Spotify links)
-        const musicTracks = {
-            extreme_fear: 'https://www.youtube.com/watch?v=04F4xlWSFh0',  // Dramatic/intense
-            fear: 'https://www.youtube.com/watch?v=vr0NBPRMe2E',  // Chill/thoughtful
-            neutral: 'https://www.youtube.com/watch?v=2WPCLda_erI',  // Ambient
-            greed: 'https://www.youtube.com/watch?v=SSbBvKaM6sk',  // Upbeat
-            extreme_greed: 'https://www.youtube.com/watch?v=ZnHmskwqCCQ'  // Party/euphoric
-        };
+        // Initialize Web Audio API for sound
+        function initAudio(){
+            if(!audioContext){
+                audioContext=new(window.AudioContext||window.webkitAudioContext)();
+            }
+        }
+        
+        // Play sound for each state
+        function playSound(state){
+            if(!soundEnabled)return;
+            initAudio();
+            
+            // Stop previous sound
+            if(currentOscillator){
+                currentOscillator.stop();
+                currentOscillator=null;
+            }
+            
+            const oscillator=audioContext.createOscillator();
+            const gainNode=audioContext.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // Different frequencies for different states
+            const sounds={
+                extreme_fear:{freq:110,type:'sawtooth',duration:0.5},
+                fear:{freq:220,type:'sine',duration:0.3},
+                neutral:{freq:440,type:'triangle',duration:0.2},
+                greed:{freq:660,type:'sine',duration:0.3},
+                extreme_greed:{freq:880,type:'square',duration:0.5}
+            };
+            
+            const sound=sounds[state]||sounds.neutral;
+            oscillator.type=sound.type;
+            oscillator.frequency.setValueAtTime(sound.freq,audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.3,audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01,audioContext.currentTime+sound.duration);
+            
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime+sound.duration);
+            currentOscillator=oscillator;
+        }
+        
+        function getSoundStateForScore(s){
+            if(s<20)return 'extreme_fear';
+            if(s<40)return 'fear';
+            if(s<60)return 'neutral';
+            if(s<80)return 'greed';
+            return 'extreme_greed';
+        }
         
         // Matrix effect
         const canvas=document.getElementById('matrix-canvas'),ctx=canvas.getContext('2d');
@@ -98,28 +136,14 @@
         
         function getColorForScore(s){return s<20?'#ff4444':s<40?'#ff8844':s<60?'#ffd700':s<80?'#88ff44':'#44ff88';}
         
-        function getMusicForScore(s){
-            if(s<20)return musicTracks.extreme_fear;
-            if(s<40)return musicTracks.fear;
-            if(s<60)return musicTracks.neutral;
-            if(s<80)return musicTracks.greed;
-            return musicTracks.extreme_greed;
-        }
-        
-        function playMusicForState(){
-            if(!soundEnabled)return;
-            // For now, just log which track would play
-            // In production, you'd open the YouTube link or use an embed
-            const track=getMusicForScore(currentScore);
-            console.log('Playing track for score '+currentScore+': '+track);
-            // You could open in new tab: window.open(track, '_blank');
-        }
-        
         document.getElementById('soundToggle').addEventListener('click',function(){
             soundEnabled=!soundEnabled;
             this.classList.toggle('active');
             this.textContent=soundEnabled?'🔊':'🔇';
-            if(soundEnabled)playMusicForState();
+            if(soundEnabled){
+                initAudio();
+                playSound(getSoundStateForScore(currentScore));
+            }
         });
         
         document.getElementById('particlesToggle').addEventListener('click',function(){
@@ -134,7 +158,7 @@
                 if(p==='granted'){
                     notificationsEnabled=true;
                     this.classList.add('active');
-                    new Notification('🔔 Alerts Enabled!',{body:'You will be notified when F&G hits extreme levels (<20 or >80)'});
+                    new Notification('🔔 Alerts Enabled!',{body:'You will be notified at extreme F&G levels'});
                 }
             }else{
                 notificationsEnabled=false;
@@ -156,17 +180,34 @@
         
         async function fetchHistoricalData(){
             try{
+                console.log('Fetching historical data...');
                 const r=await fetch('/api/fgi?history=true');
                 const d=await r.json();
-                if(d.history&&d.history.length>0)renderChart(d.history);
-            }catch(e){console.error('Chart error:',e);}
+                console.log('Historical data received:',d);
+                if(d.history&&d.history.length>0){
+                    renderChart(d.history);
+                }else{
+                    console.error('No history data in response');
+                }
+            }catch(e){
+                console.error('Chart error:',e);
+            }
         }
         
         function renderChart(h){
-            const c=document.getElementById('historyChart');
-            if(!c)return;
-            const ctx=c.getContext('2d');
-            new Chart(ctx,{
+            const canvasEl=document.getElementById('historyChart');
+            if(!canvasEl){
+                console.error('Chart canvas not found');
+                return;
+            }
+            const ctx=canvasEl.getContext('2d');
+            
+            // Destroy existing chart if any
+            if(window.chartInstance){
+                window.chartInstance.destroy();
+            }
+            
+            window.chartInstance=new Chart(ctx,{
                 type:'line',
                 data:{
                     labels:h.map(d=>d.date),
@@ -180,19 +221,39 @@
                         pointBackgroundColor:h.map(d=>getColorForScore(d.score)),
                         pointBorderColor:'#fff',
                         pointBorderWidth:2,
-                        pointRadius:4
+                        pointRadius:4,
+                        pointHoverRadius:6
                     }]
                 },
                 options:{
                     responsive:true,
                     maintainAspectRatio:true,
-                    plugins:{legend:{labels:{color:'#00ff00',font:{family:'Courier New',size:12}}}},
+                    plugins:{
+                        legend:{
+                            display:true,
+                            labels:{color:'#00ff00',font:{family:'Courier New',size:12}}
+                        }
+                    },
                     scales:{
-                        y:{beginAtZero:true,max:100,grid:{color:'rgba(0,255,0,0.1)'},ticks:{color:'#00ff00',font:{family:'Courier New'}}},
-                        x:{grid:{color:'rgba(0,255,0,0.1)'},ticks:{color:'#00ff00',font:{family:'Courier New',size:10},maxRotation:45,minRotation:45}}
+                        y:{
+                            beginAtZero:true,
+                            max:100,
+                            grid:{color:'rgba(0,255,0,0.1)'},
+                            ticks:{color:'#00ff00',font:{family:'Courier New'}}
+                        },
+                        x:{
+                            grid:{color:'rgba(0,255,0,0.1)'},
+                            ticks:{
+                                color:'#00ff00',
+                                font:{family:'Courier New',size:10},
+                                maxRotation:45,
+                                minRotation:45
+                            }
+                        }
                     }
                 }
             });
+            console.log('Chart rendered successfully');
         }
         
         async function fetchData(){
@@ -204,16 +265,20 @@
                 const c=getColorForScore(currentScore);
                 const e=currentScore<=20||currentScore>=80;
                 
-                // Play music when state changes
-                if(prevScore!==currentScore)playMusicForState();
+                // Play sound when state changes
+                if(prevScore!==0&&prevScore!==currentScore){
+                    playSound(getSoundStateForScore(currentScore));
+                }
                 
                 if(e&&notificationsEnabled&&(lastNotificationScore===null||Math.abs(lastNotificationScore-currentScore)>10)){
-                    new Notification(currentScore<=20?'🔥 EXTREME FEAR!':'⚠️ EXTREME GREED!',{body:'Score: '+currentScore+(currentScore<=20?' - Time to accumulate?':' - Consider taking profits!')});
+                    new Notification(currentScore<=20?'🔥 EXTREME FEAR!':'⚠️ EXTREME GREED!',{body:'Score: '+currentScore+(currentScore<=20?' - Accumulate?':' - Take profits?')});
                     lastNotificationScore=currentScore;
                 }else if(!e){lastNotificationScore=null;}
                 
                 document.getElementById('content').innerHTML='<div class="gauge '+(e?'extreme':'')+'" style="border-color:'+c+';"><div class="score" style="color:'+c+'">'+d.meta_score+'</div><div class="status" style="color:'+c+'">'+d.status+'</div></div><div class="degen" style="color:'+c+'">'+d.degen_status+'</div><button class="btn" onclick="refreshAll()">[  REFRESH  ]</button><div style="color:#00ff00;font-size:0.8em;opacity:0.6;">> '+new Date(d.timestamp).toLocaleTimeString()+'</div>';
-            }catch(e){document.getElementById('content').innerHTML='<div style="color:#ff6b6b;">ERROR: '+e.message+'</div>';}
+            }catch(e){
+                document.getElementById('content').innerHTML='<div style="color:#ff6b6b;">ERROR: '+e.message+'</div>';
+            }
         }
         
         function shareToX(){
@@ -223,7 +288,11 @@
             window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(t)+'&url='+encodeURIComponent(window.location.href),'_blank','width=550,height=420');
         }
         
-        function refreshAll(){fetchData();fetchBTCPrice();fetchHistoricalData();}
+        function refreshAll(){
+            fetchData();
+            fetchBTCPrice();
+            fetchHistoricalData();
+        }
         
         fetchData();
         fetchBTCPrice();
