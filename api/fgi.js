@@ -1,5 +1,3 @@
-const fetch = require('node-fetch'); // Vercel includes this by default
-
 module.exports = async (req, res) => {
   try {
     const history = req.query.history === 'true';
