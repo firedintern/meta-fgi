@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meta F&G Index</title>
+    <title>Internet Capital Market Fear/Greed Index</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -18,12 +18,13 @@
         }
         .container { text-align: center; max-width: 600px; width: 100%; }
         .title {
-            font-size: 2.5em;
+            font-size: 2em;
             background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcf7f);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 20px;
             text-transform: uppercase;
+            line-height: 1.3;
         }
         .gauge {
             width: 250px;
@@ -36,10 +37,18 @@
             background: rgba(255,255,255,0.05);
             border-radius: 50%;
             border: 3px solid rgba(255,255,255,0.2);
+            transition: border-color 0.5s ease;
         }
         .score { font-size: 4em; font-weight: bold; }
         .status { font-size: 1.2em; margin-top: 10px; }
-        .degen { font-size: 0.9em; color: #888; margin: 20px; }
+        .degen { 
+            font-size: 3em; 
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            color: #fff; 
+            margin: 30px;
+            font-weight: bold;
+            text-shadow: 0 0 20px currentColor;
+        }
         .btn {
             background: linear-gradient(135deg, #667eea, #764ba2);
             border: none;
@@ -52,11 +61,15 @@
             margin: 20px;
         }
         .btn:hover { transform: scale(1.05); }
+        @media (max-width: 768px) {
+            .title { font-size: 1.5em; }
+            .degen { font-size: 2em; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="title">Meta F&G Index</div>
+        <div class="title">Internet Capital Market<br>Fear/Greed Index</div>
         <div id="content">Loading...</div>
     </div>
     <script>
@@ -66,11 +79,11 @@
                 const data = await res.json();
                 const color = data.meta_score < 20 ? '#ff4444' : data.meta_score < 40 ? '#ff8844' : data.meta_score < 60 ? '#ffd700' : data.meta_score < 80 ? '#88ff44' : '#44ff88';
                 document.getElementById('content').innerHTML = `
-                    <div class="gauge">
+                    <div class="gauge" style="border-color: ${color};">
                         <div class="score" style="color: ${color}">${data.meta_score}</div>
                         <div class="status">${data.status}</div>
                     </div>
-                    <div class="degen">${data.degen_status}</div>
+                    <div class="degen" style="color: ${color}">${data.degen_status}</div>
                     <button class="btn" onclick="fetchData()">⟳ Refresh</button>
                     <div style="color: #666; font-size: 0.8em;">${new Date(data.timestamp).toLocaleTimeString()}</div>
                 `;
