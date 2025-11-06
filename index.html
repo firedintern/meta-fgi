@@ -13,77 +13,194 @@
         .container { text-align: center; max-width: 1000px; width: 100%; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
         
         .controls { position: fixed; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 100; }
-        .control-btn { 
-            background: rgba(0, 100, 0, 0.3); 
-            border: 1px solid #00aa00; 
-            color: #00ff00; 
-            padding: 10px 15px; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            font-family: 'Courier New', monospace; 
-            font-size: 1.2em; 
-            transition: all 0.3s ease; 
-            position: relative; 
-        }
-        .control-btn:hover { 
-            background: rgba(0, 150, 0, 0.4); 
-            transform: scale(1.05); 
-        }
-        .control-btn:hover::after { 
-            content: attr(data-tooltip); 
-            position: absolute; 
-            bottom: -40px; 
-            right: 0; 
-            background: rgba(0, 200, 0, 0.9); 
-            color: #000; 
-            padding: 5px 10px; 
-            border-radius: 5px; 
-            font-size: 0.7em; 
-            white-space: nowrap; 
-            z-index: 1000; 
-        }
-        .control-btn.active { 
-            background: rgba(0, 200, 0, 0.5); 
-            border-color: #00ff00; 
-        }
+        .control-btn { background: rgba(0, 100, 0, 0.3); border: 1px solid #00aa00; color: #00ff00; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 1.2em; transition: all 0.3s ease; position: relative; }
+        .control-btn:hover { background: rgba(0, 150, 0, 0.4); transform: scale(1.05); }
+        .control-btn:hover::after { content: attr(data-tooltip); position: absolute; bottom: -40px; right: 0; background: rgba(0, 200, 0, 0.9); color: #000; padding: 5px 10px; border-radius: 5px; font-size: 0.7em; white-space: nowrap; z-index: 1000; }
+        .control-btn.active { background: rgba(0, 200, 0, 0.5); border-color: #00ff00; }
         
-        .btc-ticker { background: linear-gradient(135deg, #f7931a 0%, #ffb74d 100%); padding: 15px 30px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 5px 20px rgba(247, 147, 26, 0.3); animation: pulse 2s ease-in-out infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
-        .btc-label { font-size: 0.9em; color: #000; opacity: 0.8; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; }
-        .btc-price { font-size: 2.5em; font-weight: bold; color: #000; margin: 5px 0; }
-        .btc-change { font-size: 1.2em; font-weight: bold; margin-top: 5px; }
+        .title { font-size: 2.2em; color: #00ff00; margin-bottom: 15px; font-weight: bold; letter-spacing: 3px; text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00; animation: terminal-flicker 3s ease-in-out infinite; }
+        @keyframes terminal-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.95; } }
+        
+        .btc-ticker { background: linear-gradient(135deg, #f7931a 0%, #ffb74d 100%); padding: 10px 25px; border-radius: 10px; margin: 0 auto 30px; max-width: 400px; box-shadow: 0 3px 15px rgba(247, 147, 26, 0.3); }
+        .btc-label { font-size: 0.75em; color: #000; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+        .btc-price { font-size: 1.8em; font-weight: bold; color: #000; margin: 3px 0; }
+        .btc-change { font-size: 0.95em; font-weight: bold; margin-top: 3px; }
         .positive { color: #00ff00; }
         .negative { color: #ff0000; }
         
-        .title { font-size: 2.2em; color: #00ff00; margin-bottom: 25px; font-weight: bold; letter-spacing: 3px; text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00; animation: terminal-flicker 3s ease-in-out infinite; }
-        @keyframes terminal-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.95; } }
+        /* SLOT MACHINE */
+        .slot-machine { 
+            width: 500px; 
+            margin: 30px auto; 
+            background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+            border: 8px solid;
+            border-image: linear-gradient(45deg, #ffd700, #ff6b6b, #4ecdc4, #ffd700) 1;
+            border-radius: 20px;
+            padding: 40px 30px 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8), inset 0 0 30px rgba(255,255,255,0.1);
+            position: relative;
+        }
         
-        .speedometer-container { width: 450px; height: 450px; margin: 30px auto; position: relative; }
-        .speedometer { width: 100%; height: 100%; position: relative; }
-        .score-display { position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
-        .score-number { font-size: 5em; font-weight: bold; text-shadow: 0 0 30px currentColor; line-height: 1; }
-        .score-label { font-size: 1.2em; margin-top: 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; }
-        .gauge-extreme { animation: extreme-pulse 1s ease-in-out infinite; }
-        @keyframes extreme-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .slot-lights { 
+            position: absolute; 
+            top: 10px; 
+            left: 0; 
+            right: 0; 
+            display: flex; 
+            justify-content: space-around; 
+            padding: 0 20px; 
+        }
+        .light { 
+            width: 15px; 
+            height: 15px; 
+            border-radius: 50%; 
+            background: #ff0000;
+            animation: blink 1s infinite;
+        }
+        .light:nth-child(2) { animation-delay: 0.2s; background: #ffd700; }
+        .light:nth-child(3) { animation-delay: 0.4s; background: #00ff00; }
+        .light:nth-child(4) { animation-delay: 0.6s; background: #00ffff; }
+        .light:nth-child(5) { animation-delay: 0.8s; background: #ff00ff; }
+        @keyframes blink { 0%, 50%, 100% { opacity: 1; box-shadow: 0 0 10px currentColor; } 25%, 75% { opacity: 0.3; } }
         
-        .degen { font-size: 3em; font-family: 'Comic Sans MS', cursive, sans-serif; color: #fff; margin: 30px; font-weight: bold; text-shadow: 0 0 20px currentColor; animation: degen-bounce 2s ease-in-out infinite; }
+        .slot-title { 
+            color: #ffd700; 
+            font-size: 1.5em; 
+            font-weight: bold; 
+            margin-bottom: 20px; 
+            text-shadow: 0 0 20px #ffd700, 0 0 40px #ffd700;
+            letter-spacing: 3px;
+        }
+        
+        .reels-container { 
+            display: flex; 
+            gap: 15px; 
+            justify-content: center; 
+            margin-bottom: 20px;
+            background: #000;
+            padding: 20px;
+            border-radius: 10px;
+            border: 3px solid #333;
+        }
+        
+        .reel { 
+            width: 120px; 
+            height: 140px; 
+            background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
+            border: 4px solid #444;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
+        }
+        
+        .reel-symbols { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            top: 0;
+        }
+        
+        .reel-symbols.spinning { 
+            animation: spin 0.3s linear infinite; 
+        }
+        
+        @keyframes spin {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-700px); }
+        }
+        
+        .symbol { 
+            font-size: 4em; 
+            height: 140px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            text-shadow: 0 0 20px currentColor;
+        }
+        
+        .payout-display { 
+            background: #000; 
+            padding: 15px; 
+            border-radius: 10px; 
+            border: 3px solid #ffd700;
+            margin-top: 20px;
+        }
+        
+        .payout-label { 
+            color: #ffd700; 
+            font-size: 0.9em; 
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+        }
+        
+        .payout-score { 
+            font-size: 3em; 
+            font-weight: bold; 
+            text-shadow: 0 0 30px currentColor;
+        }
+        
+        .payout-text { 
+            font-size: 1.1em; 
+            font-weight: bold; 
+            margin-top: 5px;
+            letter-spacing: 2px;
+        }
+        
+        .jackpot { 
+            animation: jackpot-flash 0.5s infinite; 
+        }
+        
+        @keyframes jackpot-flash {
+            0%, 100% { 
+                transform: scale(1); 
+                text-shadow: 0 0 20px currentColor; 
+            }
+            50% { 
+                transform: scale(1.1); 
+                text-shadow: 0 0 40px currentColor, 0 0 60px currentColor; 
+            }
+        }
+        
+        .lever { 
+            position: absolute; 
+            right: -40px; 
+            top: 50%; 
+            transform: translateY(-50%);
+            font-size: 3em;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .lever:hover { transform: translateY(-50%) scale(1.2); }
+        .lever.pulled { animation: pull 0.5s; }
+        @keyframes pull {
+            0%, 100% { transform: translateY(-50%) rotate(0deg); }
+            50% { transform: translateY(-30%) rotate(20deg); }
+        }
+        
+        .degen { font-size: 2.5em; font-family: 'Comic Sans MS', cursive, sans-serif; color: #fff; margin: 20px; font-weight: bold; text-shadow: 0 0 20px currentColor; animation: degen-bounce 2s ease-in-out infinite; }
         @keyframes degen-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        
+        .share-btn { background: #000; border: 2px solid #fff; color: #fff; display: inline-flex; align-items: center; gap: 8px; padding: 12px 30px; font-size: 1em; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-weight: bold; margin: 10px; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s ease; }
+        .share-btn:hover { box-shadow: 0 0 25px rgba(255, 255, 255, 0.6); background: #111; transform: scale(1.05); }
+        
+        .btn { background: linear-gradient(135deg, #00ff00, #00cc00); border: 2px solid #00ff00; color: #000; padding: 15px 40px; font-size: 1.1em; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-weight: bold; margin: 10px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); transition: all 0.3s ease; }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(0, 255, 0, 0.6); }
         
         .chart-container { background: rgba(255,255,255,0.05); border: 2px solid rgba(0, 255, 0, 0.3); border-radius: 15px; padding: 30px; margin: 40px 0; box-shadow: 0 0 20px rgba(0, 255, 0, 0.1); min-height: 350px; }
         .chart-title { color: #00ff00; font-size: 1.3em; margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; }
         
-        .btn { background: linear-gradient(135deg, #00ff00, #00cc00); border: 2px solid #00ff00; color: #000; padding: 15px 40px; font-size: 1.1em; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-weight: bold; margin: 10px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); transition: all 0.3s ease; }
-        .btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(0, 255, 0, 0.6); }
-        .share-btn { background: #000; border: 2px solid #fff; color: #fff; display: inline-flex; align-items: center; gap: 8px; }
-        .share-btn:hover { box-shadow: 0 0 25px rgba(255, 255, 255, 0.6); background: #111; }
-        
         @media (max-width: 768px) { 
             .title { font-size: 1.5em; } 
-            .degen { font-size: 2em; } 
-            .btc-price { font-size: 2em; } 
-            .speedometer-container { width: 300px; height: 300px; }
-            .score-number { font-size: 3.5em; } 
-            .score-label { font-size: 1em; }
+            .slot-machine { width: 90%; padding: 30px 15px 20px; }
+            .reels-container { gap: 8px; padding: 15px; }
+            .reel { width: 90px; height: 110px; }
+            .symbol { font-size: 3em; height: 110px; }
+            .payout-score { font-size: 2em; }
+            .lever { display: none; }
+            .degen { font-size: 2em; }
             .controls { top: 10px; right: 10px; flex-direction: column; } 
             .chart-container { padding: 15px; } 
         }
@@ -93,72 +210,101 @@
     <canvas id="matrix-canvas"></canvas>
     
     <div class="controls">
-        <button class="control-btn" id="soundToggle" data-tooltip="Toggle Music">🔇</button>
         <button class="control-btn active" id="particlesToggle" data-tooltip="Toggle Matrix">✨</button>
         <button class="control-btn" id="notifyToggle" data-tooltip="Extreme alerts">🔔</button>
     </div>
     
     <div class="container">
+        <div class="title">&gt; FEAR_GREED_PROTOCOL &lt;</div>
+        
         <div class="btc-ticker">
             <div class="btc-label">₿ Bitcoin</div>
             <div class="btc-price" id="btcPrice">Loading...</div>
             <div class="btc-change" id="btcChange"></div>
         </div>
         
-        <div class="title">&gt; FEAR_GREED_PROTOCOL &lt;</div>
-        
         <div id="content">
-            <div class="speedometer-container">
-                <svg class="speedometer" viewBox="0 0 200 200">
-                    <defs>
-                        <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" style="stop-color:#ff4444;stop-opacity:1" />
-                            <stop offset="25%" style="stop-color:#ff8844;stop-opacity:1" />
-                            <stop offset="50%" style="stop-color:#ffd700;stop-opacity:1" />
-                            <stop offset="75%" style="stop-color:#88ff44;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#44ff88;stop-opacity:1" />
-                        </linearGradient>
-                    </defs>
-                    <path id="gaugeArc" d="M 30 170 A 80 80 0 1 1 170 170" fill="none" stroke="url(#gaugeGradient)" stroke-width="20" stroke-linecap="round"/>
-                    <g id="ticks">
-                        <line x1="30" y1="170" x2="30" y2="160" stroke="#fff" stroke-width="2" opacity="0.5"/>
-                        <line x1="50" y1="145" x2="55" y2="138" stroke="#fff" stroke-width="2" opacity="0.5"/>
-                        <line x1="75" y1="125" x2="82" y2="120" stroke="#fff" stroke-width="2" opacity="0.5"/>
-                        <line x1="100" y1="110" x2="100" y2="100" stroke="#fff" stroke-width="2" opacity="0.5"/>
-                        <line x1="125" y1="125" x2="118" y2="120" stroke="#fff" stroke-width="2" opacity="0.5"/>
-                        <line x1="150" y1="145" x2="145" y2="138" stroke="#fff" stroke-width="2" opacity="0.5"/>
-                        <line x1="170" y1="170" x2="170" y2="160" stroke="#fff" stroke-width="2" opacity="0.5"/>
-                    </g>
-                    <g id="needle" transform="rotate(-90 100 170)">
-                        <line x1="100" y1="170" x2="100" y2="100" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
-                        <circle cx="100" cy="170" r="8" fill="#fff"/>
-                    </g>
-                </svg>
-                <div class="score-display">
-                    <div class="score-number" id="scoreNumber">--</div>
-                    <div class="score-label" id="scoreLabel">LOADING...</div>
+            <div class="slot-machine">
+                <div class="slot-lights">
+                    <div class="light"></div>
+                    <div class="light"></div>
+                    <div class="light"></div>
+                    <div class="light"></div>
+                    <div class="light"></div>
                 </div>
+                <div class="slot-title">🎰 DEGEN CASINO 🎰</div>
+                <div class="reels-container">
+                    <div class="reel">
+                        <div class="reel-symbols" id="reel1">
+                            <div class="symbol">💀</div>
+                            <div class="symbol">😱</div>
+                            <div class="symbol">😰</div>
+                            <div class="symbol">😐</div>
+                            <div class="symbol">😏</div>
+                            <div class="symbol">🤑</div>
+                            <div class="symbol">💀</div>
+                            <div class="symbol">😱</div>
+                            <div class="symbol">😰</div>
+                            <div class="symbol">😐</div>
+                        </div>
+                    </div>
+                    <div class="reel">
+                        <div class="reel-symbols" id="reel2">
+                            <div class="symbol">💀</div>
+                            <div class="symbol">😱</div>
+                            <div class="symbol">😰</div>
+                            <div class="symbol">😐</div>
+                            <div class="symbol">😏</div>
+                            <div class="symbol">🤑</div>
+                            <div class="symbol">💀</div>
+                            <div class="symbol">😱</div>
+                            <div class="symbol">😰</div>
+                            <div class="symbol">😐</div>
+                        </div>
+                    </div>
+                    <div class="reel">
+                        <div class="reel-symbols" id="reel3">
+                            <div class="symbol">💀</div>
+                            <div class="symbol">😱</div>
+                            <div class="symbol">😰</div>
+                            <div class="symbol">😐</div>
+                            <div class="symbol">😏</div>
+                            <div class="symbol">🤑</div>
+                            <div class="symbol">💀</div>
+                            <div class="symbol">😱</div>
+                            <div class="symbol">😰</div>
+                            <div class="symbol">😐</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="payout-display">
+                    <div class="payout-label">MARKET SENTIMENT</div>
+                    <div class="payout-score" id="slotScore">--</div>
+                    <div class="payout-text" id="slotStatus">...</div>
+                </div>
+                <div class="lever" onclick="spinSlots()">🎰</div>
             </div>
+            
             <div class="degen" id="degenStatus">...</div>
+            
+            <button class="share-btn" onclick="shareToX()">Share on <span style="font-size:1.3em">𝕏</span></button>
+            
             <button class="btn" onclick="refreshAll()">[  REFRESH  ]</button>
-            <div style="color:#00ff00;font-size:0.8em;opacity:0.6;" id="timestamp">> --:--:--</div>
+            <div style="color:#00ff00;font-size:0.8em;opacity:0.6;margin-top:10px;" id="timestamp">> --:--:--</div>
         </div>
         
         <div class="chart-container">
             <div class="chart-title" id="chartTitle">📊 30-Day Sentiment History</div>
             <canvas id="historyChart"></canvas>
         </div>
-        
-        <button class="btn share-btn" onclick="shareToX()">Share on <span style="font-size:1.3em">𝕏</span></button>
     </div>
     
     <script>
-        let currentScore=0,soundEnabled=false,particlesEnabled=true,notificationsEnabled=false,lastNotificationScore=null;
+        let currentScore=0,particlesEnabled=true,notificationsEnabled=false,lastNotificationScore=null;
         
-        // Matrix
         const canvas=document.getElementById('matrix-canvas'),ctx=canvas.getContext('2d');
         canvas.width=window.innerWidth;canvas.height=window.innerHeight;
-        const matrix="ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%₿🧮📊";
+        const matrix="ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%₿🧮📊🎰💀😱😰😐😏🤑";
         const fontSize=14,columns=canvas.width/fontSize;
         const drops=[];
         for(let i=0;i<columns;i++)drops[i]=1;
@@ -187,27 +333,51 @@
             return '#44ff88';
         }
         
-        function updateSpeedometer(score){
-            const angle=(score/100)*180-90;
-            const needle=document.getElementById('needle');
-            needle.setAttribute('transform','rotate('+angle+' 100 170)');
-            
-            const color=getColorForScore(score);
-            document.getElementById('scoreNumber').style.color=color;
-            document.getElementById('scoreNumber').textContent=score;
-            
-            if(score<=20||score>=80){
-                document.querySelector('.speedometer-container').classList.add('gauge-extreme');
-            }else{
-                document.querySelector('.speedometer-container').classList.remove('gauge-extreme');
-            }
+        function getSymbolForScore(s){
+            if(s<10)return '💀';
+            if(s<25)return '😱';
+            if(s<45)return '😰';
+            if(s<60)return '😐';
+            if(s<80)return '😏';
+            return '🤑';
         }
         
-        document.getElementById('soundToggle').addEventListener('click',function(){
-            soundEnabled=!soundEnabled;
-            this.classList.toggle('active');
-            this.textContent=soundEnabled?'🔊':'🔇';
-        });
+        function spinSlots(){
+            const lever=document.querySelector('.lever');
+            lever.classList.add('pulled');
+            setTimeout(()=>lever.classList.remove('pulled'),500);
+            refreshAll();
+        }
+        
+        function updateSlotMachine(score){
+            const symbol=getSymbolForScore(score);
+            const color=getColorForScore(score);
+            
+            // Spin animation
+            const reels=[document.getElementById('reel1'),document.getElementById('reel2'),document.getElementById('reel3')];
+            reels.forEach((reel,i)=>{
+                reel.classList.add('spinning');
+                setTimeout(()=>{
+                    reel.classList.remove('spinning');
+                    // Calculate position to show correct symbol
+                    const symbolIndex={'💀':0,'😱':1,'😰':2,'😐':3,'😏':4,'🤑':5}[symbol];
+                    reel.style.transform='translateY(-'+(symbolIndex*140)+'px)';
+                },300+(i*200));
+            });
+            
+            // Update display
+            setTimeout(()=>{
+                document.getElementById('slotScore').textContent=score;
+                document.getElementById('slotScore').style.color=color;
+                
+                const extreme=score<=20||score>=80;
+                if(extreme){
+                    document.getElementById('slotScore').classList.add('jackpot');
+                }else{
+                    document.getElementById('slotScore').classList.remove('jackpot');
+                }
+            },800);
+        }
         
         document.getElementById('particlesToggle').addEventListener('click',function(){
             particlesEnabled=!particlesEnabled;
@@ -332,22 +502,22 @@
                 
                 const color=getColorForScore(currentScore);
                 
-                updateSpeedometer(currentScore);
-                document.getElementById('scoreLabel').textContent=status;
-                document.getElementById('scoreLabel').style.color=color;
+                updateSlotMachine(currentScore);
+                document.getElementById('slotStatus').textContent=status;
+                document.getElementById('slotStatus').style.color=color;
                 document.getElementById('degenStatus').textContent=degenStatus;
                 document.getElementById('degenStatus').style.color=color;
                 document.getElementById('timestamp').textContent='> '+new Date(fgiData.timestamp*1000).toLocaleTimeString();
                 
                 const extreme=currentScore<=20||currentScore>=80;
                 if(extreme&&notificationsEnabled&&(lastNotificationScore===null||Math.abs(lastNotificationScore-currentScore)>10)){
-                    new Notification(currentScore<=20?'🔥 EXTREME FEAR!':'⚠️ EXTREME GREED!',{body:'Score: '+currentScore});
+                    new Notification(currentScore<=20?'🔥 EXTREME FEAR - JACKPOT!':'⚠️ EXTREME GREED - JACKPOT!',{body:'Score: '+currentScore});
                     lastNotificationScore=currentScore;
                 }else if(!extreme){lastNotificationScore=null;}
             }catch(e){
                 console.error('Data fetch error:',e);
-                document.getElementById('scoreLabel').textContent='ERROR';
-                document.getElementById('scoreLabel').style.color='#ff0000';
+                document.getElementById('slotStatus').textContent='ERROR';
+                document.getElementById('slotStatus').style.color='#ff0000';
             }
         }
         
