@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>> FEAR_GREED_PROTOCOL <</title>
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Crypto Fear & Greed Protocol">
+    <meta name="twitter:description" content="Real-time crypto market sentiment tracker with casino-style visualization">
+    <meta name="twitter:image" content="https://meta-fgi.vercel.app/og-image.png">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Crypto Fear & Greed Protocol">
+    <meta property="og:description" content="Real-time crypto market sentiment tracker">
+    <meta property="og:image" content="https://meta-fgi.vercel.app/og-image.png">
+    <meta property="og:url" content="https://meta-fgi.vercel.app">
+    
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧮</text></svg>">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
@@ -208,7 +221,6 @@
 </head>
 <body>
     <canvas id="matrix-canvas"></canvas>
-    <canvas id="shareCanvas" style="display:none;"></canvas>
     
     <div class="controls">
         <button class="control-btn active" id="particlesToggle" data-tooltip="Toggle Matrix">✨</button>
@@ -310,71 +322,49 @@
             }
         }
         
-        function playSlotSound(){
+        function playJackpotSound(){
             initAudio();
-            
-            // Create mechanical spinning sound
-            const duration=1.5;
             const now=audioContext.currentTime;
             
-            // Main spinning sound (filtered noise)
-            const bufferSize=audioContext.sampleRate*duration;
-            const buffer=audioContext.createBuffer(1,bufferSize,audioContext.sampleRate);
-            const data=buffer.getChannelData(0);
-            for(let i=0;i<bufferSize;i++){
-                data[i]=(Math.random()*2-1)*0.3;
-            }
+            // Ascending "ding ding ding" melody
+            const notes=[523.25,659.25,783.99,1046.50]; // C5, E5, G5, C6
             
-            const noise=audioContext.createBufferSource();
-            noise.buffer=buffer;
-            
-            const filter=audioContext.createBiquadFilter();
-            filter.type='bandpass';
-            filter.frequency.setValueAtTime(200,now);
-            filter.frequency.exponentialRampToValueAtTime(800,now+duration);
-            
-            const gainNode=audioContext.createGain();
-            gainNode.gain.setValueAtTime(0.4,now);
-            gainNode.gain.exponentialRampToValueAtTime(0.01,now+duration);
-            
-            noise.connect(filter);
-            filter.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            noise.start(now);
-            noise.stop(now+duration);
-            
-            // Click sounds during spin
-            for(let i=0;i<8;i++){
-                const clickTime=now+(i*0.15);
+            notes.forEach((freq,i)=>{
                 const osc=audioContext.createOscillator();
-                const clickGain=audioContext.createGain();
+                const gain=audioContext.createGain();
                 
-                osc.frequency.setValueAtTime(100,clickTime);
-                clickGain.gain.setValueAtTime(0.2,clickTime);
-                clickGain.gain.exponentialRampToValueAtTime(0.01,clickTime+0.05);
+                osc.type='sine';
+                osc.frequency.setValueAtTime(freq,now+(i*0.15));
                 
-                osc.connect(clickGain);
-                clickGain.connect(audioContext.destination);
-                osc.start(clickTime);
-                osc.stop(clickTime+0.05);
-            }
+                gain.gain.setValueAtTime(0,now+(i*0.15));
+                gain.gain.linearRampToValueAtTime(0.3,now+(i*0.15)+0.01);
+                gain.gain.exponentialRampToValueAtTime(0.01,now+(i*0.15)+0.4);
+                
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                
+                osc.start(now+(i*0.15));
+                osc.stop(now+(i*0.15)+0.5);
+            });
             
-            // Final ding
+            // Final celebratory chord
             setTimeout(()=>{
-                const ding=audioContext.createOscillator();
-                const dingGain=audioContext.createGain();
-                const dingTime=audioContext.currentTime;
-                
-                ding.frequency.setValueAtTime(800,dingTime);
-                dingGain.gain.setValueAtTime(0.3,dingTime);
-                dingGain.gain.exponentialRampToValueAtTime(0.01,dingTime+0.3);
-                
-                ding.connect(dingGain);
-                dingGain.connect(audioContext.destination);
-                ding.start(dingTime);
-                ding.stop(dingTime+0.3);
-            },1200);
+                [523.25,659.25,783.99].forEach(freq=>{
+                    const osc=audioContext.createOscillator();
+                    const gain=audioContext.createGain();
+                    const time=audioContext.currentTime;
+                    
+                    osc.type='sine';
+                    osc.frequency.setValueAtTime(freq,time);
+                    gain.gain.setValueAtTime(0.2,time);
+                    gain.gain.exponentialRampToValueAtTime(0.01,time+0.8);
+                    
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    osc.start(time);
+                    osc.stop(time+0.8);
+                });
+            },600);
         }
         
         const canvas=document.getElementById('matrix-canvas'),ctx=canvas.getContext('2d');
@@ -418,7 +408,7 @@
         }
         
         function spinSlots(){
-            playSlotSound();
+            playJackpotSound();
             const lever=document.querySelector('.lever');
             lever.classList.add('pulled');
             setTimeout(()=>lever.classList.remove('pulled'),500);
@@ -594,72 +584,12 @@
             }
         }
         
-        function generateShareImage(){
-            const shareCanvas=document.getElementById('shareCanvas');
-            const sctx=shareCanvas.getContext('2d');
-            shareCanvas.width=800;
-            shareCanvas.height=600;
-            
-            // Background
-            sctx.fillStyle='#000';
-            sctx.fillRect(0,0,800,600);
-            
-            // Title
-            sctx.fillStyle='#00ff00';
-            sctx.font='bold 40px "Courier New"';
-            sctx.textAlign='center';
-            sctx.fillText('FEAR & GREED PROTOCOL',400,80);
-            
-            // Score circle
-            const color=getColorForScore(currentScore);
-            sctx.beginPath();
-            sctx.arc(400,300,120,0,2*Math.PI);
-            sctx.strokeStyle=color;
-            sctx.lineWidth=15;
-            sctx.stroke();
-            
-            // Score
-            sctx.fillStyle=color;
-            sctx.font='bold 100px "Courier New"';
-            sctx.fillText(currentScore,400,320);
-            
-            // Status
-            const status=document.getElementById('slotStatus').textContent;
-            sctx.font='bold 30px "Courier New"';
-            sctx.fillText(status,400,480);
-            
-            // Symbol
-            const symbol=getSymbolForScore(currentScore);
-            sctx.font='80px Arial';
-            sctx.fillText(symbol,400,420);
-            
-            // Footer
-            sctx.fillStyle='#00ff00';
-            sctx.font='20px "Courier New"';
-            sctx.fillText('meta-fgi.vercel.app',400,550);
-            
-            return shareCanvas.toDataURL('image/png');
-        }
-        
         function shareToX(){
-            const imageData=generateShareImage();
             const s=currentScore<20?'BLOOD IN THE STREETS':currentScore<40?'PAPER HANDS EVERYWHERE':currentScore<60?'CRAB MARKET':currentScore<80?'FOMO KICKING IN':'EUPHORIA - TOP IS IN';
             const e=currentScore<20?'🔥':currentScore<40?'💎':currentScore<60?'🦀':currentScore<80?'🚀':'⚠️';
             const symbol=getSymbolForScore(currentScore);
-            
-            // Open image in new tab for user to save/share
-            const win=window.open();
-            win.document.write('<html><head><title>Share Image</title></head><body style="margin:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:Courier;color:#0f0;">');
-            win.document.write('<h2 style="margin:20px;">Right-click to save and attach to your tweet!</h2>');
-            win.document.write('<img src="'+imageData+'" style="max-width:90%;border:2px solid #0f0;"/>');
-            win.document.write('<p style="margin:20px;font-size:18px;">Or click below to tweet with text:</p>');
-            win.document.write('</body></html>');
-            
-            // Also open Twitter with text
             const t=e+' '+symbol+' Crypto F&G: '+currentScore+'/100\n\nStatus: '+s+'\n\nCheck it live:';
-            setTimeout(()=>{
-                window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(t)+'&url='+encodeURIComponent(window.location.href),'_blank','width=550,height=420');
-            },500);
+            window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(t)+'&url='+encodeURIComponent(window.location.href),'_blank','width=550,height=420');
         }
         
         function refreshAll(){
