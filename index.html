@@ -13,10 +13,39 @@
         .container { text-align: center; max-width: 1000px; width: 100%; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
         
         .controls { position: fixed; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 100; }
-        .control-btn { background: rgba(0, 255, 0, 0.2); border: 2px solid #00ff00; color: #00ff00; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 1.2em; transition: all 0.3s ease; position: relative; }
-        .control-btn:hover { background: rgba(0, 255, 0, 0.4); transform: scale(1.1); }
-        .control-btn:hover::after { content: attr(data-tooltip); position: absolute; bottom: -40px; right: 0; background: rgba(0, 255, 0, 0.9); color: #000; padding: 5px 10px; border-radius: 5px; font-size: 0.7em; white-space: nowrap; z-index: 1000; }
-        .control-btn.active { background: #00ff00; color: #000; box-shadow: 0 0 15px #00ff00; }
+        .control-btn { 
+            background: rgba(0, 100, 0, 0.3); 
+            border: 1px solid #00aa00; 
+            color: #00ff00; 
+            padding: 10px 15px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-family: 'Courier New', monospace; 
+            font-size: 1.2em; 
+            transition: all 0.3s ease; 
+            position: relative; 
+        }
+        .control-btn:hover { 
+            background: rgba(0, 150, 0, 0.4); 
+            transform: scale(1.05); 
+        }
+        .control-btn:hover::after { 
+            content: attr(data-tooltip); 
+            position: absolute; 
+            bottom: -40px; 
+            right: 0; 
+            background: rgba(0, 200, 0, 0.9); 
+            color: #000; 
+            padding: 5px 10px; 
+            border-radius: 5px; 
+            font-size: 0.7em; 
+            white-space: nowrap; 
+            z-index: 1000; 
+        }
+        .control-btn.active { 
+            background: rgba(0, 200, 0, 0.5); 
+            border-color: #00ff00; 
+        }
         
         .btc-ticker { background: linear-gradient(135deg, #f7931a 0%, #ffb74d 100%); padding: 15px 30px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 5px 20px rgba(247, 147, 26, 0.3); animation: pulse 2s ease-in-out infinite; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
@@ -29,10 +58,8 @@
         .title { font-size: 2.2em; color: #00ff00; margin-bottom: 25px; font-weight: bold; letter-spacing: 3px; text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00; animation: terminal-flicker 3s ease-in-out infinite; }
         @keyframes terminal-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.95; } }
         
-        /* Speedometer Gauge */
         .speedometer-container { width: 450px; height: 450px; margin: 30px auto; position: relative; }
         .speedometer { width: 100%; height: 100%; position: relative; }
-        .gauge-bg { width: 100%; height: 100%; }
         .score-display { position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
         .score-number { font-size: 5em; font-weight: bold; text-shadow: 0 0 30px currentColor; line-height: 1; }
         .score-label { font-size: 1.2em; margin-top: 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; }
@@ -64,10 +91,9 @@
 </head>
 <body>
     <canvas id="matrix-canvas"></canvas>
-    <audio id="bgMusic" loop></audio>
     
     <div class="controls">
-        <button class="control-btn" id="soundToggle" data-tooltip="Toggle Music">🔊</button>
+        <button class="control-btn" id="soundToggle" data-tooltip="Toggle Music">🔇</button>
         <button class="control-btn active" id="particlesToggle" data-tooltip="Toggle Matrix">✨</button>
         <button class="control-btn" id="notifyToggle" data-tooltip="Extreme alerts">🔔</button>
     </div>
@@ -84,7 +110,6 @@
         <div id="content">
             <div class="speedometer-container">
                 <svg class="speedometer" viewBox="0 0 200 200">
-                    <!-- Background arc -->
                     <defs>
                         <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                             <stop offset="0%" style="stop-color:#ff4444;stop-opacity:1" />
@@ -94,9 +119,7 @@
                             <stop offset="100%" style="stop-color:#44ff88;stop-opacity:1" />
                         </linearGradient>
                     </defs>
-                    <!-- Gauge arc -->
                     <path id="gaugeArc" d="M 30 170 A 80 80 0 1 1 170 170" fill="none" stroke="url(#gaugeGradient)" stroke-width="20" stroke-linecap="round"/>
-                    <!-- Tick marks -->
                     <g id="ticks">
                         <line x1="30" y1="170" x2="30" y2="160" stroke="#fff" stroke-width="2" opacity="0.5"/>
                         <line x1="50" y1="145" x2="55" y2="138" stroke="#fff" stroke-width="2" opacity="0.5"/>
@@ -106,15 +129,14 @@
                         <line x1="150" y1="145" x2="145" y2="138" stroke="#fff" stroke-width="2" opacity="0.5"/>
                         <line x1="170" y1="170" x2="170" y2="160" stroke="#fff" stroke-width="2" opacity="0.5"/>
                     </g>
-                    <!-- Needle -->
-                    <g id="needle" transform="rotate(0 100 170)">
+                    <g id="needle" transform="rotate(-90 100 170)">
                         <line x1="100" y1="170" x2="100" y2="100" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
                         <circle cx="100" cy="170" r="8" fill="#fff"/>
                     </g>
                 </svg>
                 <div class="score-display">
                     <div class="score-number" id="scoreNumber">--</div>
-                    <div class="score-label" id="scoreLabel">LOADING</div>
+                    <div class="score-label" id="scoreLabel">LOADING...</div>
                 </div>
             </div>
             <div class="degen" id="degenStatus">...</div>
@@ -123,7 +145,7 @@
         </div>
         
         <div class="chart-container">
-            <div class="chart-title">📊 30-Day Sentiment History</div>
+            <div class="chart-title" id="chartTitle">📊 30-Day Sentiment History</div>
             <canvas id="historyChart"></canvas>
         </div>
         
@@ -132,42 +154,6 @@
     
     <script>
         let currentScore=0,soundEnabled=false,particlesEnabled=true,notificationsEnabled=false,lastNotificationScore=null;
-        const bgMusic=document.getElementById('bgMusic');
-        let currentState='';
-        
-        const musicTracks={
-            extreme_fear:'https://incompetech.com/music/royalty-free/mp3-royaltyfree/Myst%20on%20the%20Moor.mp3',
-            fear:'https://incompetech.com/music/royalty-free/mp3-royaltyfree/Interloper.mp3',
-            neutral:'https://incompetech.com/music/royalty-free/mp3-royaltyfree/Pixel%20Peeker%20Polka%20-%20Faster.mp3',
-            greed:'https://incompetech.com/music/royalty-free/mp3-royaltyfree/Martian%20Cowboy.mp3',
-            extreme_greed:'https://incompetech.com/music/royalty-free/mp3-royaltyfree/Rocket.mp3'
-        };
-        
-        function playMusicForState(state){
-            if(!soundEnabled)return;
-            if(state===currentState&&!bgMusic.paused)return;
-            currentState=state;
-            const url=musicTracks[state];
-            if(url){
-                bgMusic.src=url;
-                bgMusic.volume=0.3;
-                bgMusic.play().catch(e=>console.log('Music:',e.message));
-            }
-        }
-        
-        function stopMusic(){
-            bgMusic.pause();
-            bgMusic.currentTime=0;
-            currentState='';
-        }
-        
-        function getSoundStateForScore(s){
-            if(s<20)return 'extreme_fear';
-            if(s<40)return 'fear';
-            if(s<60)return 'neutral';
-            if(s<80)return 'greed';
-            return 'extreme_greed';
-        }
         
         // Matrix
         const canvas=document.getElementById('matrix-canvas'),ctx=canvas.getContext('2d');
@@ -221,11 +207,6 @@
             soundEnabled=!soundEnabled;
             this.classList.toggle('active');
             this.textContent=soundEnabled?'🔊':'🔇';
-            if(soundEnabled&&currentScore>0){
-                playMusicForState(getSoundStateForScore(currentScore));
-            }else{
-                stopMusic();
-            }
         });
         
         document.getElementById('particlesToggle').addEventListener('click',function(){
@@ -257,25 +238,27 @@
                 const e=document.getElementById('btcChange');
                 e.textContent=(c>0?'+':'')+c.toFixed(2)+'% (24h)';
                 e.className='btc-change '+(c>0?'positive':'negative');
-            }catch(e){}
+            }catch(e){console.error('BTC price error:',e);}
         }
         
         async function fetchHistoricalData(){
             try{
-                console.log('Fetching historical data...');
-                const r=await fetch('/api/fgi?history=true');
-                if(!r.ok)throw new Error('API error');
+                const r=await fetch('https://api.alternative.me/fng/?limit=30&format=json');
                 const d=await r.json();
                 
-                if(d.history&&Array.isArray(d.history)&&d.history.length>0){
-                    console.log('Got '+d.history.length+' data points');
-                    renderChart(d.history);
+                if(d.data&&Array.isArray(d.data)&&d.data.length>0){
+                    const history=d.data.reverse().map(item=>({
+                        date:new Date(item.timestamp*1000).toLocaleDateString('en-US',{month:'short',day:'numeric'}),
+                        score:parseInt(item.value),
+                        timestamp:item.timestamp
+                    }));
+                    renderChart(history);
                 }else{
-                    document.querySelector('.chart-title').innerHTML='📊 Historical data unavailable<br><small style="font-size:0.7em">Consider adding Altcoin Season Index</small>';
+                    document.getElementById('chartTitle').innerHTML='📊 Historical data unavailable';
                 }
             }catch(e){
-                console.error('History fetch failed:',e);
-                document.querySelector('.chart-title').innerHTML='📊 Unable to load historical data';
+                console.error('History error:',e);
+                document.getElementById('chartTitle').innerHTML='📊 Unable to load history';
             }
         }
         
@@ -315,28 +298,46 @@
                         }
                     }
                 });
-                console.log('Chart rendered!');
             }catch(e){console.error('Chart error:',e);}
         }
         
         async function fetchData(){
             try{
-                const r=await fetch('/api/fgi');
+                const r=await fetch('https://api.alternative.me/fng/?limit=1&format=json');
                 const d=await r.json();
-                const prevScore=currentScore;
-                currentScore=d.meta_score;
+                
+                if(!d.data||!d.data[0]){
+                    throw new Error('Invalid API response');
+                }
+                
+                const fgiData=d.data[0];
+                currentScore=parseInt(fgiData.value);
+                const statusMap={
+                    'Extreme Fear':'EXTREME FEAR',
+                    'Fear':'FEAR',
+                    'Neutral':'NEUTRAL',
+                    'Greed':'GREED',
+                    'Extreme Greed':'EXTREME GREED'
+                };
+                const status=statusMap[fgiData.value_classification]||fgiData.value_classification.toUpperCase();
+                
+                const degenMap={
+                    'Extreme Fear':'💎 Accumulate',
+                    'Fear':'🤔 Good Entry',
+                    'Neutral':'😐 Wait & See',
+                    'Greed':'🚨 Take Profits',
+                    'Extreme Greed':'⚠️ Exit Now'
+                };
+                const degenStatus=degenMap[fgiData.value_classification]||'...';
+                
                 const color=getColorForScore(currentScore);
                 
                 updateSpeedometer(currentScore);
-                document.getElementById('scoreLabel').textContent=d.status;
+                document.getElementById('scoreLabel').textContent=status;
                 document.getElementById('scoreLabel').style.color=color;
-                document.getElementById('degenStatus').textContent=d.degen_status;
+                document.getElementById('degenStatus').textContent=degenStatus;
                 document.getElementById('degenStatus').style.color=color;
-                document.getElementById('timestamp').textContent='> '+new Date(d.timestamp).toLocaleTimeString();
-                
-                if(prevScore!==0&&prevScore!==currentScore&&soundEnabled){
-                    playMusicForState(getSoundStateForScore(currentScore));
-                }
+                document.getElementById('timestamp').textContent='> '+new Date(fgiData.timestamp*1000).toLocaleTimeString();
                 
                 const extreme=currentScore<=20||currentScore>=80;
                 if(extreme&&notificationsEnabled&&(lastNotificationScore===null||Math.abs(lastNotificationScore-currentScore)>10)){
@@ -344,8 +345,9 @@
                     lastNotificationScore=currentScore;
                 }else if(!extreme){lastNotificationScore=null;}
             }catch(e){
+                console.error('Data fetch error:',e);
                 document.getElementById('scoreLabel').textContent='ERROR';
-                console.error(e);
+                document.getElementById('scoreLabel').style.color='#ff0000';
             }
         }
         
@@ -366,7 +368,7 @@
             fetchData();
             fetchBTCPrice();
             fetchHistoricalData();
-        },100);
+        },500);
         
         setInterval(fetchBTCPrice,30000);
         setInterval(fetchData,60000);
