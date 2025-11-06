@@ -28,7 +28,8 @@
         #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.15; }
         .container { text-align: center; max-width: 1000px; width: 100%; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
         
-        .controls { position: fixed; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 100; }
+        .controls { position: fixed; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 100; transition: opacity 0.3s, transform 0.3s; }
+        .controls.hidden { opacity: 0; transform: translateY(-100px); pointer-events: none; }
         .control-btn { background: rgba(0, 100, 0, 0.3); border: 1px solid #00aa00; color: #00ff00; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 1.2em; transition: all 0.3s ease; position: relative; }
         .control-btn:hover { background: rgba(0, 150, 0, 0.4); transform: scale(1.05); }
         .control-btn:hover::after { content: attr(data-tooltip); position: absolute; bottom: -40px; right: 0; background: rgba(0, 200, 0, 0.9); color: #000; padding: 5px 10px; border-radius: 5px; font-size: 0.7em; white-space: nowrap; z-index: 1000; }
@@ -63,12 +64,13 @@
         .mobile-spin-hint {
             display: none;
             position: absolute;
-            bottom: -35px;
+            bottom: -50px;
             left: 50%;
             transform: translateX(-50%);
             color: #ffd700;
-            font-size: 0.8em;
+            font-size: 0.85em;
             animation: bounce 2s infinite;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
         
         @keyframes bounce {
@@ -224,6 +226,7 @@
             font-family: 'Comic Sans', 'Comic Sans MS', 'Chalkboard', 'ChalkboardSE-Regular', cursive, sans-serif;
             color: #fff; 
             margin: 20px; 
+            margin-top: 60px;
             font-weight: bold; 
             text-shadow: 0 0 20px currentColor; 
             animation: degen-bounce 2s ease-in-out infinite; 
@@ -245,6 +248,9 @@
             .container { padding: 60px 10px 10px; }
             .title { font-size: 1.3em; letter-spacing: 1px; margin-bottom: 10px; }
             
+            /* More visible matrix on mobile */
+            #matrix-canvas { opacity: 0.3; }
+            
             .btc-ticker { max-width: 90%; padding: 8px 15px; margin-bottom: 20px; }
             .btc-label { font-size: 0.65em; }
             .btc-price { font-size: 1.4em; }
@@ -255,6 +261,7 @@
                 padding: 30px 10px 20px; 
                 border-width: 4px;
                 margin: 20px auto;
+                margin-bottom: 70px;
             }
             
             .mobile-spin-hint { display: block; }
@@ -289,6 +296,7 @@
             .degen { 
                 font-size: 1.8em; 
                 margin: 15px;
+                margin-top: 25px;
                 font-family: 'Comic Sans', 'Comic Sans MS', 'Marker Felt', 'Chalkboard', cursive, sans-serif;
             }
             
@@ -303,6 +311,9 @@
                 top: 10px; 
                 right: 10px; 
                 gap: 6px;
+                background: rgba(0, 0, 0, 0.7);
+                padding: 8px;
+                border-radius: 10px;
             }
             .control-btn { 
                 padding: 8px 12px; 
@@ -335,7 +346,7 @@
 <body>
     <canvas id="matrix-canvas"></canvas>
     
-    <div class="controls">
+    <div class="controls" id="controls">
         <button class="control-btn active" id="particlesToggle" data-tooltip="Toggle Matrix">✨</button>
         <button class="control-btn" id="notifyToggle" data-tooltip="Extreme alerts">🔔</button>
     </div>
@@ -429,6 +440,29 @@
     <script>
         let currentScore=0,particlesEnabled=true,notificationsEnabled=false,lastNotificationScore=null,isSpinning=false;
         let audioContext;
+        let lastScrollTop=0;
+        
+        // Hide controls when scrolling down on mobile
+        if(window.innerWidth<=768){
+            let scrollTimeout;
+            window.addEventListener('scroll',function(){
+                clearTimeout(scrollTimeout);
+                const controls=document.getElementById('controls');
+                const st=window.pageYOffset||document.documentElement.scrollTop;
+                
+                if(st>lastScrollTop&&st>100){
+                    controls.classList.add('hidden');
+                }else{
+                    controls.classList.remove('hidden');
+                }
+                
+                scrollTimeout=setTimeout(()=>{
+                    controls.classList.remove('hidden');
+                },2000);
+                
+                lastScrollTop=st<=0?0:st;
+            },false);
+        }
         
         function initAudio(){
             if(!audioContext){
