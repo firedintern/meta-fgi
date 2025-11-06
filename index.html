@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>> FEAR_GREED_PROTOCOL <</title>
     
     <!-- Twitter Card -->
@@ -16,6 +16,7 @@
     <meta property="og:description" content="Real-time crypto market sentiment tracker">
     <meta property="og:image" content="https://meta-fgi.vercel.app/og-image.png">
     <meta property="og:url" content="https://meta-fgi.vercel.app">
+    <meta property="og:type" content="website">
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧮</text></svg>">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -43,6 +44,7 @@
         
         .slot-machine { 
             width: 500px; 
+            max-width: 100%;
             margin: 30px auto; 
             background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
             border: 8px solid;
@@ -205,17 +207,86 @@
         .chart-container { background: rgba(255,255,255,0.05); border: 2px solid rgba(0, 255, 0, 0.3); border-radius: 15px; padding: 30px; margin: 40px 0; box-shadow: 0 0 20px rgba(0, 255, 0, 0.1); min-height: 350px; }
         .chart-title { color: #00ff00; font-size: 1.3em; margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; }
         
+        /* MOBILE OPTIMIZATIONS */
         @media (max-width: 768px) { 
-            .title { font-size: 1.5em; } 
-            .slot-machine { width: 90%; padding: 30px 15px 20px; }
-            .reels-container { gap: 8px; padding: 15px; }
-            .reel { width: 90px; height: 110px; }
-            .symbol { font-size: 3em; height: 110px; }
-            .payout-score { font-size: 2em; }
+            body { overflow-x: hidden; }
+            .container { padding: 60px 10px 10px; }
+            .title { font-size: 1.3em; letter-spacing: 1px; margin-bottom: 10px; }
+            
+            .btc-ticker { max-width: 90%; padding: 8px 15px; margin-bottom: 20px; }
+            .btc-label { font-size: 0.65em; }
+            .btc-price { font-size: 1.4em; }
+            .btc-change { font-size: 0.85em; }
+            
+            .slot-machine { 
+                width: 95%; 
+                padding: 30px 10px 20px; 
+                border-width: 4px;
+                margin: 20px auto;
+            }
+            .slot-title { font-size: 1.1em; letter-spacing: 2px; margin-bottom: 15px; }
+            .slot-lights { padding: 0 10px; }
+            .light { width: 10px; height: 10px; }
+            
+            .reels-container { 
+                gap: 8px; 
+                padding: 12px; 
+                flex-wrap: nowrap;
+            }
+            .reel { 
+                width: 28vw;
+                max-width: 90px;
+                height: 110px; 
+                border-width: 3px;
+            }
+            .symbol { font-size: 2.5em; height: 110px; }
+            
+            .payout-display { padding: 12px; margin-top: 15px; }
+            .payout-label { font-size: 0.75em; }
+            .payout-score { font-size: 2.2em; }
+            .payout-text { font-size: 0.9em; letter-spacing: 1px; }
+            
             .lever { display: none; }
-            .degen { font-size: 2em; }
-            .controls { top: 10px; right: 10px; flex-direction: column; } 
-            .chart-container { padding: 15px; } 
+            
+            .degen { font-size: 1.8em; margin: 15px; }
+            
+            .share-btn, .btn { 
+                padding: 12px 20px; 
+                font-size: 0.9em; 
+                letter-spacing: 1px;
+                margin: 8px;
+            }
+            
+            .controls { 
+                top: 10px; 
+                right: 10px; 
+                gap: 6px;
+            }
+            .control-btn { 
+                padding: 8px 12px; 
+                font-size: 1em; 
+            }
+            .control-btn:hover::after { display: none; }
+            
+            .chart-container { 
+                padding: 15px 10px; 
+                margin: 30px 0;
+                min-height: 250px;
+            }
+            .chart-title { font-size: 1em; margin-bottom: 15px; letter-spacing: 1px; }
+            
+            #timestamp { font-size: 0.7em; }
+        }
+        
+        @media (max-width: 400px) {
+            .title { font-size: 1.1em; }
+            .btc-price { font-size: 1.2em; }
+            .slot-machine { padding: 25px 8px 15px; }
+            .slot-title { font-size: 1em; }
+            .reel { width: 26vw; }
+            .symbol { font-size: 2em; }
+            .payout-score { font-size: 1.8em; }
+            .degen { font-size: 1.5em; }
         }
     </style>
 </head>
@@ -325,40 +396,29 @@
         function playJackpotSound(){
             initAudio();
             const now=audioContext.currentTime;
-            
-            // Ascending "ding ding ding" melody
-            const notes=[523.25,659.25,783.99,1046.50]; // C5, E5, G5, C6
-            
+            const notes=[523.25,659.25,783.99,1046.50];
             notes.forEach((freq,i)=>{
                 const osc=audioContext.createOscillator();
                 const gain=audioContext.createGain();
-                
                 osc.type='sine';
                 osc.frequency.setValueAtTime(freq,now+(i*0.15));
-                
                 gain.gain.setValueAtTime(0,now+(i*0.15));
                 gain.gain.linearRampToValueAtTime(0.3,now+(i*0.15)+0.01);
                 gain.gain.exponentialRampToValueAtTime(0.01,now+(i*0.15)+0.4);
-                
                 osc.connect(gain);
                 gain.connect(audioContext.destination);
-                
                 osc.start(now+(i*0.15));
                 osc.stop(now+(i*0.15)+0.5);
             });
-            
-            // Final celebratory chord
             setTimeout(()=>{
                 [523.25,659.25,783.99].forEach(freq=>{
                     const osc=audioContext.createOscillator();
                     const gain=audioContext.createGain();
                     const time=audioContext.currentTime;
-                    
                     osc.type='sine';
                     osc.frequency.setValueAtTime(freq,time);
                     gain.gain.setValueAtTime(0.2,time);
                     gain.gain.exponentialRampToValueAtTime(0.01,time+0.8);
-                    
                     osc.connect(gain);
                     gain.connect(audioContext.destination);
                     osc.start(time);
@@ -410,15 +470,16 @@
         function spinSlots(){
             playJackpotSound();
             const lever=document.querySelector('.lever');
-            lever.classList.add('pulled');
-            setTimeout(()=>lever.classList.remove('pulled'),500);
+            if(lever){
+                lever.classList.add('pulled');
+                setTimeout(()=>lever.classList.remove('pulled'),500);
+            }
             refreshAll();
         }
         
         function updateSlotMachine(score){
             const symbol=getSymbolForScore(score);
             const color=getColorForScore(score);
-            
             const reels=[document.getElementById('reel1'),document.getElementById('reel2'),document.getElementById('reel3')];
             reels.forEach((reel,i)=>{
                 reel.classList.add('spinning');
@@ -428,11 +489,9 @@
                     reel.style.transform='translateY(-'+(symbolIndex*140)+'px)';
                 },300+(i*200));
             });
-            
             setTimeout(()=>{
                 document.getElementById('slotScore').textContent=score;
                 document.getElementById('slotScore').style.color=color;
-                
                 const extreme=score<=20||score>=80;
                 if(extreme){
                     document.getElementById('slotScore').classList.add('jackpot');
@@ -478,7 +537,6 @@
             try{
                 const r=await fetch('https://api.alternative.me/fng/?limit=30&format=json');
                 const d=await r.json();
-                
                 if(d.data&&Array.isArray(d.data)&&d.data.length>0){
                     const history=d.data.reverse().map(item=>({
                         date:new Date(item.timestamp*1000).toLocaleDateString('en-US',{month:'short',day:'numeric'}),
@@ -500,7 +558,6 @@
             if(!el||typeof Chart==='undefined')return;
             const c=el.getContext('2d');
             if(window.chartInstance)window.chartInstance.destroy();
-            
             try{
                 window.chartInstance=new Chart(c,{
                     type:'line',
@@ -538,40 +595,20 @@
             try{
                 const r=await fetch('https://api.alternative.me/fng/?limit=1&format=json');
                 const d=await r.json();
-                
-                if(!d.data||!d.data[0]){
-                    throw new Error('Invalid API response');
-                }
-                
+                if(!d.data||!d.data[0]){throw new Error('Invalid API response');}
                 const fgiData=d.data[0];
                 currentScore=parseInt(fgiData.value);
-                const statusMap={
-                    'Extreme Fear':'EXTREME FEAR',
-                    'Fear':'FEAR',
-                    'Neutral':'NEUTRAL',
-                    'Greed':'GREED',
-                    'Extreme Greed':'EXTREME GREED'
-                };
+                const statusMap={'Extreme Fear':'EXTREME FEAR','Fear':'FEAR','Neutral':'NEUTRAL','Greed':'GREED','Extreme Greed':'EXTREME GREED'};
                 const status=statusMap[fgiData.value_classification]||fgiData.value_classification.toUpperCase();
-                
-                const degenMap={
-                    'Extreme Fear':'💎 Accumulate',
-                    'Fear':'🤔 Good Entry',
-                    'Neutral':'😐 Wait & See',
-                    'Greed':'🚨 Take Profits',
-                    'Extreme Greed':'⚠️ Exit Now'
-                };
+                const degenMap={'Extreme Fear':'💎 Accumulate','Fear':'🤔 Good Entry','Neutral':'😐 Wait & See','Greed':'🚨 Take Profits','Extreme Greed':'⚠️ Exit Now'};
                 const degenStatus=degenMap[fgiData.value_classification]||'...';
-                
                 const color=getColorForScore(currentScore);
-                
                 updateSlotMachine(currentScore);
                 document.getElementById('slotStatus').textContent=status;
                 document.getElementById('slotStatus').style.color=color;
                 document.getElementById('degenStatus').textContent=degenStatus;
                 document.getElementById('degenStatus').style.color=color;
                 document.getElementById('timestamp').textContent='> '+new Date(fgiData.timestamp*1000).toLocaleTimeString();
-                
                 const extreme=currentScore<=20||currentScore>=80;
                 if(extreme&&notificationsEnabled&&(lastNotificationScore===null||Math.abs(lastNotificationScore-currentScore)>10)){
                     new Notification(currentScore<=20?'🔥 JACKPOT - EXTREME FEAR!':'⚠️ JACKPOT - EXTREME GREED!',{body:'Score: '+currentScore});
