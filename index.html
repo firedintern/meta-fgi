@@ -353,6 +353,7 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.9);
             animation: fadeIn 0.3s;
+            overflow-y: auto; /* Allow scrolling */
         }
 
         @keyframes fadeIn {
@@ -362,14 +363,17 @@
 
         .modal-content {
             background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
-            margin: 5% auto;
+            margin: 3% auto 3% auto; /* Reduced top margin */
             padding: 0;
             border: 4px solid #00ff00;
             border-radius: 15px;
             width: 90%;
             max-width: 500px;
+            max-height: 90vh; /* Max height to prevent overflow */
             box-shadow: 0 0 40px rgba(0, 255, 0, 0.4);
             animation: slideDown 0.3s;
+            display: flex;
+            flex-direction: column;
         }
 
         @keyframes slideDown {
@@ -397,21 +401,25 @@
 
         .close {
             color: #ff4444;
-            font-size: 2em;
+            font-size: 2.5em;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
             line-height: 1;
+            text-shadow: 0 0 10px #ff4444;
+            padding: 0 5px;
         }
 
         .close:hover {
             color: #ff0000;
             text-shadow: 0 0 20px #ff0000;
-            transform: scale(1.2);
+            transform: scale(1.3) rotate(90deg);
         }
 
         .modal-body {
             padding: 30px;
+            overflow-y: auto; /* Allow scrolling in body */
+            flex: 1;
         }
 
         .input-group {
@@ -517,8 +525,9 @@
         /* Mobile Adjustments for Portfolio */
         @media (max-width: 768px) {
             .modal-content {
-                margin: 10% auto;
+                margin: 2% auto;
                 width: 95%;
+                max-height: 95vh; /* More height on mobile */
             }
 
             .modal-header {
@@ -531,11 +540,16 @@
 
             .modal-body {
                 padding: 20px;
+                max-height: calc(95vh - 80px); /* Account for header */
             }
 
             .input-group input {
                 padding: 10px 12px;
                 font-size: 1em;
+            }
+
+            .input-group {
+                margin-bottom: 15px; /* Reduce spacing on mobile */
             }
 
             .portfolio-advice {
@@ -549,6 +563,10 @@
 
             .advice-text {
                 font-size: 1.2em;
+            }
+
+            .close {
+                font-size: 2em;
             }
         }
     </style>
@@ -572,7 +590,7 @@
         </div>
         
         <div id="content">
-            <div class="slot-machine" id="slotMachine" onclick="spinSlots()">
+            <div class="slot-machine" id="slotMachine">
                 <div class="slot-lights">
                     <div class="light"></div>
                     <div class="light"></div>
@@ -630,7 +648,7 @@
                     <div class="payout-score" id="slotScore">--</div>
                     <div class="payout-text" id="slotStatus">...</div>
                 </div>
-                <div class="lever" onclick="event.stopPropagation();spinSlots()">🎰</div>
+                <div class="lever" id="leverBtn">🎰</div>
                 <div class="mobile-spin-hint">👆 Tap to spin!</div>
             </div>
             
@@ -641,9 +659,9 @@
                 <div class="advice-text" id="adviceText">...</div>
             </div>
 
-            <button class="share-btn" onclick="shareToX()">Share on <span style="font-size:1.3em">𝕏</span></button>
-            
-            <button class="btn" onclick="refreshAll()">[  REFRESH  ]</button>
+            <button class="share-btn" id="shareBtn">Share on <span style="font-size:1.3em">𝕏</span></button>
+
+            <button class="btn" id="refreshBtn">[  REFRESH  ]</button>
             <div style="color:#00ff00;font-size:0.8em;opacity:0.6;margin-top:10px;" id="timestamp">> --:--:--</div>
         </div>
         
@@ -652,7 +670,38 @@
             <canvas id="historyChart"></canvas>
         </div>
     </div>
-    
+
+    <!-- Portfolio Modal -->
+    <div id="portfolioModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>💼 My Portfolio</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label for="cryptoInput">💰 Crypto Holdings ($)</label>
+                    <input type="number" id="cryptoInput" placeholder="5000" min="0" step="100">
+                </div>
+                <div class="input-group">
+                    <label for="stablesInput">🪙 Stablecoins ($)</label>
+                    <input type="number" id="stablesInput" placeholder="3000" min="0" step="100">
+                </div>
+                <div class="input-group">
+                    <label for="cashInput">💵 Cash/Fiat ($)</label>
+                    <input type="number" id="cashInput" placeholder="2000" min="0" step="100">
+                </div>
+                <button class="btn" id="savePortfolioBtn">Save Portfolio</button>
+
+                <div id="portfolioChart" style="display:none;">
+                    <div class="chart-title" style="margin-top:30px;font-size:1.1em;">Allocation Breakdown</div>
+                    <canvas id="allocationChart" style="max-height:250px;"></canvas>
+                    <div id="allocationStats" class="allocation-stats"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         let currentScore=0,particlesEnabled=true,notificationsEnabled=false,lastNotificationScore=null,isSpinning=false;
         let audioContext;
@@ -1123,65 +1172,69 @@
             document.getElementById('allocationStats').innerHTML = statsHTML;
         }
 
-        // Modal handlers
-        const modal = document.getElementById('portfolioModal');
-        const portfolioBtn = document.getElementById('portfolioToggle');
-        const closeBtn = document.getElementsByClassName('close')[0];
+        // Initialize modal handlers after DOM is ready
+        function initPortfolioModal() {
+            const modal = document.getElementById('portfolioModal');
+            const portfolioBtn = document.getElementById('portfolioToggle');
+            const closeBtn = document.getElementsByClassName('close')[0];
+            const saveBtn = document.getElementById('savePortfolioBtn');
 
-        portfolioBtn.onclick = function() {
-            modal.style.display = 'block';
-            const saved = loadPortfolio();
-            if (saved) {
-                document.getElementById('cryptoInput').value = saved.crypto;
-                document.getElementById('stablesInput').value = saved.stablecoins;
-                document.getElementById('cashInput').value = saved.cash;
-                renderAllocationChart();
+            if (!modal || !portfolioBtn || !closeBtn || !saveBtn) {
+                console.error('Portfolio modal elements not found', {modal, portfolioBtn, closeBtn, saveBtn});
+                return;
             }
-        };
 
-        closeBtn.onclick = function() {
-            modal.style.display = 'none';
-        };
+            console.log('Portfolio modal initialized successfully');
 
-        window.onclick = function(event) {
-            if (event.target == modal) {
+            portfolioBtn.addEventListener('click', function() {
+                console.log('Portfolio button clicked');
+                modal.style.display = 'block';
+                const saved = loadPortfolio();
+                if (saved) {
+                    document.getElementById('cryptoInput').value = saved.crypto;
+                    document.getElementById('stablesInput').value = saved.stablecoins;
+                    document.getElementById('cashInput').value = saved.cash;
+                    renderAllocationChart();
+                }
+            });
+
+            closeBtn.addEventListener('click', function() {
+                console.log('Close button clicked');
                 modal.style.display = 'none';
-            }
-        };
+            });
+
+            saveBtn.addEventListener('click', function() {
+                console.log('Save button clicked');
+                savePortfolio();
+            });
+
+            window.addEventListener('click', function(event) {
+                if (event.target == modal) {
+                    console.log('Background clicked');
+                    modal.style.display = 'none';
+                }
+            });
+        }
 
         // Load portfolio on page load
         loadPortfolio();
+
+        // Initialize modal immediately (modal is now defined before script)
+        initPortfolioModal();
+
+        // Add event listeners for all interactive elements (CSP-friendly)
+        document.getElementById('slotMachine').addEventListener('click', spinSlots);
+
+        const leverBtn = document.getElementById('leverBtn');
+        if (leverBtn) {
+            leverBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                spinSlots();
+            });
+        }
+
+        document.getElementById('shareBtn').addEventListener('click', shareToX);
+        document.getElementById('refreshBtn').addEventListener('click', refreshAll);
     </script>
-
-    <!-- Portfolio Modal -->
-    <div id="portfolioModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>💼 My Portfolio</h2>
-                <span class="close">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="input-group">
-                    <label for="cryptoInput">💰 Crypto Holdings ($)</label>
-                    <input type="number" id="cryptoInput" placeholder="5000" min="0" step="100">
-                </div>
-                <div class="input-group">
-                    <label for="stablesInput">🪙 Stablecoins ($)</label>
-                    <input type="number" id="stablesInput" placeholder="3000" min="0" step="100">
-                </div>
-                <div class="input-group">
-                    <label for="cashInput">💵 Cash/Fiat ($)</label>
-                    <input type="number" id="cashInput" placeholder="2000" min="0" step="100">
-                </div>
-                <button class="btn" onclick="savePortfolio()">Save Portfolio</button>
-
-                <div id="portfolioChart" style="display:none;">
-                    <div class="chart-title" style="margin-top:30px;font-size:1.1em;">Allocation Breakdown</div>
-                    <canvas id="allocationChart" style="max-height:250px;"></canvas>
-                    <div id="allocationStats" class="allocation-stats"></div>
-                </div>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
