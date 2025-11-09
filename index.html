@@ -341,6 +341,216 @@
             .payout-score { font-size: 1.8em; }
             .degen { font-size: 1.5em; }
         }
+
+        /* Portfolio Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+            margin: 5% auto;
+            padding: 0;
+            border: 4px solid #00ff00;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 0 40px rgba(0, 255, 0, 0.4);
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 20px 30px;
+            background: rgba(0, 255, 0, 0.1);
+            border-bottom: 2px solid #00ff00;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 11px 11px 0 0;
+        }
+
+        .modal-header h2 {
+            color: #00ff00;
+            margin: 0;
+            font-size: 1.5em;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .close {
+            color: #ff4444;
+            font-size: 2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            line-height: 1;
+        }
+
+        .close:hover {
+            color: #ff0000;
+            text-shadow: 0 0 20px #ff0000;
+            transform: scale(1.2);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            color: #00ff00;
+            font-size: 1em;
+            margin-bottom: 8px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #000;
+            border: 2px solid #00ff00;
+            border-radius: 5px;
+            color: #00ff00;
+            font-size: 1.1em;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #00ff00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+        }
+
+        .input-group input::placeholder {
+            color: rgba(0, 255, 0, 0.4);
+        }
+
+        .allocation-stats {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 255, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+            font-size: 1em;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .stat-value {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        /* Portfolio Advice Styles */
+        .portfolio-advice {
+            margin: 20px auto;
+            padding: 20px 30px;
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.1), rgba(0, 200, 0, 0.05));
+            border: 3px solid;
+            border-radius: 15px;
+            max-width: 600px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+        }
+
+        .advice-title {
+            color: #00ff00;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .advice-text {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            text-shadow: 0 0 15px currentColor;
+            animation: advice-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes advice-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* Mobile Adjustments for Portfolio */
+        @media (max-width: 768px) {
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+            }
+
+            .modal-header {
+                padding: 15px 20px;
+            }
+
+            .modal-header h2 {
+                font-size: 1.2em;
+            }
+
+            .modal-body {
+                padding: 20px;
+            }
+
+            .input-group input {
+                padding: 10px 12px;
+                font-size: 1em;
+            }
+
+            .portfolio-advice {
+                margin: 15px;
+                padding: 15px 20px;
+            }
+
+            .advice-title {
+                font-size: 1.1em;
+            }
+
+            .advice-text {
+                font-size: 1.2em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -349,6 +559,7 @@
     <div class="controls" id="controls">
         <button class="control-btn active" id="particlesToggle" data-tooltip="Toggle Matrix">✨</button>
         <button class="control-btn" id="notifyToggle" data-tooltip="Extreme alerts">🔔</button>
+        <button class="control-btn" id="portfolioToggle" data-tooltip="My Portfolio">💼</button>
     </div>
     
     <div class="container">
@@ -424,7 +635,12 @@
             </div>
             
             <div class="degen" id="degenStatus">...</div>
-            
+
+            <div class="portfolio-advice" id="portfolioAdvice" style="display:none;">
+                <div class="advice-title">📊 Portfolio Recommendation</div>
+                <div class="advice-text" id="adviceText">...</div>
+            </div>
+
             <button class="share-btn" onclick="shareToX()">Share on <span style="font-size:1.3em">𝕏</span></button>
             
             <button class="btn" onclick="refreshAll()">[  REFRESH  ]</button>
@@ -704,6 +920,11 @@
                     new Notification(currentScore<=20?'🔥 JACKPOT - EXTREME FEAR!':'⚠️ JACKPOT - EXTREME GREED!',{body:'Score: '+currentScore});
                     lastNotificationScore=currentScore;
                 }else if(!extreme){lastNotificationScore=null;}
+
+                // Update portfolio advice if portfolio exists
+                if(portfolioData){
+                    updatePortfolioAdvice();
+                }
             }catch(e){
                 console.error('Data fetch error:',e);
                 document.getElementById('slotStatus').textContent='ERROR';
@@ -733,6 +954,234 @@
         
         setInterval(fetchBTCPrice,30000);
         setInterval(fetchData,60000);
+
+        // Portfolio Management
+        let portfolioData = null;
+        let allocationChartInstance = null;
+
+        function loadPortfolio() {
+            const saved = localStorage.getItem('portfolio');
+            if (saved) {
+                portfolioData = JSON.parse(saved);
+                return portfolioData;
+            }
+            return null;
+        }
+
+        function savePortfolio() {
+            const crypto = parseFloat(document.getElementById('cryptoInput').value) || 0;
+            const stablecoins = parseFloat(document.getElementById('stablesInput').value) || 0;
+            const cash = parseFloat(document.getElementById('cashInput').value) || 0;
+
+            if (crypto === 0 && stablecoins === 0 && cash === 0) {
+                alert('Please enter at least one value');
+                return;
+            }
+
+            portfolioData = { crypto, stablecoins, cash };
+            localStorage.setItem('portfolio', JSON.stringify(portfolioData));
+
+            renderAllocationChart();
+            updatePortfolioAdvice();
+        }
+
+        function calculateAllocation() {
+            if (!portfolioData) return null;
+            const total = portfolioData.crypto + portfolioData.stablecoins + portfolioData.cash;
+            if (total === 0) return null;
+
+            return {
+                cryptoRatio: portfolioData.crypto / total,
+                stablesRatio: portfolioData.stablecoins / total,
+                cashRatio: portfolioData.cash / total,
+                total: total
+            };
+        }
+
+        function getPortfolioAdvice(fgiScore, cryptoRatio) {
+            // Extreme Fear (0-24) + High Cash (cryptoRatio < 30%)
+            if (fgiScore < 25 && cryptoRatio < 0.3) {
+                return {
+                    text: "💎 Deploy your cash - great entry point!",
+                    color: "#44ff88",
+                    borderColor: "#44ff88"
+                };
+            }
+
+            // Extreme Greed (80-100) + High Crypto (cryptoRatio > 70%)
+            if (fgiScore > 79 && cryptoRatio > 0.7) {
+                return {
+                    text: "⚠️ Take profits - you're overexposed!",
+                    color: "#ff4444",
+                    borderColor: "#ff4444"
+                };
+            }
+
+            // Fear + Low Crypto (opportunity)
+            if (fgiScore < 40 && cryptoRatio < 0.4) {
+                return {
+                    text: "🎯 Good time to increase crypto allocation",
+                    color: "#88ff44",
+                    borderColor: "#88ff44"
+                };
+            }
+
+            // Greed + High Crypto (warning)
+            if (fgiScore > 65 && cryptoRatio > 0.6) {
+                return {
+                    text: "🛡️ Consider taking some profits",
+                    color: "#ff8844",
+                    borderColor: "#ff8844"
+                };
+            }
+
+            // Balanced
+            return {
+                text: "✅ Your allocation looks good",
+                color: "#ffd700",
+                borderColor: "#ffd700"
+            };
+        }
+
+        function updatePortfolioAdvice() {
+            const allocation = calculateAllocation();
+            if (!allocation || currentScore === 0) return;
+
+            const advice = getPortfolioAdvice(currentScore, allocation.cryptoRatio);
+            const adviceElement = document.getElementById('portfolioAdvice');
+            const adviceText = document.getElementById('adviceText');
+
+            adviceText.textContent = advice.text;
+            adviceText.style.color = advice.color;
+            adviceElement.style.borderColor = advice.borderColor;
+            adviceElement.style.display = 'block';
+        }
+
+        function renderAllocationChart() {
+            if (!portfolioData) return;
+
+            const allocation = calculateAllocation();
+            if (!allocation) return;
+
+            document.getElementById('portfolioChart').style.display = 'block';
+
+            const ctx = document.getElementById('allocationChart').getContext('2d');
+
+            if (allocationChartInstance) {
+                allocationChartInstance.destroy();
+            }
+
+            allocationChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Crypto', 'Stablecoins', 'Cash'],
+                    datasets: [{
+                        data: [portfolioData.crypto, portfolioData.stablecoins, portfolioData.cash],
+                        backgroundColor: ['#f7931a', '#26a17b', '#44ff88'],
+                        borderColor: ['#fff', '#fff', '#fff'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#00ff00',
+                                font: {
+                                    family: 'Courier New',
+                                    size: 12
+                                },
+                                padding: 15
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Display allocation stats
+            const statsHTML = `
+                <div class="stat-item">
+                    <span class="stat-label">💰 Crypto:</span>
+                    <span class="stat-value">$${portfolioData.crypto.toLocaleString()} (${(allocation.cryptoRatio * 100).toFixed(1)}%)</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">🪙 Stablecoins:</span>
+                    <span class="stat-value">$${portfolioData.stablecoins.toLocaleString()} (${(allocation.stablesRatio * 100).toFixed(1)}%)</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">💵 Cash:</span>
+                    <span class="stat-value">$${portfolioData.cash.toLocaleString()} (${(allocation.cashRatio * 100).toFixed(1)}%)</span>
+                </div>
+                <div class="stat-item" style="margin-top:10px;border-top:2px solid rgba(0,255,0,0.5);padding-top:10px;">
+                    <span class="stat-label">📊 Total:</span>
+                    <span class="stat-value">$${allocation.total.toLocaleString()}</span>
+                </div>
+            `;
+            document.getElementById('allocationStats').innerHTML = statsHTML;
+        }
+
+        // Modal handlers
+        const modal = document.getElementById('portfolioModal');
+        const portfolioBtn = document.getElementById('portfolioToggle');
+        const closeBtn = document.getElementsByClassName('close')[0];
+
+        portfolioBtn.onclick = function() {
+            modal.style.display = 'block';
+            const saved = loadPortfolio();
+            if (saved) {
+                document.getElementById('cryptoInput').value = saved.crypto;
+                document.getElementById('stablesInput').value = saved.stablecoins;
+                document.getElementById('cashInput').value = saved.cash;
+                renderAllocationChart();
+            }
+        };
+
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        };
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        };
+
+        // Load portfolio on page load
+        loadPortfolio();
     </script>
+
+    <!-- Portfolio Modal -->
+    <div id="portfolioModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>💼 My Portfolio</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label for="cryptoInput">💰 Crypto Holdings ($)</label>
+                    <input type="number" id="cryptoInput" placeholder="5000" min="0" step="100">
+                </div>
+                <div class="input-group">
+                    <label for="stablesInput">🪙 Stablecoins ($)</label>
+                    <input type="number" id="stablesInput" placeholder="3000" min="0" step="100">
+                </div>
+                <div class="input-group">
+                    <label for="cashInput">💵 Cash/Fiat ($)</label>
+                    <input type="number" id="cashInput" placeholder="2000" min="0" step="100">
+                </div>
+                <button class="btn" onclick="savePortfolio()">Save Portfolio</button>
+
+                <div id="portfolioChart" style="display:none;">
+                    <div class="chart-title" style="margin-top:30px;font-size:1.1em;">Allocation Breakdown</div>
+                    <canvas id="allocationChart" style="max-height:250px;"></canvas>
+                    <div id="allocationStats" class="allocation-stats"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
