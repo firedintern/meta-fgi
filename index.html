@@ -230,43 +230,6 @@
             }
         }
         
-        .slot-title {
-            color: #ffd700;
-            font-size: 1.8em;
-            font-weight: 900;
-            margin-bottom: 20px;
-            text-shadow:
-                2px 2px 0px #8b6508,
-                4px 4px 0px #6b4d06,
-                0 0 10px #ffd700,
-                0 0 20px #ffd700,
-                0 0 40px #ffd700;
-            letter-spacing: 8px;
-            animation: title-glow 2s ease-in-out infinite;
-            text-transform: uppercase;
-            font-family: 'Impact', 'Arial Black', 'Haettenschweiler', sans-serif;
-            -webkit-text-stroke: 2px #8b6508;
-            paint-order: stroke fill;
-        }
-
-        @keyframes title-glow {
-            0%, 100% {
-                text-shadow:
-                    0 0 10px #ffd700,
-                    0 0 20px #ffd700,
-                    0 0 40px #ffd700,
-                    0 0 60px #ffd700;
-            }
-            50% {
-                text-shadow:
-                    0 0 15px #ffd700,
-                    0 0 30px #ffd700,
-                    0 0 60px #ffd700,
-                    0 0 90px #ffd700,
-                    0 0 120px rgba(255, 215, 0, 0.8);
-            }
-        }
-        
         .reels-container {
             display: flex;
             gap: 15px;
@@ -363,24 +326,6 @@
                 0 0 20px rgba(255,215,0,0.3),
                 0 0 40px rgba(255,215,0,0.2);
             position: relative;
-            overflow: hidden;
-        }
-
-        .payout-display::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(255,215,0,0.03) 2px,
-                rgba(255,215,0,0.03) 4px
-            );
-            pointer-events: none;
         }
 
         .payout-label {
@@ -558,7 +503,6 @@
             
             .mobile-spin-hint { display: block; }
 
-            .slot-title { font-size: 1.2em; letter-spacing: 4px; margin-bottom: 15px; }
             .slot-lights { padding: 0 15px; }
             .light {
                 width: 12px;
@@ -637,7 +581,6 @@
             .title { font-size: 1.1em; }
             .btc-price { font-size: 1.2em; }
             .slot-machine { padding: 25px 8px 15px; }
-            .slot-title { font-size: 1em; letter-spacing: 2px; }
             .light {
                 width: 10px;
                 height: 10px;
@@ -908,7 +851,6 @@
                     <div class="light"></div>
                     <div class="light"></div>
                 </div>
-                <div class="slot-title">FREE SPINS</div>
                 <div class="reels-container">
                     <div class="reel">
                         <div class="reel-symbols" id="reel1">
