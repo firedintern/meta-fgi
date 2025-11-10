@@ -45,21 +45,63 @@
         .positive { color: #00ff00; }
         .negative { color: #ff0000; }
         
-        .slot-machine { 
-            width: 500px; 
+        .slot-machine {
+            width: 500px;
             max-width: 100%;
-            margin: 30px auto; 
+            margin: 30px auto;
             background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
             border: 8px solid;
             border-image: linear-gradient(45deg, #ffd700, #ff6b6b, #4ecdc4, #ffd700) 1;
             border-radius: 20px;
             padding: 40px 30px 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8), inset 0 0 30px rgba(255,255,255,0.1);
+            box-shadow:
+                0 20px 60px rgba(0,0,0,0.8),
+                inset 0 0 30px rgba(255,255,255,0.1),
+                0 0 40px rgba(255,215,0,0.3),
+                0 0 80px rgba(255,215,0,0.2);
             position: relative;
             cursor: pointer;
+            transform: perspective(1000px) rotateX(2deg);
+            transition: all 0.3s ease;
         }
-        
-        .slot-machine.spinning { cursor: wait; }
+
+        .slot-machine:hover {
+            transform: perspective(1000px) rotateX(0deg) scale(1.02);
+            box-shadow:
+                0 25px 80px rgba(0,0,0,0.9),
+                inset 0 0 40px rgba(255,255,255,0.15),
+                0 0 60px rgba(255,215,0,0.5),
+                0 0 100px rgba(255,215,0,0.3);
+        }
+
+        .slot-machine.spinning {
+            cursor: wait;
+            animation: machine-shake 0.1s infinite, machine-glow 1s ease-in-out infinite;
+        }
+
+        @keyframes machine-shake {
+            0%, 100% { transform: perspective(1000px) rotateX(2deg) translateX(0) translateY(0); }
+            25% { transform: perspective(1000px) rotateX(2deg) translateX(-2px) translateY(-1px); }
+            50% { transform: perspective(1000px) rotateX(2deg) translateX(2px) translateY(1px); }
+            75% { transform: perspective(1000px) rotateX(2deg) translateX(-1px) translateY(1px); }
+        }
+
+        @keyframes machine-glow {
+            0%, 100% {
+                box-shadow:
+                    0 20px 60px rgba(0,0,0,0.8),
+                    inset 0 0 30px rgba(255,255,255,0.1),
+                    0 0 60px rgba(255,215,0,0.5),
+                    0 0 100px rgba(255,215,0,0.3);
+            }
+            50% {
+                box-shadow:
+                    0 20px 60px rgba(0,0,0,0.8),
+                    inset 0 0 30px rgba(255,255,255,0.1),
+                    0 0 80px rgba(255,215,0,0.7),
+                    0 0 120px rgba(255,215,0,0.5);
+            }
+        }
         
         .mobile-spin-hint {
             display: none;
@@ -77,148 +119,319 @@
             0%, 100% { transform: translateX(-50%) translateY(0); }
             50% { transform: translateX(-50%) translateY(-5px); }
         }
-        
-        .slot-lights { 
-            position: absolute; 
-            top: 10px; 
-            left: 0; 
-            right: 0; 
-            display: flex; 
-            justify-content: space-around; 
-            padding: 0 20px; 
+
+        /* Confetti particle effects */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            animation: confetti-fall 2s ease-out forwards;
+            pointer-events: none;
+            z-index: 100;
         }
-        .light { 
-            width: 15px; 
-            height: 15px; 
-            border-radius: 50%; 
-            background: #ff0000;
-            animation: blink 1s infinite;
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(300px) rotate(720deg);
+                opacity: 0;
+            }
         }
-        .light:nth-child(2) { animation-delay: 0.2s; background: #ffd700; }
-        .light:nth-child(3) { animation-delay: 0.4s; background: #00ff00; }
-        .light:nth-child(4) { animation-delay: 0.6s; background: #00ffff; }
-        .light:nth-child(5) { animation-delay: 0.8s; background: #ff00ff; }
-        @keyframes blink { 0%, 50%, 100% { opacity: 1; box-shadow: 0 0 10px currentColor; } 25%, 75% { opacity: 0.3; } }
-        
-        .slot-title { 
-            color: #ffd700; 
-            font-size: 1.5em; 
-            font-weight: bold; 
-            margin-bottom: 20px; 
-            text-shadow: 0 0 20px #ffd700, 0 0 40px #ffd700;
-            letter-spacing: 5px;
+
+        /* Win flash overlay */
+        .win-flash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle, rgba(255,215,0,0.3) 0%, transparent 70%);
+            animation: flash-burst 0.5s ease-out;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        @keyframes flash-burst {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
         }
         
-        .reels-container { 
-            display: flex; 
-            gap: 15px; 
-            justify-content: center; 
+        .slot-lights {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            padding: 0 30px;
+        }
+        .light {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #ffffff, #ffd700 40%, #d4af37 100%);
+            animation: casino-blink 1.5s infinite;
+            box-shadow:
+                0 0 5px rgba(255, 215, 0, 0.5),
+                0 0 10px rgba(255, 215, 0, 0.4),
+                0 0 15px rgba(255, 215, 0, 0.3),
+                inset 0 -2px 5px rgba(0, 0, 0, 0.3),
+                inset 0 2px 5px rgba(255, 255, 255, 0.4);
+            border: 2px solid #8b6508;
+            position: relative;
+        }
+        .light::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            filter: blur(1px);
+        }
+        .light:nth-child(2) { animation-delay: 0.3s; }
+        .light:nth-child(3) { animation-delay: 0.6s; }
+        .light:nth-child(4) { animation-delay: 0.9s; }
+        .light:nth-child(5) { animation-delay: 1.2s; }
+        @keyframes casino-blink {
+            0%, 40%, 100% {
+                opacity: 1;
+                box-shadow:
+                    0 0 10px rgba(255, 215, 0, 0.8),
+                    0 0 20px rgba(255, 215, 0, 0.6),
+                    0 0 30px rgba(255, 215, 0, 0.4),
+                    inset 0 -2px 5px rgba(0, 0, 0, 0.3),
+                    inset 0 2px 5px rgba(255, 255, 255, 0.4);
+                transform: scale(1);
+            }
+            20% {
+                opacity: 0.3;
+                box-shadow:
+                    0 0 3px rgba(255, 215, 0, 0.2),
+                    inset 0 -2px 5px rgba(0, 0, 0, 0.5),
+                    inset 0 2px 5px rgba(255, 255, 255, 0.2);
+                transform: scale(0.95);
+            }
+        }
+        
+        .reels-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
             margin-bottom: 20px;
-            background: #000;
+            background: linear-gradient(145deg, #0a0a0a, #1a1a1a);
             padding: 20px;
             border-radius: 10px;
             border: 3px solid #333;
+            box-shadow:
+                inset 0 0 30px rgba(0,0,0,0.9),
+                inset 0 0 60px rgba(0,0,0,0.5),
+                0 5px 15px rgba(0,0,0,0.8);
+            position: relative;
         }
-        
-        .reel { 
-            width: 120px; 
-            height: 140px; 
+
+        .reels-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 50%, rgba(0,0,0,0.3) 100%);
+            border-radius: 10px;
+            pointer-events: none;
+        }
+
+        .reel {
+            width: 120px;
+            height: 140px;
             background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
-            border: 4px solid #444;
+            border: 4px solid #555;
             border-radius: 10px;
             overflow: hidden;
             position: relative;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
+            box-shadow:
+                inset 0 0 20px rgba(0,0,0,0.9),
+                inset 0 4px 8px rgba(0,0,0,0.8),
+                0 0 15px rgba(0,255,255,0.2),
+                0 8px 20px rgba(0,0,0,0.6);
+            transform: perspective(500px) rotateX(0deg);
+            transition: all 0.3s ease;
         }
         
-        .reel-symbols { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        .reel-symbols {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
         }
-        
-        .reel-symbols.spinning { 
-            animation: spin 0.3s linear infinite; 
+
+        .reel-symbols.spinning {
+            animation: spin 0.15s linear infinite;
+            filter: blur(3px);
         }
-        
+
         @keyframes spin {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-700px); }
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-700px);
+            }
         }
         
-        .symbol { 
-            font-size: 4em; 
-            height: 140px; 
+        .symbol {
+            font-size: 4em;
+            height: 140px;
             width: 100%;
-            display: flex; 
-            align-items: center; 
+            display: flex;
+            align-items: center;
             justify-content: center;
-            text-shadow: 0 0 20px currentColor;
+            text-shadow:
+                0 0 10px currentColor,
+                0 0 20px currentColor,
+                0 0 30px currentColor,
+                0 0 40px currentColor;
+            filter: drop-shadow(0 0 15px currentColor);
         }
         
-        .payout-display { 
-            background: #000; 
-            padding: 15px; 
-            border-radius: 10px; 
+        .payout-display {
+            background: linear-gradient(145deg, #0a0a0a, #000);
+            padding: 15px;
+            border-radius: 10px;
             border: 3px solid #ffd700;
             margin-top: 20px;
+            box-shadow:
+                inset 0 0 20px rgba(0,0,0,0.9),
+                0 0 20px rgba(255,215,0,0.3),
+                0 0 40px rgba(255,215,0,0.2);
+            position: relative;
         }
-        
-        .payout-label { 
-            color: #ffd700; 
-            font-size: 0.9em; 
+
+        .payout-label {
+            color: #ffd700;
+            font-size: 0.9em;
             margin-bottom: 5px;
             letter-spacing: 2px;
+            text-shadow:
+                0 0 5px #ffd700,
+                0 0 10px #ffd700;
         }
-        
-        .payout-score { 
-            font-size: 3em; 
-            font-weight: bold; 
-            text-shadow: 0 0 30px currentColor;
+
+        .payout-score {
+            font-size: 3em;
+            font-weight: bold;
+            text-shadow:
+                0 0 5px currentColor,
+                0 0 10px currentColor;
+            font-family: 'Courier New', monospace;
         }
-        
-        .payout-text { 
-            font-size: 1.1em; 
-            font-weight: bold; 
+
+        .payout-text {
+            font-size: 1.1em;
+            font-weight: bold;
             margin-top: 5px;
             letter-spacing: 2px;
+            text-shadow:
+                0 0 10px currentColor,
+                0 0 20px currentColor;
         }
         
-        .jackpot { 
-            animation: jackpot-flash 0.5s infinite; 
+        .jackpot {
+            animation: jackpot-flash 0.5s infinite, jackpot-pulse 1s ease-in-out infinite;
         }
-        
+
         @keyframes jackpot-flash {
-            0%, 100% { 
-                transform: scale(1); 
-                text-shadow: 0 0 20px currentColor; 
+            0%, 100% {
+                transform: scale(1);
+                text-shadow:
+                    0 0 5px currentColor,
+                    0 0 10px currentColor,
+                    0 0 15px currentColor;
             }
-            50% { 
-                transform: scale(1.1); 
-                text-shadow: 0 0 40px currentColor, 0 0 60px currentColor; 
+            50% {
+                transform: scale(1.15);
+                text-shadow:
+                    0 0 10px currentColor,
+                    0 0 20px currentColor,
+                    0 0 30px currentColor,
+                    0 0 40px currentColor;
+            }
+        }
+
+        @keyframes jackpot-pulse {
+            0%, 100% {
+                filter: brightness(1);
+            }
+            50% {
+                filter: brightness(1.2);
             }
         }
         
-        .lever { 
-            position: absolute; 
-            right: -40px; 
-            top: 50%; 
+        .lever {
+            position: absolute;
+            right: -40px;
+            top: 50%;
             transform: translateY(-50%);
             font-size: 3em;
             cursor: pointer;
-            transition: transform 0.3s;
-            filter: drop-shadow(0 0 10px rgba(255,215,0,0.5));
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 0 10px rgba(255,215,0,0.5)) drop-shadow(0 0 20px rgba(255,215,0,0.3));
+            animation: lever-idle 2s ease-in-out infinite;
         }
-        .lever:hover { transform: translateY(-50%) scale(1.2); }
-        .lever.pulled { animation: pull 0.5s; }
+
+        @keyframes lever-idle {
+            0%, 100% {
+                transform: translateY(-50%) rotate(-5deg);
+            }
+            50% {
+                transform: translateY(-50%) rotate(5deg);
+            }
+        }
+
+        .lever:hover {
+            transform: translateY(-50%) scale(1.2) rotate(0deg);
+            filter: drop-shadow(0 0 20px rgba(255,215,0,0.8)) drop-shadow(0 0 30px rgba(255,215,0,0.5));
+            animation: none;
+        }
+
+        .lever.pulled {
+            animation: pull 0.5s ease-out;
+        }
+
         @keyframes pull {
-            0%, 100% { transform: translateY(-50%) rotate(0deg); }
-            50% { transform: translateY(-30%) rotate(20deg); }
+            0% {
+                transform: translateY(-50%) rotate(0deg);
+            }
+            30% {
+                transform: translateY(-30%) rotate(25deg) scale(1.1);
+            }
+            60% {
+                transform: translateY(-20%) rotate(15deg);
+            }
+            100% {
+                transform: translateY(-50%) rotate(0deg);
+            }
         }
         
         .degen { 
@@ -256,19 +469,44 @@
             .btc-price { font-size: 1.4em; }
             .btc-change { font-size: 0.85em; }
             
-            .slot-machine { 
-                width: 95%; 
-                padding: 30px 10px 20px; 
+            .slot-machine {
+                width: 95%;
+                padding: 30px 10px 20px;
                 border-width: 4px;
                 margin: 20px auto;
                 margin-bottom: 70px;
+                transform: perspective(800px) rotateX(1deg);
+            }
+
+            .slot-machine:hover {
+                transform: perspective(800px) rotateX(0deg) scale(1.01);
+            }
+
+            .slot-machine.spinning {
+                animation: machine-shake-mobile 0.1s infinite, machine-glow 1s ease-in-out infinite;
+            }
+
+            @keyframes machine-shake-mobile {
+                0%, 100% { transform: perspective(800px) rotateX(1deg) translateX(0) translateY(0); }
+                25% { transform: perspective(800px) rotateX(1deg) translateX(-1px) translateY(-1px); }
+                50% { transform: perspective(800px) rotateX(1deg) translateX(1px) translateY(1px); }
+                75% { transform: perspective(800px) rotateX(1deg) translateX(-1px) translateY(1px); }
             }
             
             .mobile-spin-hint { display: block; }
-            
-            .slot-title { font-size: 1.1em; letter-spacing: 2px; margin-bottom: 15px; }
-            .slot-lights { padding: 0 10px; }
-            .light { width: 10px; height: 10px; }
+
+            .slot-lights { padding: 0 15px; }
+            .light {
+                width: 12px;
+                height: 12px;
+                border-width: 1px;
+            }
+            .light::after {
+                width: 4px;
+                height: 4px;
+                top: 1px;
+                left: 2px;
+            }
             
             .reels-container { 
                 gap: 8px; 
@@ -335,7 +573,14 @@
             .title { font-size: 1.1em; }
             .btc-price { font-size: 1.2em; }
             .slot-machine { padding: 25px 8px 15px; }
-            .slot-title { font-size: 1em; }
+            .light {
+                width: 10px;
+                height: 10px;
+            }
+            .light::after {
+                width: 3px;
+                height: 3px;
+            }
             .reel { width: 26vw; }
             .symbol { font-size: 2.3em; }
             .payout-score { font-size: 1.8em; }
@@ -598,7 +843,6 @@
                     <div class="light"></div>
                     <div class="light"></div>
                 </div>
-                <div class="slot-title">FREE SPINS</div>
                 <div class="reels-container">
                     <div class="reel">
                         <div class="reel-symbols" id="reel1">
@@ -655,7 +899,7 @@
             <div class="degen" id="degenStatus">...</div>
 
             <div class="portfolio-advice" id="portfolioAdvice" style="display:none;">
-                <div class="advice-title">📊 Portfolio Recommendation</div>
+                <div class="advice-title">Portfolio Recommendation</div>
                 <div class="advice-text" id="adviceText">...</div>
             </div>
 
@@ -675,20 +919,20 @@
     <div id="portfolioModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>💼 My Portfolio</h2>
+                <h2>My Portfolio</h2>
                 <span class="close">&times;</span>
             </div>
             <div class="modal-body">
                 <div class="input-group">
-                    <label for="cryptoInput">💰 Crypto Holdings ($)</label>
+                    <label for="cryptoInput">Crypto Holdings ($)</label>
                     <input type="number" id="cryptoInput" placeholder="5000" min="0" step="100">
                 </div>
                 <div class="input-group">
-                    <label for="stablesInput">🪙 Stablecoins ($)</label>
+                    <label for="stablesInput">Stablecoins ($)</label>
                     <input type="number" id="stablesInput" placeholder="3000" min="0" step="100">
                 </div>
                 <div class="input-group">
-                    <label for="cashInput">💵 Cash/Fiat ($)</label>
+                    <label for="cashInput">Cash/Fiat ($)</label>
                     <input type="number" id="cashInput" placeholder="2000" min="0" step="100">
                 </div>
                 <button class="btn" id="savePortfolioBtn">Save Portfolio</button>
@@ -809,6 +1053,34 @@
             return '🤑';
         }
         
+        function triggerWinEffect(color){
+            const machine=document.getElementById('slotMachine');
+
+            // Add flash effect
+            const flash=document.createElement('div');
+            flash.className='win-flash';
+            machine.appendChild(flash);
+            setTimeout(()=>flash.remove(),500);
+
+            // Create confetti particles
+            const colors=['#ffd700','#ff6b6b','#4ecdc4','#00ff00','#ff00ff'];
+            for(let i=0;i<30;i++){
+                setTimeout(()=>{
+                    const confetti=document.createElement('div');
+                    confetti.className='confetti';
+                    confetti.style.left=Math.random()*100+'%';
+                    confetti.style.top='50%';
+                    confetti.style.background=colors[Math.floor(Math.random()*colors.length)];
+                    confetti.style.animationDelay=(Math.random()*0.3)+'s';
+                    confetti.style.animationDuration=(1+Math.random())+'s';
+                    const rotation=Math.random()*360;
+                    confetti.style.setProperty('--rotation',rotation+'deg');
+                    machine.appendChild(confetti);
+                    setTimeout(()=>confetti.remove(),2000);
+                },i*30);
+            }
+        }
+
         function spinSlots(){
             if(isSpinning)return;
             isSpinning=true;
@@ -832,7 +1104,7 @@
             const symbol=getSymbolForScore(score);
             const color=getColorForScore(score);
             const symbolIndex={'💀':0,'😱':1,'😰':2,'😐':3,'😏':4,'🤑':5}[symbol];
-            
+
             const reels=[document.getElementById('reel1'),document.getElementById('reel2'),document.getElementById('reel3')];
             reels.forEach((reel,i)=>{
                 reel.classList.add('spinning');
@@ -841,19 +1113,20 @@
                     const isMobile=window.innerWidth<=768;
                     const reelHeight=isMobile?110:140;
                     reel.style.transform='translateY(-'+(symbolIndex*reelHeight)+'px)';
-                },300+(i*200));
+                },400+(i*300));
             });
-            
+
             setTimeout(()=>{
                 document.getElementById('slotScore').textContent=score;
                 document.getElementById('slotScore').style.color=color;
                 const extreme=score<=20||score>=80;
                 if(extreme){
                     document.getElementById('slotScore').classList.add('jackpot');
+                    triggerWinEffect(color);
                 }else{
                     document.getElementById('slotScore').classList.remove('jackpot');
                 }
-            },800);
+            },1400);
         }
         
         document.getElementById('particlesToggle').addEventListener('click',function(){
@@ -1051,7 +1324,7 @@
             // Extreme Fear (0-24) + High Cash (cryptoRatio < 30%)
             if (fgiScore < 25 && cryptoRatio < 0.3) {
                 return {
-                    text: "💎 Deploy your cash - great entry point!",
+                    text: "Deploy your cash - great entry point!",
                     color: "#44ff88",
                     borderColor: "#44ff88"
                 };
@@ -1060,7 +1333,7 @@
             // Extreme Greed (80-100) + High Crypto (cryptoRatio > 70%)
             if (fgiScore > 79 && cryptoRatio > 0.7) {
                 return {
-                    text: "⚠️ Take profits - you're overexposed!",
+                    text: "Take profits - you're overexposed!",
                     color: "#ff4444",
                     borderColor: "#ff4444"
                 };
@@ -1069,7 +1342,7 @@
             // Fear + Low Crypto (opportunity)
             if (fgiScore < 40 && cryptoRatio < 0.4) {
                 return {
-                    text: "🎯 Good time to increase crypto allocation",
+                    text: "Good time to increase crypto allocation",
                     color: "#88ff44",
                     borderColor: "#88ff44"
                 };
@@ -1078,7 +1351,7 @@
             // Greed + High Crypto (warning)
             if (fgiScore > 65 && cryptoRatio > 0.6) {
                 return {
-                    text: "🛡️ Consider taking some profits",
+                    text: "Consider taking some profits",
                     color: "#ff8844",
                     borderColor: "#ff8844"
                 };
@@ -1086,7 +1359,7 @@
 
             // Balanced
             return {
-                text: "✅ Your allocation looks good",
+                text: "Your allocation looks good",
                 color: "#ffd700",
                 borderColor: "#ffd700"
             };
@@ -1153,19 +1426,19 @@
             // Display allocation stats
             const statsHTML = `
                 <div class="stat-item">
-                    <span class="stat-label">💰 Crypto:</span>
+                    <span class="stat-label">Crypto:</span>
                     <span class="stat-value">$${portfolioData.crypto.toLocaleString()} (${(allocation.cryptoRatio * 100).toFixed(1)}%)</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-label">🪙 Stablecoins:</span>
+                    <span class="stat-label">Stablecoins:</span>
                     <span class="stat-value">$${portfolioData.stablecoins.toLocaleString()} (${(allocation.stablesRatio * 100).toFixed(1)}%)</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-label">💵 Cash:</span>
+                    <span class="stat-label">Cash:</span>
                     <span class="stat-value">$${portfolioData.cash.toLocaleString()} (${(allocation.cashRatio * 100).toFixed(1)}%)</span>
                 </div>
                 <div class="stat-item" style="margin-top:10px;border-top:2px solid rgba(0,255,0,0.5);padding-top:10px;">
-                    <span class="stat-label">📊 Total:</span>
+                    <span class="stat-label">Total:</span>
                     <span class="stat-value">$${allocation.total.toLocaleString()}</span>
                 </div>
             `;
