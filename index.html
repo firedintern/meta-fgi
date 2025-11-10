@@ -131,21 +131,21 @@
             box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
         }
         
-        .reel-symbols { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        .reel-symbols {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
         }
-        
-        .reel-symbols.spinning { 
-            animation: spin 0.3s linear infinite; 
+
+        .reel-symbols.spinning {
+            animation: spin 0.15s linear infinite;
         }
-        
+
         @keyframes spin {
             0% { transform: translateY(0); }
             100% { transform: translateY(-700px); }
@@ -655,7 +655,7 @@
             <div class="degen" id="degenStatus">...</div>
 
             <div class="portfolio-advice" id="portfolioAdvice" style="display:none;">
-                <div class="advice-title">📊 Portfolio Recommendation</div>
+                <div class="advice-title">Portfolio Recommendation</div>
                 <div class="advice-text" id="adviceText">...</div>
             </div>
 
@@ -675,20 +675,20 @@
     <div id="portfolioModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>💼 My Portfolio</h2>
+                <h2>My Portfolio</h2>
                 <span class="close">&times;</span>
             </div>
             <div class="modal-body">
                 <div class="input-group">
-                    <label for="cryptoInput">💰 Crypto Holdings ($)</label>
+                    <label for="cryptoInput">Crypto Holdings ($)</label>
                     <input type="number" id="cryptoInput" placeholder="5000" min="0" step="100">
                 </div>
                 <div class="input-group">
-                    <label for="stablesInput">🪙 Stablecoins ($)</label>
+                    <label for="stablesInput">Stablecoins ($)</label>
                     <input type="number" id="stablesInput" placeholder="3000" min="0" step="100">
                 </div>
                 <div class="input-group">
-                    <label for="cashInput">💵 Cash/Fiat ($)</label>
+                    <label for="cashInput">Cash/Fiat ($)</label>
                     <input type="number" id="cashInput" placeholder="2000" min="0" step="100">
                 </div>
                 <button class="btn" id="savePortfolioBtn">Save Portfolio</button>
@@ -832,7 +832,7 @@
             const symbol=getSymbolForScore(score);
             const color=getColorForScore(score);
             const symbolIndex={'💀':0,'😱':1,'😰':2,'😐':3,'😏':4,'🤑':5}[symbol];
-            
+
             const reels=[document.getElementById('reel1'),document.getElementById('reel2'),document.getElementById('reel3')];
             reels.forEach((reel,i)=>{
                 reel.classList.add('spinning');
@@ -841,9 +841,9 @@
                     const isMobile=window.innerWidth<=768;
                     const reelHeight=isMobile?110:140;
                     reel.style.transform='translateY(-'+(symbolIndex*reelHeight)+'px)';
-                },300+(i*200));
+                },400+(i*300));
             });
-            
+
             setTimeout(()=>{
                 document.getElementById('slotScore').textContent=score;
                 document.getElementById('slotScore').style.color=color;
@@ -853,7 +853,7 @@
                 }else{
                     document.getElementById('slotScore').classList.remove('jackpot');
                 }
-            },800);
+            },1400);
         }
         
         document.getElementById('particlesToggle').addEventListener('click',function(){
@@ -1051,7 +1051,7 @@
             // Extreme Fear (0-24) + High Cash (cryptoRatio < 30%)
             if (fgiScore < 25 && cryptoRatio < 0.3) {
                 return {
-                    text: "💎 Deploy your cash - great entry point!",
+                    text: "Deploy your cash - great entry point!",
                     color: "#44ff88",
                     borderColor: "#44ff88"
                 };
@@ -1060,7 +1060,7 @@
             // Extreme Greed (80-100) + High Crypto (cryptoRatio > 70%)
             if (fgiScore > 79 && cryptoRatio > 0.7) {
                 return {
-                    text: "⚠️ Take profits - you're overexposed!",
+                    text: "Take profits - you're overexposed!",
                     color: "#ff4444",
                     borderColor: "#ff4444"
                 };
@@ -1069,7 +1069,7 @@
             // Fear + Low Crypto (opportunity)
             if (fgiScore < 40 && cryptoRatio < 0.4) {
                 return {
-                    text: "🎯 Good time to increase crypto allocation",
+                    text: "Good time to increase crypto allocation",
                     color: "#88ff44",
                     borderColor: "#88ff44"
                 };
@@ -1078,7 +1078,7 @@
             // Greed + High Crypto (warning)
             if (fgiScore > 65 && cryptoRatio > 0.6) {
                 return {
-                    text: "🛡️ Consider taking some profits",
+                    text: "Consider taking some profits",
                     color: "#ff8844",
                     borderColor: "#ff8844"
                 };
@@ -1086,7 +1086,7 @@
 
             // Balanced
             return {
-                text: "✅ Your allocation looks good",
+                text: "Your allocation looks good",
                 color: "#ffd700",
                 borderColor: "#ffd700"
             };
@@ -1153,19 +1153,19 @@
             // Display allocation stats
             const statsHTML = `
                 <div class="stat-item">
-                    <span class="stat-label">💰 Crypto:</span>
+                    <span class="stat-label">Crypto:</span>
                     <span class="stat-value">$${portfolioData.crypto.toLocaleString()} (${(allocation.cryptoRatio * 100).toFixed(1)}%)</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-label">🪙 Stablecoins:</span>
+                    <span class="stat-label">Stablecoins:</span>
                     <span class="stat-value">$${portfolioData.stablecoins.toLocaleString()} (${(allocation.stablesRatio * 100).toFixed(1)}%)</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-label">💵 Cash:</span>
+                    <span class="stat-label">Cash:</span>
                     <span class="stat-value">$${portfolioData.cash.toLocaleString()} (${(allocation.cashRatio * 100).toFixed(1)}%)</span>
                 </div>
                 <div class="stat-item" style="margin-top:10px;border-top:2px solid rgba(0,255,0,0.5);padding-top:10px;">
-                    <span class="stat-label">📊 Total:</span>
+                    <span class="stat-label">Total:</span>
                     <span class="stat-value">$${allocation.total.toLocaleString()}</span>
                 </div>
             `;
