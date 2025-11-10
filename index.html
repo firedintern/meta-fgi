@@ -170,43 +170,83 @@
             }
         }
         
-        .slot-lights { 
-            position: absolute; 
-            top: 10px; 
-            left: 0; 
-            right: 0; 
-            display: flex; 
-            justify-content: space-around; 
-            padding: 0 20px; 
+        .slot-lights {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            padding: 0 30px;
         }
-        .light { 
-            width: 15px; 
-            height: 15px; 
-            border-radius: 50%; 
-            background: #ff0000;
-            animation: blink 1s infinite;
+        .light {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #ffffff, #ffd700 40%, #d4af37 100%);
+            animation: casino-blink 1.5s infinite;
+            box-shadow:
+                0 0 5px rgba(255, 215, 0, 0.5),
+                0 0 10px rgba(255, 215, 0, 0.4),
+                0 0 15px rgba(255, 215, 0, 0.3),
+                inset 0 -2px 5px rgba(0, 0, 0, 0.3),
+                inset 0 2px 5px rgba(255, 255, 255, 0.4);
+            border: 2px solid #8b6508;
+            position: relative;
         }
-        .light:nth-child(2) { animation-delay: 0.2s; background: #ffd700; }
-        .light:nth-child(3) { animation-delay: 0.4s; background: #00ff00; }
-        .light:nth-child(4) { animation-delay: 0.6s; background: #00ffff; }
-        .light:nth-child(5) { animation-delay: 0.8s; background: #ff00ff; }
-        @keyframes blink { 0%, 50%, 100% { opacity: 1; box-shadow: 0 0 10px currentColor; } 25%, 75% { opacity: 0.3; } }
+        .light::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            filter: blur(1px);
+        }
+        .light:nth-child(2) { animation-delay: 0.3s; }
+        .light:nth-child(3) { animation-delay: 0.6s; }
+        .light:nth-child(4) { animation-delay: 0.9s; }
+        .light:nth-child(5) { animation-delay: 1.2s; }
+        @keyframes casino-blink {
+            0%, 40%, 100% {
+                opacity: 1;
+                box-shadow:
+                    0 0 10px rgba(255, 215, 0, 0.8),
+                    0 0 20px rgba(255, 215, 0, 0.6),
+                    0 0 30px rgba(255, 215, 0, 0.4),
+                    inset 0 -2px 5px rgba(0, 0, 0, 0.3),
+                    inset 0 2px 5px rgba(255, 255, 255, 0.4);
+                transform: scale(1);
+            }
+            20% {
+                opacity: 0.3;
+                box-shadow:
+                    0 0 3px rgba(255, 215, 0, 0.2),
+                    inset 0 -2px 5px rgba(0, 0, 0, 0.5),
+                    inset 0 2px 5px rgba(255, 255, 255, 0.2);
+                transform: scale(0.95);
+            }
+        }
         
         .slot-title {
             color: #ffd700;
-            font-size: 1.5em;
-            font-weight: bold;
+            font-size: 1.8em;
+            font-weight: 900;
             margin-bottom: 20px;
             text-shadow:
+                2px 2px 0px #8b6508,
+                4px 4px 0px #6b4d06,
                 0 0 10px #ffd700,
                 0 0 20px #ffd700,
-                0 0 40px #ffd700,
-                0 0 60px #ffd700,
-                0 0 80px rgba(255, 215, 0, 0.5);
-            letter-spacing: 5px;
+                0 0 40px #ffd700;
+            letter-spacing: 8px;
             animation: title-glow 2s ease-in-out infinite;
             text-transform: uppercase;
-            font-family: 'Courier New', monospace;
+            font-family: 'Impact', 'Arial Black', 'Haettenschweiler', sans-serif;
+            -webkit-text-stroke: 2px #8b6508;
+            paint-order: stroke fill;
         }
 
         @keyframes title-glow {
@@ -270,37 +310,6 @@
                 0 8px 20px rgba(0,0,0,0.6);
             transform: perspective(500px) rotateX(0deg);
             transition: all 0.3s ease;
-        }
-
-        .reel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 50%;
-            background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 100%);
-            border-radius: 6px 6px 0 0;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .reel::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(0,0,0,0.1) 2px,
-                rgba(0,0,0,0.1) 4px
-            );
-            pointer-events: none;
-            z-index: 5;
         }
         
         .reel-symbols {
@@ -548,10 +557,20 @@
             }
             
             .mobile-spin-hint { display: block; }
-            
-            .slot-title { font-size: 1.1em; letter-spacing: 2px; margin-bottom: 15px; }
-            .slot-lights { padding: 0 10px; }
-            .light { width: 10px; height: 10px; }
+
+            .slot-title { font-size: 1.2em; letter-spacing: 4px; margin-bottom: 15px; }
+            .slot-lights { padding: 0 15px; }
+            .light {
+                width: 12px;
+                height: 12px;
+                border-width: 1px;
+            }
+            .light::after {
+                width: 4px;
+                height: 4px;
+                top: 1px;
+                left: 2px;
+            }
             
             .reels-container { 
                 gap: 8px; 
@@ -618,7 +637,15 @@
             .title { font-size: 1.1em; }
             .btc-price { font-size: 1.2em; }
             .slot-machine { padding: 25px 8px 15px; }
-            .slot-title { font-size: 1em; }
+            .slot-title { font-size: 1em; letter-spacing: 2px; }
+            .light {
+                width: 10px;
+                height: 10px;
+            }
+            .light::after {
+                width: 3px;
+                height: 3px;
+            }
             .reel { width: 26vw; }
             .symbol { font-size: 2.3em; }
             .payout-score { font-size: 1.8em; }
