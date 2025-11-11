@@ -32,8 +32,9 @@
         .controls.hidden { opacity: 0; transform: translateY(-100px); pointer-events: none; }
         .control-btn { background: rgba(0, 100, 0, 0.3); border: 1px solid #00aa00; color: #00ff00; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 1.2em; transition: all 0.3s ease; position: relative; }
         .control-btn:hover { background: rgba(0, 150, 0, 0.4); transform: scale(1.05); }
-        .control-btn:hover::after { content: attr(data-tooltip); position: absolute; bottom: -40px; right: 0; background: rgba(0, 200, 0, 0.9); color: #000; padding: 5px 10px; border-radius: 5px; font-size: 0.7em; white-space: nowrap; z-index: 1000; }
+        .control-btn:hover::after { content: attr(data-tooltip); position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%); background: rgba(0, 200, 0, 0.95); color: #000; padding: 6px 12px; border-radius: 5px; font-size: 0.7em; white-space: nowrap; z-index: 1000; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
         .control-btn.active { background: rgba(0, 200, 0, 0.5); border-color: #00ff00; }
+        .control-btn:focus-visible { outline: 3px solid #00ff00; outline-offset: 3px; box-shadow: 0 0 15px rgba(0, 255, 0, 0.6); }
         
         .title { font-size: 2.2em; color: #00ff00; margin-bottom: 15px; font-weight: bold; letter-spacing: 3px; text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00; animation: terminal-flicker 3s ease-in-out infinite; }
         @keyframes terminal-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.95; } }
@@ -72,6 +73,12 @@
                 inset 0 0 40px rgba(255,255,255,0.15),
                 0 0 60px rgba(255,215,0,0.5),
                 0 0 100px rgba(255,215,0,0.3);
+        }
+
+        .slot-machine:focus-visible {
+            outline: 4px solid #ffd700;
+            outline-offset: 4px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8), inset 0 0 30px rgba(255,255,255,0.1), 0 0 30px rgba(255, 215, 0, 0.8);
         }
 
         .slot-machine.spinning {
@@ -509,11 +516,13 @@
             margin-left: 5px;
         }
 
-        .share-btn { background: #000; border: 2px solid #fff; color: #fff; display: inline-flex; align-items: center; gap: 8px; padding: 12px 30px; font-size: 1em; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-weight: bold; margin: 10px; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s ease; }
+        .share-btn { background: #000; border: 2px solid #fff; color: #fff; display: inline-flex; align-items: center; gap: 8px; padding: 12px 30px; font-size: 1em; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-weight: bold; margin: 10px; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); }
         .share-btn:hover { box-shadow: 0 0 25px rgba(255, 255, 255, 0.6); background: #111; transform: scale(1.05); }
-        
-        .btn { background: linear-gradient(135deg, #00ff00, #00cc00); border: 2px solid #00ff00; color: #000; padding: 15px 40px; font-size: 1.1em; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-weight: bold; margin: 10px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); transition: all 0.3s ease; }
+        .share-btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; box-shadow: 0 0 30px rgba(255, 255, 255, 0.8); }
+
+        .btn { background: linear-gradient(135deg, #00ff00, #00cc00); border: 2px solid #00ff00; color: #000; padding: 12px 30px; font-size: 1em; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-weight: bold; margin: 10px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); transition: all 0.3s ease; }
         .btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(0, 255, 0, 0.6); }
+        .btn:focus-visible { outline: 3px solid #00ff00; outline-offset: 3px; box-shadow: 0 0 30px rgba(0, 255, 0, 0.8); }
         
         .chart-container { background: rgba(255,255,255,0.05); border: 2px solid rgba(0, 255, 0, 0.3); border-radius: 15px; padding: 30px; margin: 40px 0; box-shadow: 0 0 20px rgba(0, 255, 0, 0.1); min-height: 350px; }
         .chart-title { color: #00ff00; font-size: 1.3em; margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; }
@@ -897,13 +906,13 @@
     <canvas id="matrix-canvas"></canvas>
     
     <div class="controls" id="controls">
-        <button class="control-btn active" id="particlesToggle" data-tooltip="Toggle Matrix">✨</button>
-        <button class="control-btn" id="notifyToggle" data-tooltip="Extreme alerts">🔔</button>
-        <button class="control-btn" id="portfolioToggle" data-tooltip="My Portfolio">💼</button>
+        <button class="control-btn active" id="particlesToggle" data-tooltip="Toggle Matrix" aria-label="Toggle Matrix Background Animation" aria-pressed="true">✨</button>
+        <button class="control-btn" id="notifyToggle" data-tooltip="Extreme alerts" aria-label="Enable notifications for extreme market sentiment alerts" aria-pressed="false">🔔</button>
+        <button class="control-btn" id="portfolioToggle" data-tooltip="My Portfolio" aria-label="View and manage your portfolio" aria-pressed="false">💼</button>
     </div>
     
     <div class="container">
-        <div class="title">&gt; FEAR_GREED_PROTOCOL &lt;</div>
+        <h1 class="title">&gt; FEAR_GREED_PROTOCOL &lt;</h1>
         
         <div class="btc-ticker">
             <div class="btc-label">₿ Bitcoin</div>
@@ -912,7 +921,7 @@
         </div>
         
         <div id="content">
-            <div class="slot-machine" id="slotMachine">
+            <div class="slot-machine" id="slotMachine" role="button" tabindex="0" aria-label="Spin the slot machine to reveal current market sentiment">
                 <div class="slot-lights">
                     <div class="light"></div>
                     <div class="light"></div>
@@ -969,7 +978,7 @@
                     <div class="payout-score" id="slotScore">--</div>
                     <div class="payout-text" id="slotStatus">...</div>
                 </div>
-                <div class="lever" id="leverBtn">🎰</div>
+                <div class="lever" id="leverBtn" role="button" tabindex="-1" aria-label="Pull lever to spin">🎰</div>
                 <div class="mobile-spin-hint">👆 Tap to spin!</div>
             </div>
             
@@ -985,10 +994,10 @@
                 <div class="advice-text" id="adviceText">...</div>
             </div>
 
-            <button class="share-btn" id="shareBtn">Share on <span style="font-size:1.3em">𝕏</span></button>
+            <button class="share-btn" id="shareBtn" aria-label="Share current market sentiment on X (formerly Twitter)">Share on <span style="font-size:1.3em">𝕏</span></button>
 
-            <button class="btn" id="refreshBtn">[  REFRESH  ]</button>
-            <div style="color:#00ff00;font-size:0.8em;opacity:0.6;margin-top:10px;" id="timestamp">> --:--:--</div>
+            <button class="btn" id="refreshBtn" aria-label="Refresh all market data and sentiment">[  REFRESH  ]</button>
+            <div style="color:#00ff00;font-size:0.8em;opacity:0.6;margin-top:10px;" id="timestamp">> Last Updated: --:--:--</div>
         </div>
         
         <div class="chart-container">
@@ -1253,6 +1262,7 @@
         document.getElementById('particlesToggle').addEventListener('click',function(){
             particlesEnabled=!particlesEnabled;
             this.classList.toggle('active');
+            this.setAttribute('aria-pressed', particlesEnabled ? 'true' : 'false');
             if(!particlesEnabled){ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);}
         });
         
@@ -1262,11 +1272,13 @@
                 if(p==='granted'){
                     notificationsEnabled=true;
                     this.classList.add('active');
+                    this.setAttribute('aria-pressed', 'true');
                     new Notification('🔔 Alerts Enabled!',{body:'Extreme level notifications on'});
                 }
             }else{
                 notificationsEnabled=false;
                 this.classList.remove('active');
+                this.setAttribute('aria-pressed', 'false');
             }
         });
         
@@ -1307,6 +1319,7 @@
             if(!el||typeof Chart==='undefined')return;
             const c=el.getContext('2d');
             if(window.chartInstance)window.chartInstance.destroy();
+            const isMobile=window.innerWidth<=768;
             try{
                 window.chartInstance=new Chart(c,{
                     type:'line',
@@ -1323,17 +1336,17 @@
                             pointBackgroundColor:h.map(d=>getColorForScore(d.score)),
                             pointBorderColor:'#fff',
                             pointBorderWidth:2,
-                            pointRadius:5,
-                            pointHoverRadius:7
+                            pointRadius:isMobile?3:5,
+                            pointHoverRadius:isMobile?5:7
                         }]
                     },
                     options:{
                         responsive:true,
                         maintainAspectRatio:true,
-                        plugins:{legend:{labels:{color:'#00ff00',font:{family:'Courier New',size:14}}}},
+                        plugins:{legend:{labels:{color:'#00ff00',font:{family:'Courier New',size:isMobile?12:14}}}},
                         scales:{
-                            y:{beginAtZero:true,max:100,grid:{color:'rgba(0,255,0,0.2)'},ticks:{color:'#00ff00',font:{family:'Courier New'}}},
-                            x:{grid:{color:'rgba(0,255,0,0.1)'},ticks:{color:'#00ff00',font:{family:'Courier New',size:11},maxRotation:45,minRotation:45}}
+                            y:{beginAtZero:true,max:100,grid:{color:'rgba(0,255,0,0.2)'},ticks:{color:'#00ff00',font:{family:'Courier New',size:isMobile?9:11}}},
+                            x:{grid:{color:'rgba(0,255,0,0.1)'},ticks:{color:'#00ff00',font:{family:'Courier New',size:isMobile?8:11},maxRotation:45,minRotation:45,autoSkip:true,maxTicksLimit:isMobile?8:15}}
                         }
                     }
                 });
@@ -1357,7 +1370,7 @@
                 document.getElementById('slotStatus').style.color=color;
                 document.getElementById('degenStatus').textContent=degenStatus;
                 document.getElementById('degenStatus').style.color=color;
-                document.getElementById('timestamp').textContent='> '+new Date(fgiData.timestamp*1000).toLocaleTimeString();
+                document.getElementById('timestamp').textContent='> Last Updated: '+new Date(fgiData.timestamp*1000).toLocaleTimeString();
                 updateSentimentQuote(currentScore, color);
                 const extreme=currentScore<=20||currentScore>=80;
                 if(extreme&&notificationsEnabled&&(lastNotificationScore===null||Math.abs(lastNotificationScore-currentScore)>10)){
@@ -1619,7 +1632,14 @@
 
         // Add event listeners for all interactive elements (CSP-friendly)
         document.getElementById('slotMachine').addEventListener('click', spinSlots);
+        document.getElementById('slotMachine').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                spinSlots();
+            }
+        });
 
+        // Add lever click handler
         const leverBtn = document.getElementById('leverBtn');
         if (leverBtn) {
             leverBtn.addEventListener('click', function(e) {
