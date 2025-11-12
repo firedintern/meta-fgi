@@ -20,6 +20,11 @@
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧮</text></svg>">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- jQuery SlotMachine Library -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-slotmachine@6.0.0/dist/slotmachine.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery-slotmachine@6.0.0/dist/slotmachine.min.js"></script>
+
     <style>
         @import url('https://fonts.cdnfonts.com/css/comic-sans');
         
@@ -47,32 +52,32 @@
         .negative { color: #ff0000; }
         
         .slot-machine {
-            width: 500px;
-            max-width: 100%;
-            margin: 30px auto;
-            background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
-            border: 8px solid;
-            border-image: linear-gradient(45deg, #ffd700, #ff6b6b, #4ecdc4, #ffd700) 1;
+            width: 700px;
+            max-width: 95%;
+            margin: 40px auto;
+            background: linear-gradient(145deg, #1a1f3a 0%, #0f1424 50%, #1a1f3a 100%);
+            border: 6px solid;
+            border-image: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%) 1;
             border-radius: 20px;
-            padding: 40px 30px 30px;
+            padding: 40px 30px 35px;
             box-shadow:
-                0 20px 60px rgba(0,0,0,0.8),
-                inset 0 0 30px rgba(255,255,255,0.1),
-                0 0 40px rgba(255,215,0,0.3),
-                0 0 80px rgba(255,215,0,0.2);
+                0 20px 60px rgba(0,0,0,0.95),
+                inset 0 2px 20px rgba(255,215,0,0.15),
+                inset 0 -2px 20px rgba(0,0,0,0.5),
+                0 0 60px rgba(255,215,0,0.3),
+                0 0 100px rgba(255,215,0,0.15);
             position: relative;
-            cursor: pointer;
-            transform: perspective(1000px) rotateX(2deg);
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
         }
 
         .slot-machine:hover {
-            transform: perspective(1000px) rotateX(0deg) scale(1.02);
+            transform: translateY(-3px);
             box-shadow:
-                0 25px 80px rgba(0,0,0,0.9),
-                inset 0 0 40px rgba(255,255,255,0.15),
-                0 0 60px rgba(255,215,0,0.5),
-                0 0 100px rgba(255,215,0,0.3);
+                0 25px 70px rgba(0,0,0,1),
+                inset 0 2px 25px rgba(255,215,0,0.2),
+                inset 0 -2px 25px rgba(0,0,0,0.6),
+                0 0 80px rgba(255,215,0,0.4),
+                0 0 120px rgba(255,215,0,0.2);
         }
 
         .slot-machine:focus-visible {
@@ -87,10 +92,10 @@
         }
 
         @keyframes machine-shake {
-            0%, 100% { transform: perspective(1000px) rotateX(2deg) translateX(0) translateY(0); }
-            25% { transform: perspective(1000px) rotateX(2deg) translateX(-2px) translateY(-1px); }
-            50% { transform: perspective(1000px) rotateX(2deg) translateX(2px) translateY(1px); }
-            75% { transform: perspective(1000px) rotateX(2deg) translateX(-1px) translateY(1px); }
+            0%, 100% { transform: translateX(0) translateY(0); }
+            25% { transform: translateX(-2px) translateY(-1px); }
+            50% { transform: translateX(2px) translateY(1px); }
+            75% { transform: translateX(-1px) translateY(1px); }
         }
 
         @keyframes machine-glow {
@@ -178,13 +183,7 @@
         }
         
         .slot-lights {
-            position: absolute;
-            top: 10px;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-around;
-            padding: 0 30px;
+            display: none;
         }
         .light {
             width: 18px;
@@ -239,17 +238,17 @@
         
         .reels-container {
             display: flex;
-            gap: 15px;
+            gap: 25px;
             justify-content: center;
-            margin-bottom: 20px;
-            background: linear-gradient(145deg, #0a0a0a, #1a1a1a);
-            padding: 20px;
-            border-radius: 10px;
-            border: 3px solid #333;
+            margin-bottom: 30px;
+            background: linear-gradient(145deg, #0a0e1a 0%, #060912 100%);
+            padding: 40px 30px;
+            border-radius: 15px;
+            border: 3px solid rgba(255, 215, 0, 0.4);
             box-shadow:
-                inset 0 0 30px rgba(0,0,0,0.9),
-                inset 0 0 60px rgba(0,0,0,0.5),
-                0 5px 15px rgba(0,0,0,0.8);
+                inset 0 4px 25px rgba(0,0,0,0.9),
+                inset 0 -4px 25px rgba(0,0,0,0.7),
+                0 4px 20px rgba(0,0,0,0.8);
             position: relative;
         }
 
@@ -266,19 +265,19 @@
         }
 
         .reel {
-            width: 120px;
-            height: 140px;
-            background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
-            border: 4px solid #555;
-            border-radius: 10px;
+            width: 170px;
+            height: 170px;
+            background: linear-gradient(180deg, #12172e 0%, #0a0d1a 50%, #12172e 100%);
+            border: 4px solid;
+            border-image: linear-gradient(180deg, rgba(255, 215, 0, 0.6), rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.6)) 1;
+            border-radius: 12px;
             overflow: hidden;
             position: relative;
             box-shadow:
-                inset 0 0 20px rgba(0,0,0,0.9),
-                inset 0 4px 8px rgba(0,0,0,0.8),
-                0 0 15px rgba(0,255,255,0.2),
-                0 8px 20px rgba(0,0,0,0.6);
-            transform: perspective(500px) rotateX(0deg);
+                inset 0 3px 20px rgba(0,0,0,0.95),
+                inset 0 -3px 20px rgba(0,0,0,0.8),
+                0 6px 20px rgba(0,0,0,0.7),
+                0 0 20px rgba(255,215,0,0.25);
             transition: all 0.3s ease;
         }
         
@@ -308,30 +307,71 @@
         }
         
         .symbol {
-            font-size: 4em;
-            height: 140px;
+            font-size: 5.5em;
+            height: 170px;
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             text-shadow:
-                0 0 10px currentColor,
                 0 0 20px currentColor,
-                0 0 30px currentColor,
-                0 0 40px currentColor;
-            filter: drop-shadow(0 0 15px currentColor);
+                0 0 40px currentColor,
+                0 0 60px currentColor;
+            filter: drop-shadow(0 0 25px currentColor) brightness(1.3) saturate(1.2);
+            transition: all 0.3s ease;
+        }
+
+        .spin-btn {
+            width: 180px;
+            height: 60px;
+            margin: 0 auto 30px;
+            display: block;
+            background: linear-gradient(145deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+            border: 4px solid #d4af37;
+            border-radius: 30px;
+            color: #000;
+            font-family: 'Courier New', monospace;
+            font-size: 1.4em;
+            font-weight: bold;
+            letter-spacing: 3px;
+            cursor: pointer;
+            box-shadow:
+                0 8px 25px rgba(0,0,0,0.6),
+                inset 0 2px 10px rgba(255,255,255,0.5),
+                inset 0 -2px 10px rgba(0,0,0,0.3),
+                0 0 30px rgba(255,215,0,0.5);
+            transition: all 0.3s ease;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+        }
+
+        .spin-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            background: linear-gradient(145deg, #ffed4e 0%, #ffd700 50%, #ffed4e 100%);
+            box-shadow:
+                0 12px 35px rgba(0,0,0,0.7),
+                inset 0 2px 15px rgba(255,255,255,0.6),
+                inset 0 -2px 15px rgba(0,0,0,0.4),
+                0 0 50px rgba(255,215,0,0.7);
+        }
+
+        .spin-btn:active {
+            transform: translateY(0px) scale(1.02);
+            box-shadow:
+                0 4px 15px rgba(0,0,0,0.5),
+                inset 0 2px 8px rgba(255,255,255,0.4),
+                inset 0 -2px 8px rgba(0,0,0,0.2),
+                0 0 25px rgba(255,215,0,0.4);
         }
         
         .payout-display {
-            background: linear-gradient(145deg, #0a0a0a, #000);
-            padding: 15px;
-            border-radius: 10px;
-            border: 3px solid #ffd700;
-            margin-top: 20px;
+            background: linear-gradient(145deg, #0a0e1a 0%, #060912 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border: 3px solid rgba(255, 215, 0, 0.5);
             box-shadow:
-                inset 0 0 20px rgba(0,0,0,0.9),
-                0 0 20px rgba(255,215,0,0.3),
-                0 0 40px rgba(255,215,0,0.2);
+                inset 0 3px 20px rgba(0,0,0,0.9),
+                inset 0 -3px 20px rgba(0,0,0,0.7),
+                0 4px 15px rgba(0,0,0,0.6);
             position: relative;
         }
 
@@ -363,7 +403,39 @@
                 0 0 10px currentColor,
                 0 0 20px currentColor;
         }
-        
+
+        .streak-info {
+            font-size: 0.85em;
+            color: #a0a0a0;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+            font-weight: normal;
+            letter-spacing: 0.5px;
+        }
+
+        .streak-info.record {
+            color: #ffd700;
+            font-weight: bold;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes rain-fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(600px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
         .jackpot {
             animation: jackpot-flash 0.5s infinite, jackpot-pulse 1s ease-in-out infinite;
         }
@@ -396,15 +468,38 @@
         }
         
         .lever {
+            display: none;
+        }
+
+        .lever::before {
+            content: '';
             position: absolute;
-            right: -40px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 3em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            filter: drop-shadow(0 0 10px rgba(255,215,0,0.5)) drop-shadow(0 0 20px rgba(255,215,0,0.3));
-            animation: lever-idle 2s ease-in-out infinite;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 35px;
+            height: 35px;
+            background: radial-gradient(circle at 30% 30%, #ff4444, #cc0000 60%, #880000);
+            border-radius: 50%;
+            box-shadow:
+                0 4px 10px rgba(0,0,0,0.5),
+                inset -2px -2px 6px rgba(0,0,0,0.5),
+                inset 2px 2px 6px rgba(255,100,100,0.6);
+        }
+
+        .lever::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 100px;
+            background: linear-gradient(90deg, #888, #ccc 50%, #888);
+            border-radius: 5px;
+            box-shadow:
+                2px 0 4px rgba(0,0,0,0.3),
+                inset 1px 0 2px rgba(255,255,255,0.5);
         }
 
         @keyframes lever-idle {
@@ -600,7 +695,8 @@
             .payout-label { font-size: 0.75em; }
             .payout-score { font-size: 2.2em; }
             .payout-text { font-size: 0.9em; letter-spacing: 1px; }
-            
+            .streak-info { font-size: 0.7em; margin-top: 8px; padding-top: 8px; }
+
             .lever { display: none; }
             
             .degen {
@@ -927,65 +1023,39 @@
         </div>
         
         <div id="content">
-            <div class="slot-machine" id="slotMachine" role="button" tabindex="0" aria-label="Spin the slot machine to reveal current market sentiment">
-                <div class="slot-lights">
-                    <div class="light"></div>
-                    <div class="light"></div>
-                    <div class="light"></div>
-                    <div class="light"></div>
-                    <div class="light"></div>
-                </div>
+            <div class="slot-machine" id="slotMachine">
                 <div class="reels-container">
-                    <div class="reel">
-                        <div class="reel-symbols" id="reel1">
-                            <div class="symbol">💀</div>
-                            <div class="symbol">😱</div>
-                            <div class="symbol">😰</div>
-                            <div class="symbol">😐</div>
-                            <div class="symbol">😏</div>
-                            <div class="symbol">🤑</div>
-                            <div class="symbol">💀</div>
-                            <div class="symbol">😱</div>
-                            <div class="symbol">😰</div>
-                            <div class="symbol">😐</div>
-                        </div>
+                    <div class="reel" id="reel1">
+                        <div class="symbol">💀</div>
+                        <div class="symbol">😱</div>
+                        <div class="symbol">😐</div>
+                        <div class="symbol">😏</div>
+                        <div class="symbol">🤑</div>
                     </div>
-                    <div class="reel">
-                        <div class="reel-symbols" id="reel2">
-                            <div class="symbol">💀</div>
-                            <div class="symbol">😱</div>
-                            <div class="symbol">😰</div>
-                            <div class="symbol">😐</div>
-                            <div class="symbol">😏</div>
-                            <div class="symbol">🤑</div>
-                            <div class="symbol">💀</div>
-                            <div class="symbol">😱</div>
-                            <div class="symbol">😰</div>
-                            <div class="symbol">😐</div>
-                        </div>
+                    <div class="reel" id="reel2">
+                        <div class="symbol">💀</div>
+                        <div class="symbol">😱</div>
+                        <div class="symbol">😐</div>
+                        <div class="symbol">😏</div>
+                        <div class="symbol">🤑</div>
                     </div>
-                    <div class="reel">
-                        <div class="reel-symbols" id="reel3">
-                            <div class="symbol">💀</div>
-                            <div class="symbol">😱</div>
-                            <div class="symbol">😰</div>
-                            <div class="symbol">😐</div>
-                            <div class="symbol">😏</div>
-                            <div class="symbol">🤑</div>
-                            <div class="symbol">💀</div>
-                            <div class="symbol">😱</div>
-                            <div class="symbol">😰</div>
-                            <div class="symbol">😐</div>
-                        </div>
+                    <div class="reel" id="reel3">
+                        <div class="symbol">💀</div>
+                        <div class="symbol">😱</div>
+                        <div class="symbol">😐</div>
+                        <div class="symbol">😏</div>
+                        <div class="symbol">🤑</div>
                     </div>
                 </div>
+                <button class="spin-btn" id="spinBtn" role="button" aria-label="Spin the slot machine to reveal current market sentiment">
+                    <span class="spin-text">SPIN</span>
+                </button>
                 <div class="payout-display">
                     <div class="payout-label">MARKET SENTIMENT</div>
                     <div class="payout-score" id="slotScore">--</div>
                     <div class="payout-text" id="slotStatus">...</div>
+                    <div class="streak-info" id="streakInfo"></div>
                 </div>
-                <div class="lever" id="leverBtn" role="button" tabindex="-1" aria-label="Pull lever to spin">🎰</div>
-                <div class="mobile-spin-hint">👆 Tap to spin!</div>
             </div>
             
             <div class="degen" id="degenStatus">...</div>
@@ -1142,12 +1212,11 @@
         }
         
         function getSymbolForScore(s){
-            if(s<10)return '💀';
-            if(s<25)return '😱';
-            if(s<45)return '😰';
-            if(s<60)return '😐';
-            if(s<80)return '😏';
-            return '🤑';
+            if(s<=24)return '💀';  // Extreme Fear: 0-24
+            if(s<=44)return '😱';  // Fear: 25-44
+            if(s<=59)return '😐';  // Neutral: 45-59
+            if(s<=79)return '😏';  // Greed: 60-79
+            return '🤑';           // Extreme Greed: 80-100
         }
 
         function getQuoteForScore(s){
@@ -1217,52 +1286,108 @@
             }
         }
 
+        // Initialize slot machines using jQuery-SlotMachine library
+        let machine1, machine2, machine3;
+
+        function initializeSlotMachines() {
+            const el1 = document.getElementById('reel1');
+            const el2 = document.getElementById('reel2');
+            const el3 = document.getElementById('reel3');
+
+            machine1 = new SlotMachine(el1, {
+                active: 0,
+                delay: 500
+            });
+
+            machine2 = new SlotMachine(el2, {
+                active: 0,
+                delay: 500
+            });
+
+            machine3 = new SlotMachine(el3, {
+                active: 0,
+                delay: 500
+            });
+        }
+
         function spinSlots(){
             if(isSpinning)return;
             isSpinning=true;
-            document.getElementById('slotMachine').classList.add('spinning');
-            
+
             playJackpotSound();
-            const lever=document.querySelector('.lever');
-            if(lever){
-                lever.classList.add('pulled');
-                setTimeout(()=>lever.classList.remove('pulled'),500);
-            }
             refreshAll();
-            
-            setTimeout(()=>{
-                isSpinning=false;
-                document.getElementById('slotMachine').classList.remove('spinning');
-            },1000);
         }
-        
+
         function updateSlotMachine(score){
             const symbol=getSymbolForScore(score);
             const color=getColorForScore(score);
-            const symbolIndex={'💀':0,'😱':1,'😰':2,'😐':3,'😏':4,'🤑':5}[symbol];
 
-            const reels=[document.getElementById('reel1'),document.getElementById('reel2'),document.getElementById('reel3')];
-            reels.forEach((reel,i)=>{
-                reel.classList.add('spinning');
-                setTimeout(()=>{
-                    reel.classList.remove('spinning');
-                    const isMobile=window.innerWidth<=768;
-                    const reelHeight=isMobile?110:140;
-                    reel.style.transform='translateY(-'+(symbolIndex*reelHeight)+'px)';
-                },400+(i*300));
+            // Update all reel symbols to match current sentiment
+            const reels = [document.getElementById('reel1'), document.getElementById('reel2'), document.getElementById('reel3')];
+            reels.forEach(reel => {
+                const symbols = reel.querySelectorAll('.symbol');
+                symbols.forEach(sym => {
+                    sym.textContent = symbol;
+                });
             });
 
-            setTimeout(()=>{
-                document.getElementById('slotScore').textContent=score;
-                document.getElementById('slotScore').style.color=color;
-                const extreme=score<=20||score>=80;
-                if(extreme){
-                    document.getElementById('slotScore').classList.add('jackpot');
-                    triggerWinEffect(color);
-                }else{
-                    document.getElementById('slotScore').classList.remove('jackpot');
-                }
-            },1400);
+            // Reinitialize slot machines with updated symbols
+            machine1 = new SlotMachine(document.getElementById('reel1'), { active: 0, delay: 500 });
+            machine2 = new SlotMachine(document.getElementById('reel2'), { active: 0, delay: 500 });
+            machine3 = new SlotMachine(document.getElementById('reel3'), { active: 0, delay: 500 });
+
+            // Spin all three reels
+            machine1.shuffle(5);
+            machine2.shuffle(5);
+            machine3.shuffle(5);
+
+            setTimeout(() => machine1.stop(0), 600);
+            setTimeout(() => machine2.stop(0), 900);
+            setTimeout(() => {
+                machine3.stop(0);
+                isSpinning = false;
+
+                // Update display
+                setTimeout(()=>{
+                    document.getElementById('slotScore').textContent=score;
+                    document.getElementById('slotScore').style.color=color;
+                    const extreme=score<=20||score>=80;
+                    if(extreme){
+                        document.getElementById('slotScore').classList.add('jackpot');
+                        triggerWinEffect(color);
+                    }else{
+                        document.getElementById('slotScore').classList.remove('jackpot');
+                    }
+
+                    // Trigger raining emoji effect since all 3 match
+                    triggerEmojiRain(symbol);
+                }, 300);
+            }, 1200);
+        }
+
+        // Raining emoji jackpot effect
+        function triggerEmojiRain(emoji) {
+            const container = document.getElementById('slotMachine');
+            const numEmojis = 20;
+
+            for (let i = 0; i < numEmojis; i++) {
+                setTimeout(() => {
+                    const emojiEl = document.createElement('div');
+                    emojiEl.textContent = emoji;
+                    emojiEl.style.position = 'absolute';
+                    emojiEl.style.fontSize = '3em';
+                    emojiEl.style.left = Math.random() * 100 + '%';
+                    emojiEl.style.top = '-50px';
+                    emojiEl.style.pointerEvents = 'none';
+                    emojiEl.style.zIndex = '1000';
+                    emojiEl.style.animation = 'rain-fall 2s ease-in forwards';
+                    emojiEl.style.filter = 'drop-shadow(0 0 10px currentColor)';
+
+                    container.appendChild(emojiEl);
+
+                    setTimeout(() => emojiEl.remove(), 2000);
+                }, i * 100);
+            }
         }
         
         document.getElementById('particlesToggle').addEventListener('click',function(){
@@ -1359,6 +1484,158 @@
             }catch(e){console.error('Chart error:',e);}
         }
         
+        // Sentiment Streak Functions
+        function getSentimentCategory(score) {
+            if (score <= 24) return 'Extreme Fear';
+            if (score <= 44) return 'Fear';
+            if (score <= 59) return 'Neutral';
+            if (score <= 79) return 'Greed';
+            return 'Extreme Greed';
+        }
+
+        async function fetchHistoricalStreakData() {
+            try {
+                const r = await fetch('https://api.alternative.me/fng/?limit=365&format=json');
+                const d = await r.json();
+                if (!d.data || !Array.isArray(d.data)) {
+                    throw new Error('Invalid historical data');
+                }
+                return d.data; // Newest first (index 0 = today)
+            } catch (e) {
+                console.error('Historical streak data fetch error:', e);
+                return null;
+            }
+        }
+
+        function calculateCurrentStreak(historicalData, currentCategory) {
+            let streak = 0;
+            for (let i = 0; i < historicalData.length; i++) {
+                const score = parseInt(historicalData[i].value);
+                const category = getSentimentCategory(score);
+                if (category === currentCategory) {
+                    streak++;
+                } else {
+                    break; // Stop when category changes
+                }
+            }
+            return streak;
+        }
+
+        function calculateHistoricalStats(historicalData) {
+            const categories = ['Extreme Fear', 'Fear', 'Neutral', 'Greed', 'Extreme Greed'];
+            const stats = {};
+
+            categories.forEach(cat => {
+                stats[cat] = { longestStreak: 0, totalDays: 0, streakCount: 0, recordDate: null };
+            });
+
+            // Track current streak as we iterate
+            let currentCat = null;
+            let currentStreakLen = 0;
+            let streakStartIndex = 0;
+
+            for (let i = historicalData.length - 1; i >= 0; i--) { // Go oldest to newest
+                const score = parseInt(historicalData[i].value);
+                const category = getSentimentCategory(score);
+
+                if (category === currentCat) {
+                    currentStreakLen++;
+                } else {
+                    // Save previous streak
+                    if (currentCat && currentStreakLen > 0) {
+                        if (currentStreakLen > stats[currentCat].longestStreak) {
+                            stats[currentCat].longestStreak = currentStreakLen;
+                            // Record the date when this streak ended (most recent day of the streak)
+                            stats[currentCat].recordDate = historicalData[streakStartIndex].timestamp;
+                        }
+                        stats[currentCat].totalDays += currentStreakLen;
+                        stats[currentCat].streakCount++;
+                    }
+                    // Start new streak
+                    currentCat = category;
+                    currentStreakLen = 1;
+                    streakStartIndex = i;
+                }
+            }
+
+            // Don't forget the last streak
+            if (currentCat && currentStreakLen > 0) {
+                if (currentStreakLen > stats[currentCat].longestStreak) {
+                    stats[currentCat].longestStreak = currentStreakLen;
+                    stats[currentCat].recordDate = historicalData[streakStartIndex].timestamp;
+                }
+                stats[currentCat].totalDays += currentStreakLen;
+                stats[currentCat].streakCount++;
+            }
+
+            // Calculate averages
+            categories.forEach(cat => {
+                if (stats[cat].streakCount > 0) {
+                    stats[cat].average = Math.round((stats[cat].totalDays / stats[cat].streakCount) * 10) / 10;
+                } else {
+                    stats[cat].average = 0;
+                }
+            });
+
+            return stats;
+        }
+
+        // Helper function to format timestamp to "Month Year"
+        function formatRecordDate(timestamp) {
+            if (!timestamp) return '';
+            const date = new Date(parseInt(timestamp) * 1000);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${months[date.getMonth()]} ${date.getFullYear()}`;
+        }
+
+        async function updateStreakDisplay(currentScore) {
+            try {
+                const historicalData = await fetchHistoricalStreakData();
+                if (!historicalData || historicalData.length === 0) {
+                    document.getElementById('streakInfo').textContent = '';
+                    return;
+                }
+
+                const currentCategory = getSentimentCategory(currentScore);
+                const currentStreak = calculateCurrentStreak(historicalData, currentCategory);
+                const stats = calculateHistoricalStats(historicalData);
+
+                const catStats = stats[currentCategory];
+                const record = catStats.longestStreak;
+                const average = catStats.average;
+                const recordDate = catStats.recordDate;
+
+                const streakInfoEl = document.getElementById('streakInfo');
+
+                // Format record date string
+                const recordDateStr = recordDate ? ` in ${formatRecordDate(recordDate)}` : '';
+
+                // Check if it's a new record
+                if (currentStreak > record) {
+                    streakInfoEl.innerHTML = `🔥 Day ${currentStreak} of ${currentCategory} - NEW RECORD!${record > 0 ? ` (Previous: ${record} days${recordDateStr})` : ''}`;
+                    streakInfoEl.classList.add('record');
+                } else if (currentStreak === 1) {
+                    streakInfoEl.innerHTML = `⚡ Day 1 of ${currentCategory} (Just started!)`;
+                    streakInfoEl.classList.remove('record');
+                } else if (currentStreak >= record * 0.8 && record > 0) {
+                    // Near record (80% or more)
+                    streakInfoEl.innerHTML = `📊 Day ${currentStreak} of ${currentCategory} (Near record! Longest: ${record} days${recordDateStr})`;
+                    streakInfoEl.classList.remove('record');
+                } else if (average > 0 && currentStreak > average * 1.3) {
+                    // Above average
+                    streakInfoEl.innerHTML = `📊 Day ${currentStreak} of ${currentCategory} (Above avg! Typical: ${average} days | Record: ${record} days${recordDateStr})`;
+                    streakInfoEl.classList.remove('record');
+                } else {
+                    // Normal
+                    streakInfoEl.innerHTML = `📊 Day ${currentStreak} of ${currentCategory} (Avg: ${average} days | Record: ${record} days${recordDateStr})`;
+                    streakInfoEl.classList.remove('record');
+                }
+            } catch (e) {
+                console.error('Streak display error:', e);
+                document.getElementById('streakInfo').textContent = '';
+            }
+        }
+
         async function fetchData(){
             try{
                 const r=await fetch('https://api.alternative.me/fng/?limit=1&format=json');
@@ -1378,6 +1655,10 @@
                 document.getElementById('degenStatus').style.color=color;
                 document.getElementById('timestamp').textContent='> Last Updated: '+new Date(fgiData.timestamp*1000).toLocaleTimeString();
                 updateSentimentQuote(currentScore, color);
+
+                // Update streak display
+                await updateStreakDisplay(currentScore);
+
                 const extreme=currentScore<=20||currentScore>=80;
                 if(extreme&&notificationsEnabled&&(lastNotificationScore===null||Math.abs(lastNotificationScore-currentScore)>10)){
                     new Notification(currentScore<=20?'🔥 JACKPOT - EXTREME FEAR!':'⚠️ JACKPOT - EXTREME GREED!',{body:'Score: '+currentScore});
@@ -1642,23 +1923,11 @@
         // Initialize modal immediately (modal is now defined before script)
         initPortfolioModal();
 
-        // Add event listeners for all interactive elements (CSP-friendly)
-        document.getElementById('slotMachine').addEventListener('click', spinSlots);
-        document.getElementById('slotMachine').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                spinSlots();
-            }
-        });
+        // Initialize slot machines
+        initializeSlotMachines();
 
-        // Add lever click handler
-        const leverBtn = document.getElementById('leverBtn');
-        if (leverBtn) {
-            leverBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                spinSlots();
-            });
-        }
+        // Add event listeners for all interactive elements (CSP-friendly)
+        document.getElementById('spinBtn').addEventListener('click', spinSlots);
 
         document.getElementById('shareBtn').addEventListener('click', shareToX);
         document.getElementById('refreshBtn').addEventListener('click', refreshAll);
