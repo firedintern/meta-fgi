@@ -41,7 +41,29 @@
         .title { font-size: 2.2em; color: #00ff00; margin-bottom: 15px; font-weight: bold; letter-spacing: 3px; text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00; animation: terminal-flicker 3s ease-in-out infinite; }
         @keyframes terminal-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.95; } }
         
-        .btc-ticker { background: linear-gradient(135deg, #f7931a 0%, #ffb74d 100%); padding: 10px 25px; border-radius: 10px; margin: 0 auto 30px; max-width: 400px; box-shadow: 0 3px 15px rgba(247, 147, 26, 0.3); }
+        .btc-ticker {
+            background: linear-gradient(145deg, #f7931a 0%, #ffb74d 50%, #f7931a 100%);
+            padding: 10px 25px;
+            border-radius: 10px;
+            margin: 0 auto 30px;
+            max-width: 400px;
+            border: 3px solid #d97706;
+            box-shadow:
+                0 8px 25px rgba(0,0,0,0.6),
+                inset 0 2px 10px rgba(255,255,255,0.5),
+                inset 0 -2px 10px rgba(0,0,0,0.3),
+                0 0 30px rgba(247, 147, 26, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .btc-ticker:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 12px 35px rgba(0,0,0,0.7),
+                inset 0 2px 15px rgba(255,255,255,0.6),
+                inset 0 -2px 15px rgba(0,0,0,0.4),
+                0 0 50px rgba(247, 147, 26, 0.7);
+        }
         .btc-label { font-size: 0.75em; color: #000; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
         .btc-price { font-size: 1.8em; font-weight: bold; color: #000; margin: 3px 0; }
         .btc-change { font-size: 0.95em; font-weight: bold; margin-top: 3px; }
