@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Real-time crypto market sentiment tracker with casino-style slot machine visualization">
     <title>> FEAR_GREED_PROTOCOL <</title>
-    
+
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Crypto Fear & Greed Protocol">
     <meta name="twitter:description" content="Real-time crypto market sentiment tracker with casino-style visualization">
     <meta name="twitter:image" content="https://meta-fgi.vercel.app/og-image.png">
-    
+
     <!-- Open Graph -->
     <meta property="og:title" content="Crypto Fear & Greed Protocol">
-    <meta property="og:description" content="Real-time crypto market sentiment tracker">
+    <meta property="og:description" content="Real-time crypto market sentiment tracker with casino-style slot machine visualization">
     <meta property="og:image" content="https://meta-fgi.vercel.app/og-image.png">
     <meta property="og:url" content="https://meta-fgi.vercel.app">
     <meta property="og:type" content="website">
@@ -1600,22 +1601,22 @@
 
                 // Check if it's a new record
                 if (currentStreak > record) {
-                    streakInfoEl.innerHTML = `🔥 Day ${currentStreak} of ${currentCategory} - NEW RECORD!${record > 0 ? ` (Previous: ${record} days${recordDateStr})` : ''}`;
+                    streakInfoEl.innerHTML = `Day ${currentStreak} of ${currentCategory} - NEW RECORD!${record > 0 ? ` (Previous: ${record} days${recordDateStr})` : ''}`;
                     streakInfoEl.classList.add('record');
                 } else if (currentStreak === 1) {
-                    streakInfoEl.innerHTML = `⚡ Day 1 of ${currentCategory} (Just started!)`;
+                    streakInfoEl.innerHTML = `Day 1 of ${currentCategory} (Just started!)`;
                     streakInfoEl.classList.remove('record');
                 } else if (currentStreak >= record * 0.8 && record > 0) {
                     // Near record (80% or more)
-                    streakInfoEl.innerHTML = `📊 Day ${currentStreak} of ${currentCategory} (Near record! Longest: ${record} days${recordDateStr})`;
+                    streakInfoEl.innerHTML = `Day ${currentStreak} of ${currentCategory} (Near record! Longest: ${record} days${recordDateStr})`;
                     streakInfoEl.classList.remove('record');
                 } else if (average > 0 && currentStreak > average * 1.3) {
                     // Above average
-                    streakInfoEl.innerHTML = `📊 Day ${currentStreak} of ${currentCategory} (Above avg! Typical: ${average} days | Record: ${record} days${recordDateStr})`;
+                    streakInfoEl.innerHTML = `Day ${currentStreak} of ${currentCategory} (Above avg! Typical: ${average} days | Record: ${record} days${recordDateStr})`;
                     streakInfoEl.classList.remove('record');
                 } else {
                     // Normal
-                    streakInfoEl.innerHTML = `📊 Day ${currentStreak} of ${currentCategory} (Avg: ${average} days | Record: ${record} days${recordDateStr})`;
+                    streakInfoEl.innerHTML = `Day ${currentStreak} of ${currentCategory} (Avg: ${average} days | Record: ${record} days${recordDateStr})`;
                     streakInfoEl.classList.remove('record');
                 }
             } catch (e) {
