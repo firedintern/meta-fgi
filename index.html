@@ -27,7 +27,8 @@
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Courier New', monospace; background: #000; color: #fff; min-height: 100vh; overflow-x: hidden; position: relative; }
-        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.15; }
+        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.15; transition: opacity 0.5s ease; }
+        #matrix-canvas.hidden { opacity: 0; pointer-events: none; }
         .container { text-align: center; max-width: 1000px; width: 100%; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
         
         .controls { position: fixed; top: 20px; right: 80px; display: flex; gap: 10px; z-index: 100; transition: opacity 0.3s, transform 0.3s; }
@@ -1099,11 +1100,11 @@
     </div>
 
     <!-- Portfolio Modal -->
-    <div id="portfolioModal" class="modal">
-        <div class="modal-content">
+    <div id="portfolioModal" class="modal" role="dialog" aria-labelledby="portfolioTitle" aria-hidden="true">
+        <div class="modal-content" role="document">
             <div class="modal-header">
-                <h2>My Portfolio</h2>
-                <span class="close">&times;</span>
+                <h2 id="portfolioTitle">My Portfolio</h2>
+                <span class="close" role="button" aria-label="Close portfolio modal" tabindex="0">&times;</span>
             </div>
             <div class="modal-body">
                 <div class="input-group">
@@ -1399,11 +1400,16 @@
             particlesEnabled=!particlesEnabled;
             this.classList.toggle('active');
             this.setAttribute('aria-pressed', particlesEnabled ? 'true' : 'false');
+            const canvas = document.getElementById('matrix-canvas');
             if(!particlesEnabled){
+                canvas.classList.add('hidden');
                 cancelAnimationFrame(matrixAnimationId);
-                ctx.fillStyle='#000';
-                ctx.fillRect(0,0,canvas.width,canvas.height);
+                setTimeout(() => {
+                    ctx.fillStyle='#000';
+                    ctx.fillRect(0,0,canvas.width,canvas.height);
+                }, 500); // Wait for fade out
             }else{
+                canvas.classList.remove('hidden');
                 matrixAnimationId = requestAnimationFrame(drawMatrix);
             }
         });
@@ -1427,18 +1433,25 @@
         async function fetchBTCPrice(){
             try{
                 const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true');
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
                 const d=await r.json();
+                if (!d.bitcoin) throw new Error('Invalid data');
                 const p=d.bitcoin.usd,c=d.bitcoin.usd_24h_change;
                 document.getElementById('btcPrice').textContent='$'+p.toLocaleString('en-US',{maximumFractionDigits:0});
                 const e=document.getElementById('btcChange');
                 e.textContent=(c>0?'+':'')+c.toFixed(2)+'% (24h)';
                 e.className='btc-change '+(c>0?'positive':'negative');
-            }catch(e){console.error('BTC price error:',e);}
+            }catch(e){
+                console.error('BTC price error:',e);
+                document.getElementById('btcPrice').textContent='Price unavailable';
+                document.getElementById('btcChange').textContent='';
+            }
         }
         
         async function fetchHistoricalData(){
             try{
                 const r=await fetch('https://api.alternative.me/fng/?limit=30&format=json');
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
                 const d=await r.json();
                 if(d.data&&Array.isArray(d.data)&&d.data.length>0){
                     const history=d.data.reverse().map(item=>({
@@ -1448,11 +1461,11 @@
                     }));
                     renderChart(history);
                 }else{
-                    document.getElementById('chartTitle').innerHTML='30-Day Sentiment History - Unavailable';
+                    throw new Error('No historical data available');
                 }
             }catch(e){
                 console.error('History error:',e);
-                document.getElementById('chartTitle').innerHTML='30-Day Sentiment History - Unable to load';
+                document.getElementById('chartTitle').innerHTML='30-Day Sentiment History - <span style="color:#ff6666">Connection Error</span>';
             }
         }
         
@@ -1485,7 +1498,34 @@
                     options:{
                         responsive:true,
                         maintainAspectRatio:true,
-                        plugins:{legend:{labels:{color:'#00ff00',font:{family:'Courier New',size:isMobile?12:14}}}},
+                        plugins:{
+                            legend:{labels:{color:'#00ff00',font:{family:'Courier New',size:isMobile?12:14}}},
+                            tooltip:{
+                                backgroundColor:'rgba(0,0,0,0.9)',
+                                titleColor:'#00ff00',
+                                bodyColor:'#fff',
+                                borderColor:'#00ff00',
+                                borderWidth:2,
+                                padding:12,
+                                displayColors:false,
+                                titleFont:{family:'Courier New',size:14,weight:'bold'},
+                                bodyFont:{family:'Courier New',size:13},
+                                callbacks:{
+                                    title:function(context){
+                                        return context[0].label;
+                                    },
+                                    label:function(context){
+                                        const score=context.parsed.y;
+                                        const sentiment=getSentimentCategory(score);
+                                        const emoji=getSymbolForScore(score);
+                                        return [
+                                            emoji+' '+sentiment,
+                                            'Score: '+score+'/100'
+                                        ];
+                                    }
+                                }
+                            }
+                        },
                         scales:{
                             y:{beginAtZero:true,max:100,grid:{color:'rgba(0,255,0,0.2)'},ticks:{color:'#00ff00',font:{family:'Courier New',size:isMobile?9:11}}},
                             x:{grid:{color:'rgba(0,255,0,0.1)'},ticks:{color:'#00ff00',font:{family:'Courier New',size:isMobile?8:11},maxRotation:45,minRotation:45,autoSkip:true,maxTicksLimit:isMobile?8:15}}
@@ -1650,6 +1690,7 @@
         async function fetchData(){
             try{
                 const r=await fetch('https://api.alternative.me/fng/?limit=1&format=json');
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
                 const d=await r.json();
                 if(!d.data||!d.data[0]){throw new Error('Invalid API response');}
                 const fgiData=d.data[0];
@@ -1682,8 +1723,11 @@
                 }
             }catch(e){
                 console.error('Data fetch error:',e);
-                document.getElementById('slotStatus').textContent='ERROR';
+                document.getElementById('slotStatus').textContent='CONNECTION ERROR';
                 document.getElementById('slotStatus').style.color='#ff0000';
+                document.getElementById('degenStatus').textContent='🔄 Pull lever to retry';
+                document.getElementById('degenStatus').style.color='#ffaa00';
+                document.getElementById('quoteText').textContent='Unable to fetch data. Please try again.';
             }
         }
         
@@ -1901,6 +1945,8 @@
             portfolioBtn.addEventListener('click', function() {
                 console.log('Portfolio button clicked');
                 modal.style.display = 'block';
+                modal.setAttribute('aria-hidden', 'false');
+                portfolioBtn.setAttribute('aria-pressed', 'true');
                 const saved = loadPortfolio();
                 if (saved) {
                     document.getElementById('cryptoInput').value = saved.crypto;
@@ -1908,11 +1954,33 @@
                     document.getElementById('cashInput').value = saved.cash;
                     renderAllocationChart();
                 }
+                // Focus first input for keyboard users
+                document.getElementById('cryptoInput').focus();
             });
 
-            closeBtn.addEventListener('click', function() {
-                console.log('Close button clicked');
+            const closeModal = function() {
+                console.log('Modal closed');
                 modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+                portfolioBtn.setAttribute('aria-pressed', 'false');
+                portfolioBtn.focus(); // Return focus to trigger button
+            };
+
+            closeBtn.addEventListener('click', closeModal);
+
+            // Keyboard support for close button
+            closeBtn.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    closeModal();
+                }
+            });
+
+            // ESC key to close modal
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.style.display === 'block') {
+                    closeModal();
+                }
             });
 
             saveBtn.addEventListener('click', function() {
@@ -1922,8 +1990,7 @@
 
             window.addEventListener('click', function(event) {
                 if (event.target == modal) {
-                    console.log('Background clicked');
-                    modal.style.display = 'none';
+                    closeModal();
                 }
             });
         }
@@ -1937,8 +2004,33 @@
         // Add event listeners for all interactive elements (CSP-friendly)
         document.getElementById('spinBtn').addEventListener('click', spinSlots);
 
+        // Keyboard support for spin button
+        document.getElementById('spinBtn').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                spinSlots();
+            }
+        });
+
         document.getElementById('shareBtn').addEventListener('click', shareToX);
+
+        // Keyboard support for share button
+        document.getElementById('shareBtn').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                shareToX();
+            }
+        });
+
         document.getElementById('refreshBtn').addEventListener('click', refreshAll);
+
+        // Keyboard support for refresh button
+        document.getElementById('refreshBtn').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                refreshAll();
+            }
+        });
     </script>
 </body>
 </html>
