@@ -1663,13 +1663,15 @@
 
                 // Check if it's a new record
                 if (currentStreak > record) {
-                    streakInfoEl.innerHTML = `Day ${currentStreak} of ${currentCategory} - NEW RECORD!${record > 0 ? ` (Previous: ${record} days${recordDateStr})` : ''}`;
+                    // BREAKING RECORD - current streak is longer than previous record
+                    streakInfoEl.innerHTML = `Day ${currentStreak} of ${currentCategory} 🔥 RECORD BROKEN!${record > 0 ? ` (Previous: ${record} days${recordDateStr})` : ''}`;
                     streakInfoEl.classList.add('record');
                 } else if (currentStreak === 1) {
+                    // Just started
                     streakInfoEl.innerHTML = `Day 1 of ${currentCategory} (Just started!)`;
                     streakInfoEl.classList.remove('record');
-                } else if (currentStreak >= record * 0.8 && record > 0) {
-                    // Near record (80% or more)
+                } else if (currentStreak < record && currentStreak >= record - 1 && record > 0) {
+                    // Near record (within 1 day of breaking it, but NOT equal or greater)
                     streakInfoEl.innerHTML = `Day ${currentStreak} of ${currentCategory} (Near record! Longest: ${record} days${recordDateStr})`;
                     streakInfoEl.classList.remove('record');
                 } else if (average > 0 && currentStreak > average * 1.3) {
