@@ -1609,15 +1609,9 @@
                 }
             }
 
-            // Don't forget the last streak
-            if (currentCat && currentStreakLen > 0) {
-                if (currentStreakLen > stats[currentCat].longestStreak) {
-                    stats[currentCat].longestStreak = currentStreakLen;
-                    stats[currentCat].recordDate = historicalData[streakStartIndex].timestamp;
-                }
-                stats[currentCat].totalDays += currentStreakLen;
-                stats[currentCat].streakCount++;
-            }
+            // Don't include the LAST streak because it's the CURRENT ONGOING streak
+            // We only want COMPLETED historical streaks for comparison
+            // (The last streak ends at index 0 which is today - still active!)
 
             // Calculate averages
             categories.forEach(cat => {
