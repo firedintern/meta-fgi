@@ -1839,15 +1839,30 @@
         
         async function fetchHistoricalData(){
             try{
-                const r=await fetch('https://api.alternative.me/fng/?limit=30&format=json');
-                if (!r.ok) throw new Error(`HTTP ${r.status}`);
-                const d=await r.json();
-                if(d.data&&Array.isArray(d.data)&&d.data.length>0){
-                    const history=d.data.reverse().map(item=>({
-                        date:new Date(item.timestamp*1000).toLocaleDateString('en-US',{month:'short',day:'numeric'}),
-                        score:parseInt(item.value),
-                        timestamp:item.timestamp
-                    }));
+                // Fetch FGI data
+                const fgiResponse=await fetch('https://api.alternative.me/fng/?limit=30&format=json');
+                if (!fgiResponse.ok) throw new Error(`HTTP ${fgiResponse.status}`);
+                const fgiData=await fgiResponse.json();
+
+                // Fetch BTC price data
+                const btcResponse=await fetch('https://min-api.cryptocompare.com/data/v2/histoday?fsym=BTC&tsym=USD&limit=30');
+                if (!btcResponse.ok) throw new Error(`HTTP ${btcResponse.status}`);
+                const btcData=await btcResponse.json();
+
+                if(fgiData.data&&Array.isArray(fgiData.data)&&fgiData.data.length>0&&btcData.Data&&btcData.Data.Data){
+                    const fgiHistory=fgiData.data.reverse();
+                    const btcHistory=btcData.Data.Data;
+
+                    // Merge FGI and BTC data by matching timestamps
+                    const history=fgiHistory.map(item=>{
+                        const btcItem=btcHistory.find(b=>b.time===parseInt(item.timestamp));
+                        return {
+                            date:new Date(item.timestamp*1000).toLocaleDateString('en-US',{month:'short',day:'numeric'}),
+                            score:parseInt(item.value),
+                            timestamp:item.timestamp,
+                            btcPrice:btcItem?btcItem.close:null
+                        };
+                    });
                     renderChart(history);
                 }else{
                     throw new Error('No historical data available');
@@ -1869,24 +1884,46 @@
                     type:'line',
                     data:{
                         labels:h.map(d=>d.date),
-                        datasets:[{
-                            label:'Fear & Greed',
-                            data:h.map(d=>d.score),
-                            borderColor:'#00ff00',
-                            backgroundColor:'rgba(0,255,0,0.1)',
-                            borderWidth:3,
-                            tension:0.4,
-                            fill:true,
-                            pointBackgroundColor:h.map(d=>getColorForScore(d.score)),
-                            pointBorderColor:'#fff',
-                            pointBorderWidth:2,
-                            pointRadius:isMobile?3:5,
-                            pointHoverRadius:isMobile?5:7
-                        }]
+                        datasets:[
+                            {
+                                label:'Fear & Greed',
+                                data:h.map(d=>d.score),
+                                borderColor:'#00ff00',
+                                backgroundColor:'rgba(0,255,0,0.1)',
+                                borderWidth:3,
+                                tension:0.4,
+                                fill:true,
+                                pointBackgroundColor:h.map(d=>getColorForScore(d.score)),
+                                pointBorderColor:'#fff',
+                                pointBorderWidth:2,
+                                pointRadius:isMobile?3:5,
+                                pointHoverRadius:isMobile?5:7,
+                                yAxisID:'y'
+                            },
+                            {
+                                label:'BTC Price',
+                                data:h.map(d=>d.btcPrice),
+                                borderColor:'#ffd700',
+                                backgroundColor:'rgba(255,215,0,0.1)',
+                                borderWidth:2,
+                                tension:0.4,
+                                fill:false,
+                                pointBackgroundColor:'#ffd700',
+                                pointBorderColor:'#fff',
+                                pointBorderWidth:2,
+                                pointRadius:isMobile?2:4,
+                                pointHoverRadius:isMobile?4:6,
+                                yAxisID:'y1'
+                            }
+                        ]
                     },
                     options:{
                         responsive:true,
                         maintainAspectRatio:true,
+                        interaction:{
+                            mode:'index',
+                            intersect:false
+                        },
                         plugins:{
                             legend:{labels:{color:'#00ff00',font:{family:'Courier New',size:isMobile?12:14}}},
                             tooltip:{
@@ -1896,7 +1933,7 @@
                                 borderColor:'#00ff00',
                                 borderWidth:2,
                                 padding:12,
-                                displayColors:false,
+                                displayColors:true,
                                 titleFont:{family:'Courier New',size:14,weight:'bold'},
                                 bodyFont:{family:'Courier New',size:13},
                                 callbacks:{
@@ -1904,19 +1941,35 @@
                                         return context[0].label;
                                     },
                                     label:function(context){
-                                        const score=context.parsed.y;
-                                        const sentiment=getSentimentCategory(score);
-                                        const emoji=getSymbolForScore(score);
-                                        return [
-                                            emoji+' '+sentiment,
-                                            'Score: '+score+'/100'
-                                        ];
+                                        if(context.dataset.label==='Fear & Greed'){
+                                            const score=context.parsed.y;
+                                            const sentiment=getSentimentCategory(score);
+                                            const emoji=getSymbolForScore(score);
+                                            return emoji+' '+sentiment+': '+score+'/100';
+                                        }else{
+                                            return 'BTC: $'+context.parsed.y.toLocaleString('en-US',{maximumFractionDigits:0});
+                                        }
                                     }
                                 }
                             }
                         },
                         scales:{
-                            y:{beginAtZero:true,max:100,grid:{color:'rgba(0,255,0,0.2)'},ticks:{color:'#00ff00',font:{family:'Courier New',size:isMobile?9:11}}},
+                            y:{
+                                type:'linear',
+                                position:'left',
+                                beginAtZero:true,
+                                max:100,
+                                grid:{color:'rgba(0,255,0,0.2)'},
+                                ticks:{color:'#00ff00',font:{family:'Courier New',size:isMobile?9:11}},
+                                title:{display:true,text:'FGI Score',color:'#00ff00',font:{family:'Courier New',size:isMobile?10:12}}
+                            },
+                            y1:{
+                                type:'linear',
+                                position:'right',
+                                grid:{display:false},
+                                ticks:{color:'#ffd700',font:{family:'Courier New',size:isMobile?9:11},callback:function(value){return '$'+value.toLocaleString('en-US',{maximumFractionDigits:0});}},
+                                title:{display:true,text:'BTC Price',color:'#ffd700',font:{family:'Courier New',size:isMobile?10:12}}
+                            },
                             x:{grid:{color:'rgba(0,255,0,0.1)'},ticks:{color:'#00ff00',font:{family:'Courier New',size:isMobile?8:11},maxRotation:45,minRotation:45,autoSkip:true,maxTicksLimit:isMobile?8:15}}
                         }
                     }
