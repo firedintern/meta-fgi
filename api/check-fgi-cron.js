@@ -8,7 +8,7 @@ const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const KV_REST_API_URL = process.env.KV_REST_API_URL;
 const KV_REST_API_TOKEN = process.env.KV_REST_API_TOKEN;
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   // Verify cron secret to prevent unauthorized calls
   const cronSecret = req.headers['x-vercel-cron-secret'];
   if (cronSecret !== process.env.CRON_SECRET) {
@@ -91,7 +91,7 @@ export default async function handler(req, res) {
     console.error('Cron error:', error);
     return res.status(500).json({ error: error.message });
   }
-}
+};
 
 async function getAllSubscribers() {
   try {
