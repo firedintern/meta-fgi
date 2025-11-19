@@ -38,6 +38,51 @@
         .control-btn:hover::after { content: attr(data-tooltip); position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%); background: rgba(0, 200, 0, 0.95); color: #000; padding: 6px 12px; border-radius: 5px; font-size: 0.7em; white-space: nowrap; z-index: 1000; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
         .control-btn.active { background: rgba(0, 200, 0, 0.5); border-color: #00ff00; }
         .control-btn:focus-visible { outline: 3px solid #00ff00; outline-offset: 3px; box-shadow: 0 0 15px rgba(0, 255, 0, 0.6); }
+
+        /* Hindsight Button - NEW FEATURE */
+        .hindsight-btn {
+            background: linear-gradient(145deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+            border: 2px solid #d4af37;
+            color: #000;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            position: relative;
+            animation: hindsight-pulse 2s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        .hindsight-btn:hover {
+            background: linear-gradient(145deg, #ffed4e 0%, #ffd700 50%, #ffed4e 100%);
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+        }
+        .hindsight-btn:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 215, 0, 0.95);
+            color: #000;
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-size: 0.7em;
+            white-space: nowrap;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        .hindsight-btn:focus-visible {
+            outline: 3px solid #ffd700;
+            outline-offset: 3px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.9);
+        }
+        @keyframes hindsight-pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+            50% { box-shadow: 0 0 35px rgba(255, 215, 0, 0.8); }
+        }
         
         .title { font-size: 2.2em; color: #00ff00; margin-bottom: 15px; font-weight: bold; letter-spacing: 3px; text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00; animation: terminal-flicker 3s ease-in-out infinite; }
         @keyframes terminal-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.95; } }
@@ -623,6 +668,26 @@
         
         .chart-container { background: rgba(255,255,255,0.05); border: 2px solid rgba(0, 255, 0, 0.3); border-radius: 15px; padding: 30px; margin: 40px 0; box-shadow: 0 0 20px rgba(0, 255, 0, 0.1); min-height: 350px; }
         .chart-title { color: #00ff00; font-size: 1.3em; margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 50px;
+            color: #666;
+            font-size: 0.9em;
+            border-top: 1px solid rgba(0, 255, 0, 0.2);
+        }
+        .footer a {
+            color: #00ff00;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .footer a:hover {
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
         
         /* MOBILE OPTIMIZATIONS */
         @media (max-width: 768px) { 
@@ -769,6 +834,246 @@
             .symbol { font-size: 2.3em; }
             .payout-score { font-size: 1.8em; }
             .degen { font-size: 1.5em; }
+        }
+
+        /* Hindsight Modal Styles */
+        .hindsight-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            animation: fadeIn 0.3s;
+            overflow-y: auto;
+        }
+
+        .hindsight-modal-content {
+            background: linear-gradient(145deg, #1a1f3a 0%, #0f1424 50%, #1a1f3a 100%);
+            margin: 3% auto;
+            padding: 0;
+            border: 6px solid;
+            border-image: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%) 1;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 90vh;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.95), 0 0 60px rgba(255,215,0,0.3);
+            animation: slideDown 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hindsight-modal-header {
+            padding: 25px 30px;
+            background: rgba(255, 215, 0, 0.1);
+            border-bottom: 3px solid #ffd700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 14px 14px 0 0;
+            flex-shrink: 0;
+        }
+
+        .hindsight-modal-header h2 {
+            color: #ffd700;
+            margin: 0;
+            font-size: 1.8em;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px #ffd700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hindsight-close {
+            color: #ff4444;
+            font-size: 2.5em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            line-height: 1;
+            text-shadow: 0 0 10px #ff4444;
+            padding: 0 5px;
+            flex-shrink: 0;
+        }
+
+        .hindsight-close:hover {
+            color: #ff0000;
+            text-shadow: 0 0 20px #ff0000;
+            transform: scale(1.3) rotate(90deg);
+        }
+
+        .hindsight-modal-body {
+            padding: 30px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .hindsight-description {
+            color: #aaa;
+            margin-bottom: 25px;
+            font-size: 0.95em;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .current-range-badge {
+            background: rgba(255, 215, 0, 0.15);
+            border: 2px solid #ffd700;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1em;
+            color: #ffd700;
+            display: inline-block;
+            margin: 0 auto 25px;
+            text-align: center;
+        }
+
+        .time-periods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .period-card {
+            background: linear-gradient(145deg, #0a0e1a 0%, #060912 100%);
+            border: 3px solid rgba(255, 215, 0, 0.4);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .period-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 215, 0, 0.7);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.2);
+        }
+
+        .period-label {
+            color: #ffd700;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+
+        .period-return {
+            font-size: 2.2em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .period-winrate {
+            color: #aaa;
+            font-size: 0.9em;
+        }
+
+        .historical-stats {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .hindsight-stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .hindsight-stat-label {
+            color: #aaa;
+            font-size: 0.9em;
+        }
+
+        .hindsight-stat-value {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .insight-box {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05));
+            border-left: 4px solid #ffd700;
+            padding: 15px 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .insight-icon {
+            font-size: 1.3em;
+            margin-right: 10px;
+        }
+
+        .insight-text {
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        .comparison-toggle {
+            background: rgba(255, 215, 0, 0.2);
+            border: 2px solid #ffd700;
+            color: #ffd700;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .comparison-toggle:hover {
+            background: rgba(255, 215, 0, 0.3);
+            transform: scale(1.02);
+        }
+
+        .comparison-table-container {
+            display: none;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .comparison-table-container.visible {
+            display: block;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .comparison-table th {
+            color: #ffd700;
+            font-weight: bold;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .comparison-table td {
+            color: #fff;
+        }
+
+        .comparison-table tr.current-row {
+            background: rgba(0, 255, 0, 0.1);
+            border-left: 4px solid #00ff00;
         }
 
         /* Portfolio Modal Styles */
@@ -1010,6 +1315,7 @@
     <canvas id="matrix-canvas"></canvas>
     
     <div class="controls" id="controls">
+        <button class="hindsight-btn" id="hindsightToggle" data-tooltip="Hindsight Tool" aria-label="View historical analysis and predictions" aria-pressed="false">🔮</button>
         <button class="control-btn active" id="particlesToggle" data-tooltip="Toggle Matrix" aria-label="Toggle Matrix Background Animation" aria-pressed="true">✨</button>
         <button class="control-btn" id="notifyToggle" data-tooltip="Extreme alerts" aria-label="Enable notifications for extreme market sentiment alerts" aria-pressed="false">🔔</button>
         <button class="control-btn" id="portfolioToggle" data-tooltip="My Portfolio" aria-label="View and manage your portfolio" aria-pressed="false">💼</button>
@@ -1096,6 +1402,89 @@
         <div class="chart-container">
             <div class="chart-title" id="chartTitle">30-Day Sentiment History</div>
             <canvas id="historyChart"></canvas>
+        </div>
+
+        <div class="footer">
+            Made by <a href="https://x.com/0xfiredintern" target="_blank" rel="noopener noreferrer">0xfiredintern</a>
+        </div>
+    </div>
+
+    <!-- Hindsight Score Modal -->
+    <div id="hindsightModal" class="hindsight-modal" role="dialog" aria-labelledby="hindsightTitle" aria-hidden="true">
+        <div class="hindsight-modal-content" role="document">
+            <div class="hindsight-modal-header">
+                <h2 id="hindsightTitle">🔮 Hindsight Score</h2>
+                <span class="hindsight-close" role="button" aria-label="Close hindsight modal" tabindex="0">&times;</span>
+            </div>
+            <div class="hindsight-modal-body">
+                <div class="hindsight-description">
+                    Historical analysis of BTC price performance based on 5.5 years of Fear & Greed Index data (2,000 days)
+                </div>
+
+                <div style="text-align: center;">
+                    <div class="current-range-badge" id="currentRangeBadge">Loading...</div>
+                </div>
+
+                <div class="time-periods">
+                    <div class="period-card">
+                        <div class="period-label">7 Days Forward</div>
+                        <div class="period-return" id="return7d">--</div>
+                        <div class="period-winrate" id="winrate7d">Win Rate: --%</div>
+                    </div>
+                    <div class="period-card">
+                        <div class="period-label">14 Days Forward</div>
+                        <div class="period-return" id="return14d">--</div>
+                        <div class="period-winrate" id="winrate14d">Win Rate: --%</div>
+                    </div>
+                    <div class="period-card">
+                        <div class="period-label">30 Days Forward</div>
+                        <div class="period-return" id="return30d">--</div>
+                        <div class="period-winrate" id="winrate30d">Win Rate: --%</div>
+                    </div>
+                </div>
+
+                <div class="historical-stats">
+                    <div class="stats-grid">
+                        <div class="hindsight-stat-item">
+                            <span class="hindsight-stat-label">Best Case (30d):</span>
+                            <span class="hindsight-stat-value" id="bestCase">--</span>
+                        </div>
+                        <div class="hindsight-stat-item">
+                            <span class="hindsight-stat-label">Worst Case (30d):</span>
+                            <span class="hindsight-stat-value" id="worstCase">--</span>
+                        </div>
+                        <div class="hindsight-stat-item">
+                            <span class="hindsight-stat-label">Sample Size:</span>
+                            <span class="hindsight-stat-value" id="sampleSize">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="insight-box">
+                    <span class="insight-icon">💡</span>
+                    <span class="insight-text" id="insightText">Loading insights...</span>
+                </div>
+
+                <button class="comparison-toggle" id="comparisonToggle">📊 Compare All FGI Ranges</button>
+
+                <div class="comparison-table-container" id="comparisonTableContainer">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>FGI Range</th>
+                                <th>7d Return</th>
+                                <th>14d Return</th>
+                                <th>30d Return</th>
+                                <th>Win Rate</th>
+                                <th>Sample Size</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparisonTableBody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1741,14 +2130,15 @@
             fetchHistoricalData();
         }
         
+        // Initial load - spin slot on first visit only
         setTimeout(()=>{
             fetchData();
             fetchBTCPrice();
             fetchHistoricalData();
         },500);
-        
+
+        // Keep BTC price auto-updating, but NO auto-spin for slot
         setInterval(fetchBTCPrice,30000);
-        setInterval(fetchData,60000);
 
         // Portfolio Management
         let portfolioData = null;
@@ -1996,6 +2386,195 @@
 
         // Initialize modal immediately (modal is now defined before script)
         initPortfolioModal();
+
+        // Hindsight Score Data and Functions
+        const hindsightData = {
+            "Extreme Fear": {
+                "day7": { avgReturn: 1.11, winRate: 52.2, wins: 147, total: 275, best: 40.35, worst: -23.94 },
+                "day14": { avgReturn: 1.44, winRate: 53.1, wins: 146, total: 275, best: 58.40, worst: -28.42 },
+                "day30": { avgReturn: -0.85, winRate: 48.4, wins: 133, total: 275, best: 56.94, worst: -37.41 }
+            },
+            "Fear": {
+                "day7": { avgReturn: 2.32, winRate: 57.0, wins: 251, total: 440, best: 32.74, worst: -16.67 },
+                "day14": { avgReturn: 3.33, winRate: 56.8, wins: 250, total: 440, best: 50.68, worst: -22.65 },
+                "day30": { avgReturn: 4.54, winRate: 56.8, wins: 250, total: 440, best: 74.11, worst: -30.99 }
+            },
+            "Neutral": {
+                "day7": { avgReturn: 1.86, winRate: 53.1, wins: 230, total: 433, best: 27.03, worst: -15.05 },
+                "day14": { avgReturn: 3.71, winRate: 56.4, wins: 244, total: 433, best: 42.62, worst: -22.50 },
+                "day30": { avgReturn: 6.82, winRate: 59.6, wins: 258, total: 433, best: 79.08, worst: -26.30 }
+            },
+            "Greed": {
+                "day7": { avgReturn: 0.67, winRate: 50.5, wins: 339, total: 671, best: 21.58, worst: -18.26 },
+                "day14": { avgReturn: 2.04, winRate: 52.2, wins: 350, total: 671, best: 34.61, worst: -22.60 },
+                "day30": { avgReturn: 3.97, winRate: 50.8, wins: 341, total: 671, best: 68.67, worst: -32.21 }
+            },
+            "Extreme Greed": {
+                "day7": { avgReturn: 5.08, winRate: 63.6, wins: 96, total: 151, best: 32.74, worst: -17.12 },
+                "day14": { avgReturn: 10.42, winRate: 69.5, wins: 105, total: 151, best: 57.89, worst: -20.28 },
+                "day30": { avgReturn: 21.87, winRate: 74.8, wins: 113, total: 151, best: 120.47, worst: -28.90 }
+            }
+        };
+
+        function getFGIRange(score) {
+            if (score <= 24) return 'Extreme Fear';
+            if (score <= 44) return 'Fear';
+            if (score <= 59) return 'Neutral';
+            if (score <= 79) return 'Greed';
+            return 'Extreme Greed';
+        }
+
+        function getReturnColor(value) {
+            if (value > 10) return '#44ff88';
+            if (value > 5) return '#88ff44';
+            if (value > 0) return '#ffd700';
+            if (value > -5) return '#ff8844';
+            return '#ff4444';
+        }
+
+        function updateHindsightModal(score) {
+            const range = getFGIRange(score);
+            const data = hindsightData[range];
+
+            // Update current range badge
+            document.getElementById('currentRangeBadge').textContent = `Current Range: ${range} (${score})`;
+
+            // Update time period cards
+            const day7 = data.day7;
+            const day14 = data.day14;
+            const day30 = data.day30;
+
+            document.getElementById('return7d').textContent = (day7.avgReturn > 0 ? '+' : '') + day7.avgReturn.toFixed(2) + '%';
+            document.getElementById('return7d').style.color = getReturnColor(day7.avgReturn);
+            document.getElementById('winrate7d').textContent = `Win Rate: ${day7.winRate.toFixed(1)}% (${day7.wins}/${day7.total})`;
+
+            document.getElementById('return14d').textContent = (day14.avgReturn > 0 ? '+' : '') + day14.avgReturn.toFixed(2) + '%';
+            document.getElementById('return14d').style.color = getReturnColor(day14.avgReturn);
+            document.getElementById('winrate14d').textContent = `Win Rate: ${day14.winRate.toFixed(1)}% (${day14.wins}/${day14.total})`;
+
+            document.getElementById('return30d').textContent = (day30.avgReturn > 0 ? '+' : '') + day30.avgReturn.toFixed(2) + '%';
+            document.getElementById('return30d').style.color = getReturnColor(day30.avgReturn);
+            document.getElementById('winrate30d').textContent = `Win Rate: ${day30.winRate.toFixed(1)}% (${day30.wins}/${day30.total})`;
+
+            // Update historical stats
+            document.getElementById('bestCase').textContent = '+' + day30.best.toFixed(2) + '%';
+            document.getElementById('bestCase').style.color = '#44ff88';
+            document.getElementById('worstCase').textContent = day30.worst.toFixed(2) + '%';
+            document.getElementById('worstCase').style.color = '#ff4444';
+            document.getElementById('sampleSize').textContent = day30.total + ' occurrences';
+
+            // Update insight
+            updateHindsightInsight(range, day30);
+
+            // Update comparison table
+            updateComparisonTable(range);
+        }
+
+        function updateHindsightInsight(range, data) {
+            let insight = '';
+
+            if (range === 'Extreme Fear') {
+                insight = `Historically, Extreme Fear has shown mixed results with a slight negative bias (-0.85% avg over 30 days). While contrarian wisdom suggests buying during fear, the data shows this range often precedes further declines. Best case: +${data.best.toFixed(0)}%, Worst case: ${data.worst.toFixed(0)}%.`;
+            } else if (range === 'Fear') {
+                insight = `Fear levels have historically been solid entry points, averaging +4.54% over 30 days with a 56.8% win rate. This range offers good risk/reward with less downside than Extreme Fear. Consider gradual accumulation.`;
+            } else if (range === 'Neutral') {
+                insight = `Neutral sentiment has performed surprisingly well, averaging +6.82% over 30 days (59.6% win rate). This contradicts the "buy fear" narrative - stable sentiment often leads to steady gains. Second-best performer overall.`;
+            } else if (range === 'Greed') {
+                insight = `Greed has shown moderate returns (+3.97% avg, 50.8% win rate). While not as strong as Neutral or Extreme Greed, it's still positive. The momentum strategy appears to work better than contrarian approaches.`;
+            } else if (range === 'Extreme Greed') {
+                insight = `🚀 Extreme Greed is the TOP PERFORMER with +21.87% average returns and 74.8% win rate! This defies conventional wisdom - when everyone's greedy, BTC tends to go MUCH higher. Momentum > Contrarian. Best case: +${data.best.toFixed(0)}%!`;
+            }
+
+            document.getElementById('insightText').textContent = insight;
+        }
+
+        function updateComparisonTable(currentRange) {
+            const tbody = document.getElementById('comparisonTableBody');
+            tbody.innerHTML = '';
+
+            const ranges = ['Extreme Fear', 'Fear', 'Neutral', 'Greed', 'Extreme Greed'];
+
+            ranges.forEach(range => {
+                const data = hindsightData[range];
+                const row = document.createElement('tr');
+                if (range === currentRange) {
+                    row.classList.add('current-row');
+                }
+
+                row.innerHTML = `
+                    <td>${range}</td>
+                    <td style="color: ${getReturnColor(data.day7.avgReturn)}">${(data.day7.avgReturn > 0 ? '+' : '') + data.day7.avgReturn.toFixed(2)}%</td>
+                    <td style="color: ${getReturnColor(data.day14.avgReturn)}">${(data.day14.avgReturn > 0 ? '+' : '') + data.day14.avgReturn.toFixed(2)}%</td>
+                    <td style="color: ${getReturnColor(data.day30.avgReturn)}">${(data.day30.avgReturn > 0 ? '+' : '') + data.day30.avgReturn.toFixed(2)}%</td>
+                    <td>${data.day30.winRate.toFixed(1)}%</td>
+                    <td>${data.day30.total}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Hindsight Modal Handlers
+        function initHindsightModal() {
+            const modal = document.getElementById('hindsightModal');
+            const hindsightBtn = document.getElementById('hindsightToggle');
+            const closeBtn = document.querySelector('.hindsight-close');
+            const comparisonToggle = document.getElementById('comparisonToggle');
+            const comparisonTable = document.getElementById('comparisonTableContainer');
+
+            if (!modal || !hindsightBtn || !closeBtn) {
+                console.error('Hindsight modal elements not found');
+                return;
+            }
+
+            hindsightBtn.addEventListener('click', function() {
+                modal.style.display = 'block';
+                modal.setAttribute('aria-hidden', 'false');
+                hindsightBtn.setAttribute('aria-pressed', 'true');
+
+                // Update with current score
+                if (currentScore > 0) {
+                    updateHindsightModal(currentScore);
+                }
+            });
+
+            const closeModal = function() {
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+                hindsightBtn.setAttribute('aria-pressed', 'false');
+                hindsightBtn.focus();
+            };
+
+            closeBtn.addEventListener('click', closeModal);
+
+            closeBtn.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    closeModal();
+                }
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.style.display === 'block') {
+                    closeModal();
+                }
+            });
+
+            comparisonToggle.addEventListener('click', function() {
+                comparisonTable.classList.toggle('visible');
+                comparisonToggle.textContent = comparisonTable.classList.contains('visible')
+                    ? '📊 Hide Comparison Table'
+                    : '📊 Compare All FGI Ranges';
+            });
+
+            window.addEventListener('click', function(event) {
+                if (event.target == modal) {
+                    closeModal();
+                }
+            });
+        }
+
+        // Initialize hindsight modal
+        initHindsightModal();
 
         // Add event listeners for all interactive elements (CSP-friendly)
         document.getElementById('spinBtn').addEventListener('click', spinSlots);
