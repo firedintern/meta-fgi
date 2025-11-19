@@ -244,3 +244,4 @@ MIT License - feel free to use this project for anything!
 **⚠️ Disclaimer**: This tool is for entertainment and informational purposes only. Portfolio tracking and advice features are educational tools and do not constitute financial advice. Always do your own research (DYOR) and consult with financial professionals before making investment decisions.
 
 Made with 🎰 by [firedintern](https://twitter.com/0xfiredintern)
+

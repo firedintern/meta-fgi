@@ -1,0 +1,124 @@
+{
+  "topCategories": [
+    {
+      "title": "♻️ Rehypo",
+      "relatedTagSlug": "rehypothecated-crypto"
+    },
+    {
+      "title": "🔥 Binance Alpha",
+      "relatedTagSlug": "binance-alpha"
+    },
+    {
+      "title": "🔥 Memes",
+      "relatedTagSlug": "memes"
+    },
+    {
+      "title": "🔥 SOL",
+      "relatedTagSlug": "solana-ecosystem"
+    },
+    {
+      "title": "🔥 BNB",
+      "relatedTagSlug": "bnb-chain-ecosystem"
+    },
+    {
+      "title": "🔥 AI",
+      "relatedTagSlug": "ai-big-data"
+    },
+    {
+      "title": "🔥 RWA Protocols",
+      "relatedTagSlug": "real-world-assets-protocols"
+    },
+    {
+      "title": "🔥 Gaming",
+      "relatedTagSlug": "gaming"
+    },
+    {
+      "title": "🔥 DePIN",
+      "relatedTagSlug": "depin"
+    }
+  ],
+  "fearGreedIndexData": {
+    "currentIndex": {
+      "score": 16,
+      "maxScore": 100,
+      "name": "Extreme fear",
+      "updateTime": "2025-11-19T00:23:10.016Z"
+    },
+    "dialConfig": [
+      {
+        "start": 0,
+        "end": 20,
+        "name": "Extreme fear"
+      },
+      {
+        "start": 20,
+        "end": 40,
+        "name": "Fear"
+      },
+      {
+        "start": 40,
+        "end": 60,
+        "name": "Neutral"
+      },
+      {
+        "start": 60,
+        "end": 80,
+        "name": "Greed"
+      },
+      {
+        "start": 80,
+        "end": 100,
+        "name": "Extreme greed"
+      }
+    ]
+  },
+  "cmc100": {
+    "value": 187.25,
+    "percent": 1.33
+  },
+  "cmc20": {
+    "value": 196.21,
+    "percent": 1.26
+  },
+  "faqData": {
+    "language": "en",
+    "faqList": [
+      {
+        "question": "What is the CMC Fear and Greed Index?",
+        "answer": "The CMC Fear and Greed Index is a proprietary tool developed by CoinMarketCap that measures the prevailing sentiment in the cryptocurrency market. This index ranges from 0 to 100, where a lower value indicates extreme fear, and a higher value indicates extreme greed. It helps investors understand the emotional state of the market, which can influence buying and selling behaviors. The index provides insights into whether the market may be undervalued (extreme fear) or overvalued (extreme greed).",
+        "sequence": 1
+      },
+      {
+        "question": "How can I use this index?",
+        "answer": "The CMC Fear and Greed Index can be used in several ways:\n  <br/>&nbsp;&nbsp;• **Market Sentiment Analysis:** By observing the current value of the index, you can gauge the overall mood of the cryptocurrency market. For example, a high value suggests that investors are overly greedy, which may indicate that the market is overheated and due for a correction. Conversely, a low value may suggest that fear is driving prices down, potentially creating buying opportunities.\n          <br/>&nbsp;&nbsp;• **Contrarian Strategy:** Some investors use the index as part of a contrarian investment strategy. The idea is to \"be fearful when others are greedy and greedy when others are fearful.\" If the index shows extreme greed, it might be a signal to consider selling assets, while extreme fear could indicate a buying opportunity.\n          <br/>&nbsp;&nbsp;• **Complementary Analysis:** Use the index alongside other analytical tools and indicators to make more informed decisions. It’s important to remember that the index is a tool for gauging sentiment and should not be used in isolation.",
+        "sequence": 2
+      },
+      {
+        "question": "How is this index calculated?",
+        "answer": "The CMC Fear and Greed Index is calculated using five key components:\n  <br/>&nbsp;&nbsp;1. **Price Momentum: ** This factor analyzes the price performance of the top 10 cryptocurrencies by market capitalization (excluding stablecoins). It assesses how these coins are performing relative to each other and the broader market.\n  <br/>&nbsp;&nbsp;2.  **Volatility: ** The index incorporates Volmex Implied Volatility Indices (BVIV and EVIV) for Bitcoin (BTC) and Ethereum (ETH), which provide forward-looking measures of expected volatility over the next 30 days.\n  <br/>&nbsp;&nbsp;3.  **Derivatives Market: **The index considers the Put/Call Ratio in the Bitcoin and Ethereum options markets. A higher ratio of puts to calls indicates more fear in the market, suggesting bearish expectations among investors.\n  <br/>&nbsp;&nbsp;4.  **Market Composition:  **This component looks at the relative value of Bitcoin (BTC) in the market, using the Stablecoin Supply Ratio (SSR) to measure the ratio between Bitcoin’s market capitalization and that of major stablecoins.\n  <br/>&nbsp;&nbsp;5.  **CMC Proprietary Data:  **The index also uses social trend keyword searches and user engagement metrics to capture market sentiment, retail interest, and emerging trends.",
+        "sequence": 3
+      },
+      {
+        "question": "Can I get this data through an API?",
+        "answer": "Yes, you can access the CMC Fear and Greed Index data through the CoinMarketCap API for free. Here’s how you can do it:\n\n**Example: Fetching the Latest CMC Fear and Greed Index Value**\n\nTo get the latest Fear and Greed Index value, you can use the following API endpoint:\n\n**API Endpoint:**\nGET [https://pro-api.coinmarketcap.com/v3/fear-and-greed/historical](https://pro-api.coinmarketcap.com/v3/fear-and-greed/historical)\n\n**Parameters**\n  • `start`: (optional) Integer specifying the starting point of the data retrieval.  \n  • `limit`: (optional) Integer specifying the number of records to return (default is 50).\n\n**Response Example:**\n\n```json\n{\n  \"status\": {\n    \"timestamp\": \"2024-09-03T12:00:00.000Z\",\n    \"error_code\": 0,\n    \"error_message\": null,\n    \"elapsed\": 15,\n    \"credit_count\": 1\n  },\n  \"data\": [\n    {\n      \"timestamp\": \"2024-09-02T12:00:00.000Z\",\n      \"value\": 50,\n      \"value_classification\": \"Neutral\"\n    },\n    {\n      \"timestamp\": \"2024-09-01T12:00:00.000Z\",\n      \"value\": 35,\n      \"value_classification\": \"Fear\"\n    }\n    // More records...\n  ]\n}\n",
+        "sequence": 4,
+        "id": "fear-and-greed-index-faq"
+      },
+      {
+        "question": "The World’s Leading Crypto Fear And Greed Index",
+        "answer": "CoinMarketCap’s Crypto Fear and Greed Index is the most trusted measure of overall crypto market sentiment. Our index uses multiple data sets and a complex weighting system to reflect the overall market sentiment of the largest cryptocurrencies by market capitalization. The index has been backtested thoroughly and is regularly reviewed to ensure that it remains the most relevant guide to overall crypto market conditions. This level of attention to detail has led to CMC’s Crypto Fear and Greed Index becoming the number one, most cited and most trusted index of its kind, by mainstream financial institutions such as Bloomberg, Reuters and CNBC. ",
+        "sequence": 5
+      }
+    ]
+  },
+  "altcoinIndex": 31,
+  "halvingInfo": {
+    "dateOfHalving": "1713571767",
+    "halvingTimeStamp": 0
+  },
+  "deviceInfo": {
+    "isDesktop": true,
+    "isTablet": false,
+    "isMobile": false
+  }
+}

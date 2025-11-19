@@ -1,0 +1,2032 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Real-time crypto market sentiment tracker with casino-style slot machine visualization">
+    <title>> FEAR_GREED_PROTOCOL <</title>
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Crypto Fear & Greed Protocol">
+    <meta name="twitter:description" content="Real-time crypto market sentiment tracker with casino-style visualization">
+    <meta name="twitter:image" content="https://meta-fgi.vercel.app/og-image.png">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Crypto Fear & Greed Protocol">
+    <meta property="og:description" content="Real-time crypto market sentiment tracker with casino-style slot machine visualization">
+    <meta property="og:image" content="https://meta-fgi.vercel.app/og-image.png">
+    <meta property="og:url" content="https://meta-fgi.vercel.app">
+    <meta property="og:type" content="website">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%23f7931a%22/><text x=%2250%22 y=%2270%22 font-size=%2270%22 fill=%22white%22 text-anchor=%22middle%22 font-family=%22Arial,sans-serif%22 font-weight=%22bold%22>₿</text></svg>">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+        @import url('https://fonts.cdnfonts.com/css/comic-sans');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Courier New', monospace; background: #000; color: #fff; min-height: 100vh; overflow-x: hidden; position: relative; }
+        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.15; transition: opacity 0.5s ease; }
+        #matrix-canvas.hidden { opacity: 0; pointer-events: none; }
+        .container { text-align: center; max-width: 1000px; width: 100%; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
+        
+        .controls { position: fixed; top: 20px; right: 80px; display: flex; gap: 10px; z-index: 100; transition: opacity 0.3s, transform 0.3s; }
+        .controls.hidden { opacity: 0; transform: translateY(-100px); pointer-events: none; }
+        .control-btn { background: rgba(0, 100, 0, 0.3); border: 1px solid #00aa00; color: #00ff00; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-size: 1.2em; transition: all 0.3s ease; position: relative; }
+        .control-btn:hover { background: rgba(0, 150, 0, 0.4); transform: scale(1.05); }
+        .control-btn:hover::after { content: attr(data-tooltip); position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%); background: rgba(0, 200, 0, 0.95); color: #000; padding: 6px 12px; border-radius: 5px; font-size: 0.7em; white-space: nowrap; z-index: 1000; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
+        .control-btn.active { background: rgba(0, 200, 0, 0.5); border-color: #00ff00; }
+        .control-btn:focus-visible { outline: 3px solid #00ff00; outline-offset: 3px; box-shadow: 0 0 15px rgba(0, 255, 0, 0.6); }
+        
+        .title { font-size: 2.2em; color: #00ff00; margin-bottom: 15px; font-weight: bold; letter-spacing: 3px; text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00; animation: terminal-flicker 3s ease-in-out infinite; }
+        @keyframes terminal-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.95; } }
+        
+        .btc-ticker {
+            background: linear-gradient(145deg, #f7931a 0%, #ffb74d 50%, #f7931a 100%);
+            padding: 10px 25px;
+            border-radius: 10px;
+            margin: 0 auto 30px;
+            max-width: 400px;
+            border: 3px solid #d97706;
+            box-shadow:
+                0 8px 25px rgba(0,0,0,0.6),
+                inset 0 2px 10px rgba(255,255,255,0.5),
+                inset 0 -2px 10px rgba(0,0,0,0.3),
+                0 0 30px rgba(247, 147, 26, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .btc-ticker:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 12px 35px rgba(0,0,0,0.7),
+                inset 0 2px 15px rgba(255,255,255,0.6),
+                inset 0 -2px 15px rgba(0,0,0,0.4),
+                0 0 50px rgba(247, 147, 26, 0.7);
+        }
+        .btc-label { font-size: 0.75em; color: #000; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+        .btc-price { font-size: 1.8em; font-weight: bold; color: #000; margin: 3px 0; }
+        .btc-change { font-size: 0.95em; font-weight: bold; margin-top: 3px; }
+        .positive { color: #00ff00; }
+        .negative { color: #ff0000; }
+        
+        .slot-machine {
+            width: 700px;
+            max-width: 95%;
+            margin: 40px auto;
+            background: linear-gradient(145deg, #1a1f3a 0%, #0f1424 50%, #1a1f3a 100%);
+            border: 6px solid;
+            border-image: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%) 1;
+            border-radius: 20px;
+            padding: 40px 30px 35px;
+            /* OPTIMIZED: Reduced from 5 to 2 box-shadows */
+            box-shadow:
+                0 20px 60px rgba(0,0,0,0.95),
+                0 0 60px rgba(255,215,0,0.3);
+            position: relative;
+            /* GPU acceleration */
+            transform: translateZ(0);
+            will-change: transform;
+            /* Only animate transform */
+            transition: transform 0.4s ease;
+        }
+
+        .slot-machine:hover {
+            transform: translateY(-3px) translateZ(0);
+            /* No box-shadow changes on hover for better performance */
+        }
+
+        .slot-machine:focus-visible {
+            outline: 4px solid #ffd700;
+            outline-offset: 4px;
+        }
+
+        .slot-machine.spinning {
+            cursor: wait;
+            animation: machine-shake 0.1s infinite;
+        }
+
+        @keyframes machine-shake {
+            0%, 100% { transform: translateX(0) translateY(0) translateZ(0); }
+            25% { transform: translateX(-2px) translateY(-1px) translateZ(0); }
+            50% { transform: translateX(2px) translateY(1px) translateZ(0); }
+            75% { transform: translateX(-1px) translateY(1px) translateZ(0); }
+        }
+        
+        .mobile-spin-hint {
+            display: none;
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffd700;
+            font-size: 0.85em;
+            animation: bounce 2s infinite;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        /* Confetti particle effects */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            animation: confetti-fall 2s ease-out forwards;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(300px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Win flash overlay */
+        .win-flash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle, rgba(255,215,0,0.3) 0%, transparent 70%);
+            animation: flash-burst 0.5s ease-out;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        @keyframes flash-burst {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+        }
+        
+        .slot-lights {
+            display: none;
+        }
+        .light {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #ffffff, #ffd700 40%, #d4af37 100%);
+            animation: casino-blink 1.5s infinite;
+            box-shadow:
+                0 0 5px rgba(255, 215, 0, 0.5),
+                0 0 10px rgba(255, 215, 0, 0.4),
+                0 0 15px rgba(255, 215, 0, 0.3),
+                inset 0 -2px 5px rgba(0, 0, 0, 0.3),
+                inset 0 2px 5px rgba(255, 255, 255, 0.4);
+            border: 2px solid #8b6508;
+            position: relative;
+        }
+        .light::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            filter: blur(1px);
+        }
+        .light:nth-child(2) { animation-delay: 0.3s; }
+        .light:nth-child(3) { animation-delay: 0.6s; }
+        .light:nth-child(4) { animation-delay: 0.9s; }
+        .light:nth-child(5) { animation-delay: 1.2s; }
+        @keyframes casino-blink {
+            0%, 40%, 100% {
+                opacity: 1;
+                box-shadow:
+                    0 0 10px rgba(255, 215, 0, 0.8),
+                    0 0 20px rgba(255, 215, 0, 0.6),
+                    0 0 30px rgba(255, 215, 0, 0.4),
+                    inset 0 -2px 5px rgba(0, 0, 0, 0.3),
+                    inset 0 2px 5px rgba(255, 255, 255, 0.4);
+                transform: scale(1);
+            }
+            20% {
+                opacity: 0.3;
+                box-shadow:
+                    0 0 3px rgba(255, 215, 0, 0.2),
+                    inset 0 -2px 5px rgba(0, 0, 0, 0.5),
+                    inset 0 2px 5px rgba(255, 255, 255, 0.2);
+                transform: scale(0.95);
+            }
+        }
+        
+        .reels-container {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            margin-bottom: 30px;
+            background: linear-gradient(145deg, #0a0e1a 0%, #060912 100%);
+            padding: 40px 30px;
+            border-radius: 15px;
+            border: 3px solid rgba(255, 215, 0, 0.4);
+            box-shadow:
+                inset 0 4px 25px rgba(0,0,0,0.9),
+                inset 0 -4px 25px rgba(0,0,0,0.7),
+                0 4px 20px rgba(0,0,0,0.8);
+            position: relative;
+        }
+
+        .reels-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 50%, rgba(0,0,0,0.3) 100%);
+            border-radius: 10px;
+            pointer-events: none;
+        }
+
+        .reel {
+            width: 170px;
+            height: 170px;
+            background: linear-gradient(180deg, #12172e 0%, #0a0d1a 50%, #12172e 100%);
+            border: 4px solid;
+            border-image: linear-gradient(180deg, rgba(255, 215, 0, 0.6), rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.6)) 1;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            /* OPTIMIZED: Reduced from 4 to 1 box-shadow */
+            box-shadow: inset 0 3px 20px rgba(0,0,0,0.95);
+            /* GPU acceleration */
+            transform: translateZ(0);
+            will-change: transform;
+        }
+
+        .reel-strip {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+            transform: translateY(0) translateZ(0);
+        }
+
+        .reel.spinning .reel-strip {
+            animation: reel-spin 0.1s linear infinite;
+        }
+
+        @keyframes reel-spin {
+            0% { transform: translateY(0) translateZ(0); }
+            100% { transform: translateY(-340px) translateZ(0); }
+        }
+
+        .symbol {
+            font-size: 5.5em;
+            height: 170px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* OPTIMIZED: Reduced from 3 to 1 text-shadow, removed filter */
+            text-shadow: 0 0 30px currentColor;
+            /* GPU-accelerated properties only */
+            transform: translateZ(0);
+            flex-shrink: 0;
+        }
+
+        .spin-btn {
+            width: 180px;
+            height: 60px;
+            margin: 0 auto 30px;
+            display: block;
+            background: linear-gradient(145deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+            border: 4px solid #d4af37;
+            border-radius: 30px;
+            color: #000;
+            font-family: 'Courier New', monospace;
+            font-size: 1.4em;
+            font-weight: bold;
+            letter-spacing: 3px;
+            cursor: pointer;
+            box-shadow:
+                0 8px 25px rgba(0,0,0,0.6),
+                inset 0 2px 10px rgba(255,255,255,0.5),
+                inset 0 -2px 10px rgba(0,0,0,0.3),
+                0 0 30px rgba(255,215,0,0.5);
+            transition: all 0.3s ease;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+        }
+
+        .spin-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            background: linear-gradient(145deg, #ffed4e 0%, #ffd700 50%, #ffed4e 100%);
+            box-shadow:
+                0 12px 35px rgba(0,0,0,0.7),
+                inset 0 2px 15px rgba(255,255,255,0.6),
+                inset 0 -2px 15px rgba(0,0,0,0.4),
+                0 0 50px rgba(255,215,0,0.7);
+        }
+
+        .spin-btn:active {
+            transform: translateY(0px) scale(1.02);
+            box-shadow:
+                0 4px 15px rgba(0,0,0,0.5),
+                inset 0 2px 8px rgba(255,255,255,0.4),
+                inset 0 -2px 8px rgba(0,0,0,0.2),
+                0 0 25px rgba(255,215,0,0.4);
+        }
+        
+        .payout-display {
+            background: linear-gradient(145deg, #0a0e1a 0%, #060912 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border: 3px solid rgba(255, 215, 0, 0.5);
+            box-shadow:
+                inset 0 3px 20px rgba(0,0,0,0.9),
+                inset 0 -3px 20px rgba(0,0,0,0.7),
+                0 4px 15px rgba(0,0,0,0.6);
+            position: relative;
+        }
+
+        .payout-label {
+            color: #ffd700;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+            text-shadow:
+                0 0 5px #ffd700,
+                0 0 10px #ffd700;
+        }
+
+        .payout-score {
+            font-size: 3em;
+            font-weight: bold;
+            text-shadow:
+                0 0 5px currentColor,
+                0 0 10px currentColor;
+            font-family: 'Courier New', monospace;
+        }
+
+        .payout-text {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-top: 5px;
+            letter-spacing: 2px;
+            text-shadow:
+                0 0 10px currentColor,
+                0 0 20px currentColor;
+        }
+
+        .streak-info {
+            font-size: 0.85em;
+            color: #a0a0a0;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+            font-weight: normal;
+            letter-spacing: 0.5px;
+        }
+
+        .streak-info.record {
+            color: #ffd700;
+            font-weight: bold;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes rain-fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(600px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .emoji-rain {
+            position: absolute;
+            font-size: 3em;
+            top: -50px;
+            pointer-events: none;
+            z-index: 1000;
+            animation: rain-fall 2s ease-in forwards;
+            filter: drop-shadow(0 0 10px currentColor);
+            will-change: transform, opacity;
+        }
+
+        .jackpot {
+            animation: jackpot-flash 0.5s infinite, jackpot-pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes jackpot-flash {
+            0%, 100% {
+                transform: scale(1);
+                text-shadow:
+                    0 0 5px currentColor,
+                    0 0 10px currentColor,
+                    0 0 15px currentColor;
+            }
+            50% {
+                transform: scale(1.15);
+                text-shadow:
+                    0 0 10px currentColor,
+                    0 0 20px currentColor,
+                    0 0 30px currentColor,
+                    0 0 40px currentColor;
+            }
+        }
+
+        @keyframes jackpot-pulse {
+            0%, 100% {
+                filter: brightness(1);
+            }
+            50% {
+                filter: brightness(1.2);
+            }
+        }
+        
+        .lever {
+            display: none;
+        }
+
+        .lever::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 35px;
+            height: 35px;
+            background: radial-gradient(circle at 30% 30%, #ff4444, #cc0000 60%, #880000);
+            border-radius: 50%;
+            box-shadow:
+                0 4px 10px rgba(0,0,0,0.5),
+                inset -2px -2px 6px rgba(0,0,0,0.5),
+                inset 2px 2px 6px rgba(255,100,100,0.6);
+        }
+
+        .lever::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 100px;
+            background: linear-gradient(90deg, #888, #ccc 50%, #888);
+            border-radius: 5px;
+            box-shadow:
+                2px 0 4px rgba(0,0,0,0.3),
+                inset 1px 0 2px rgba(255,255,255,0.5);
+        }
+
+        @keyframes lever-idle {
+            0%, 100% {
+                transform: translateY(-50%) rotate(-5deg);
+            }
+            50% {
+                transform: translateY(-50%) rotate(5deg);
+            }
+        }
+
+        .lever:hover {
+            transform: translateY(-50%) scale(1.2) rotate(0deg);
+            filter: drop-shadow(0 0 20px rgba(255,215,0,0.8)) drop-shadow(0 0 30px rgba(255,215,0,0.5));
+            animation: none;
+        }
+
+        .lever.pulled {
+            animation: pull 0.5s ease-out;
+        }
+
+        @keyframes pull {
+            0% {
+                transform: translateY(-50%) rotate(0deg);
+            }
+            30% {
+                transform: translateY(-30%) rotate(25deg) scale(1.1);
+            }
+            60% {
+                transform: translateY(-20%) rotate(15deg);
+            }
+            100% {
+                transform: translateY(-50%) rotate(0deg);
+            }
+        }
+        
+        .degen { 
+            font-size: 2.5em; 
+            font-family: 'Comic Sans', 'Comic Sans MS', 'Chalkboard', 'ChalkboardSE-Regular', cursive, sans-serif;
+            color: #fff; 
+            margin: 20px; 
+            margin-top: 60px;
+            font-weight: bold; 
+            text-shadow: 0 0 20px currentColor; 
+            animation: degen-bounce 2s ease-in-out infinite; 
+        }
+        @keyframes degen-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        .sentiment-quote {
+            margin: 30px auto;
+            padding: 25px 30px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(20, 20, 20, 0.9));
+            border: 3px solid;
+            border-radius: 15px;
+            max-width: 700px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sentiment-quote::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, currentColor, transparent, currentColor);
+            border-radius: 15px;
+            z-index: -1;
+            opacity: 0.3;
+            animation: border-glow 3s ease-in-out infinite;
+        }
+
+        @keyframes border-glow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .quote-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: block;
+            filter: drop-shadow(0 0 10px currentColor);
+        }
+
+        .quote-text {
+            font-size: 1.2em;
+            font-weight: bold;
+            line-height: 1.6;
+            font-family: 'Courier New', monospace;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            font-style: italic;
+        }
+
+        .quote-text::before {
+            content: '"';
+            font-size: 1.5em;
+            opacity: 0.5;
+            margin-right: 5px;
+        }
+
+        .quote-text::after {
+            content: '"';
+            font-size: 1.5em;
+            opacity: 0.5;
+            margin-left: 5px;
+        }
+
+        .share-btn { background: #000; border: 2px solid #fff; color: #fff; display: inline-flex; align-items: center; gap: 8px; padding: 12px 30px; font-size: 1em; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-weight: bold; margin: 10px; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); }
+        .share-btn:hover { box-shadow: 0 0 25px rgba(255, 255, 255, 0.6); background: #111; transform: scale(1.05); }
+        .share-btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; box-shadow: 0 0 30px rgba(255, 255, 255, 0.8); }
+
+        .btn { background: linear-gradient(135deg, #00ff00, #00cc00); border: 2px solid #00ff00; color: #000; padding: 12px 30px; font-size: 1em; border-radius: 5px; cursor: pointer; font-family: 'Courier New', monospace; font-weight: bold; margin: 10px; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); transition: all 0.3s ease; }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(0, 255, 0, 0.6); }
+        .btn:focus-visible { outline: 3px solid #00ff00; outline-offset: 3px; box-shadow: 0 0 30px rgba(0, 255, 0, 0.8); }
+        
+        .chart-container { background: rgba(255,255,255,0.05); border: 2px solid rgba(0, 255, 0, 0.3); border-radius: 15px; padding: 30px; margin: 40px 0; box-shadow: 0 0 20px rgba(0, 255, 0, 0.1); min-height: 350px; }
+        .chart-title { color: #00ff00; font-size: 1.3em; margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; }
+        
+        /* MOBILE OPTIMIZATIONS */
+        @media (max-width: 768px) { 
+            body { overflow-x: hidden; }
+            .container { padding: 60px 10px 10px; }
+            .title { font-size: 1.3em; letter-spacing: 1px; margin-bottom: 10px; }
+            
+            /* More visible matrix on mobile */
+            #matrix-canvas { opacity: 0.3; }
+            
+            .btc-ticker { max-width: 90%; padding: 8px 15px; margin-bottom: 20px; }
+            .btc-label { font-size: 0.65em; }
+            .btc-price { font-size: 1.4em; }
+            .btc-change { font-size: 0.85em; }
+            
+            .slot-machine {
+                width: 95%;
+                padding: 30px 10px 20px;
+                border-width: 4px;
+                margin: 20px auto;
+                margin-bottom: 70px;
+                transform: perspective(800px) rotateX(1deg);
+            }
+
+            .slot-machine:hover {
+                transform: perspective(800px) rotateX(0deg) scale(1.01);
+            }
+
+            .slot-machine.spinning {
+                animation: machine-shake-mobile 0.1s infinite, machine-glow 1s ease-in-out infinite;
+            }
+
+            @keyframes machine-shake-mobile {
+                0%, 100% { transform: perspective(800px) rotateX(1deg) translateX(0) translateY(0); }
+                25% { transform: perspective(800px) rotateX(1deg) translateX(-1px) translateY(-1px); }
+                50% { transform: perspective(800px) rotateX(1deg) translateX(1px) translateY(1px); }
+                75% { transform: perspective(800px) rotateX(1deg) translateX(-1px) translateY(1px); }
+            }
+            
+            .mobile-spin-hint { display: block; }
+
+            .slot-lights { padding: 0 15px; }
+            .light {
+                width: 12px;
+                height: 12px;
+                border-width: 1px;
+            }
+            .light::after {
+                width: 4px;
+                height: 4px;
+                top: 1px;
+                left: 2px;
+            }
+            
+            .reels-container { 
+                gap: 8px; 
+                padding: 12px; 
+                flex-wrap: nowrap;
+            }
+            .reel { 
+                width: 28vw;
+                max-width: 90px;
+                height: 110px; 
+                border-width: 3px;
+            }
+            .symbol { 
+                font-size: 2.8em; 
+                height: 110px;
+            }
+            
+            .payout-display { padding: 12px; margin-top: 15px; }
+            .payout-label { font-size: 0.75em; }
+            .payout-score { font-size: 2.2em; }
+            .payout-text { font-size: 0.9em; letter-spacing: 1px; }
+            .streak-info { font-size: 0.7em; margin-top: 8px; padding-top: 8px; }
+
+            .lever { display: none; }
+            
+            .degen {
+                font-size: 1.8em;
+                margin: 15px;
+                margin-top: 25px;
+                font-family: 'Comic Sans', 'Comic Sans MS', 'Marker Felt', 'Chalkboard', cursive, sans-serif;
+            }
+
+            .sentiment-quote {
+                margin: 20px 15px;
+                padding: 20px;
+            }
+
+            .quote-icon {
+                font-size: 1.5em;
+            }
+
+            .quote-text {
+                font-size: 1em;
+                line-height: 1.5;
+            }
+
+            .share-btn, .btn { 
+                padding: 12px 20px; 
+                font-size: 0.9em; 
+                letter-spacing: 1px;
+                margin: 8px;
+            }
+            
+            .controls { 
+                top: 10px; 
+                right: 10px; 
+                gap: 6px;
+                background: rgba(0, 0, 0, 0.7);
+                padding: 8px;
+                border-radius: 10px;
+            }
+            .control-btn { 
+                padding: 8px 12px; 
+                font-size: 1em; 
+            }
+            .control-btn:hover::after { display: none; }
+            
+            .chart-container { 
+                padding: 15px 10px; 
+                margin: 30px 0;
+                min-height: 250px;
+            }
+            .chart-title { font-size: 1em; margin-bottom: 15px; letter-spacing: 1px; }
+            
+            #timestamp { font-size: 0.7em; }
+        }
+        
+        @media (max-width: 400px) {
+            .title { font-size: 1.1em; }
+            .btc-price { font-size: 1.2em; }
+            .slot-machine { padding: 25px 8px 15px; }
+            .light {
+                width: 10px;
+                height: 10px;
+            }
+            .light::after {
+                width: 3px;
+                height: 3px;
+            }
+            .reel { width: 26vw; }
+            .symbol { font-size: 2.3em; }
+            .payout-score { font-size: 1.8em; }
+            .degen { font-size: 1.5em; }
+        }
+
+        /* Portfolio Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s;
+            overflow-y: auto; /* Allow scrolling */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+            margin: 5% auto; /* Increased top margin to prevent cutoff */
+            padding: 0;
+            border: 4px solid #00ff00;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 85vh; /* Slightly reduced to ensure space from top */
+            box-shadow: 0 0 40px rgba(0, 255, 0, 0.4);
+            animation: slideDown 0.3s;
+            display: flex;
+            flex-direction: column;
+            position: relative; /* Ensure proper positioning */
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 20px 30px;
+            background: rgba(0, 255, 0, 0.1);
+            border-bottom: 2px solid #00ff00;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 11px 11px 0 0;
+            flex-shrink: 0; /* Prevent header from shrinking */
+            min-height: 60px; /* Ensure minimum height */
+        }
+
+        .modal-header h2 {
+            color: #00ff00;
+            margin: 0;
+            font-size: 1.5em;
+            letter-spacing: 1px; /* Reduced from 2px for better fit */
+            text-shadow: 0 0 10px #00ff00;
+            flex: 1; /* Allow it to take available space */
+            margin-right: 10px; /* Space between title and close button */
+        }
+
+        .close {
+            color: #ff4444;
+            font-size: 2.5em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            line-height: 1;
+            text-shadow: 0 0 10px #ff4444;
+            padding: 0 5px;
+            flex-shrink: 0; /* Prevent close button from shrinking */
+        }
+
+        .close:hover {
+            color: #ff0000;
+            text-shadow: 0 0 20px #ff0000;
+            transform: scale(1.3) rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 30px;
+            overflow-y: auto; /* Allow scrolling in body */
+            flex: 1;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            color: #00ff00;
+            font-size: 1em;
+            margin-bottom: 8px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #000;
+            border: 2px solid #00ff00;
+            border-radius: 5px;
+            color: #00ff00;
+            font-size: 1.1em;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #00ff00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+        }
+
+        .input-group input::placeholder {
+            color: rgba(0, 255, 0, 0.4);
+        }
+
+        .allocation-stats {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 255, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+            font-size: 1em;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .stat-value {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        /* Portfolio Advice Styles */
+        .portfolio-advice {
+            margin: 20px auto;
+            padding: 20px 30px;
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.1), rgba(0, 200, 0, 0.05));
+            border: 3px solid;
+            border-radius: 15px;
+            max-width: 600px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+        }
+
+        .advice-title {
+            color: #00ff00;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .advice-text {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            text-shadow: 0 0 15px currentColor;
+            animation: advice-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes advice-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* Mobile Adjustments for Portfolio */
+        @media (max-width: 768px) {
+            .modal-content {
+                margin: 2% auto;
+                width: 95%;
+                max-height: 95vh; /* More height on mobile */
+            }
+
+            .modal-header {
+                padding: 15px 20px;
+            }
+
+            .modal-header h2 {
+                font-size: 1.2em;
+            }
+
+            .modal-body {
+                padding: 20px;
+                max-height: calc(95vh - 80px); /* Account for header */
+            }
+
+            .input-group input {
+                padding: 10px 12px;
+                font-size: 1em;
+            }
+
+            .input-group {
+                margin-bottom: 15px; /* Reduce spacing on mobile */
+            }
+
+            .portfolio-advice {
+                margin: 15px;
+                padding: 15px 20px;
+            }
+
+            .advice-title {
+                font-size: 1.1em;
+            }
+
+            .advice-text {
+                font-size: 1.2em;
+            }
+
+            .close {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix-canvas"></canvas>
+    
+    <div class="controls" id="controls">
+        <button class="control-btn active" id="particlesToggle" data-tooltip="Toggle Matrix" aria-label="Toggle Matrix Background Animation" aria-pressed="true">✨</button>
+        <button class="control-btn" id="notifyToggle" data-tooltip="Extreme alerts" aria-label="Enable notifications for extreme market sentiment alerts" aria-pressed="false">🔔</button>
+        <button class="control-btn" id="portfolioToggle" data-tooltip="My Portfolio" aria-label="View and manage your portfolio" aria-pressed="false">💼</button>
+    </div>
+    
+    <div class="container">
+        <h1 class="title">&gt; FEAR_GREED_PROTOCOL &lt;</h1>
+        
+        <div class="btc-ticker">
+            <div class="btc-label">₿ Bitcoin</div>
+            <div class="btc-price" id="btcPrice">Loading...</div>
+            <div class="btc-change" id="btcChange"></div>
+        </div>
+        
+        <div id="content">
+            <div class="slot-machine" id="slotMachine">
+                <div class="reels-container">
+                    <div class="reel" id="reel1">
+                        <div class="reel-strip">
+                            <div class="symbol">💀</div>
+                            <div class="symbol">😱</div>
+                            <div class="symbol">😐</div>
+                            <div class="symbol">😏</div>
+                            <div class="symbol">🤑</div>
+                            <div class="symbol">💀</div>
+                            <div class="symbol">😱</div>
+                            <div class="symbol">😐</div>
+                        </div>
+                    </div>
+                    <div class="reel" id="reel2">
+                        <div class="reel-strip">
+                            <div class="symbol">💀</div>
+                            <div class="symbol">😱</div>
+                            <div class="symbol">😐</div>
+                            <div class="symbol">😏</div>
+                            <div class="symbol">🤑</div>
+                            <div class="symbol">💀</div>
+                            <div class="symbol">😱</div>
+                            <div class="symbol">😐</div>
+                        </div>
+                    </div>
+                    <div class="reel" id="reel3">
+                        <div class="reel-strip">
+                            <div class="symbol">💀</div>
+                            <div class="symbol">😱</div>
+                            <div class="symbol">😐</div>
+                            <div class="symbol">😏</div>
+                            <div class="symbol">🤑</div>
+                            <div class="symbol">💀</div>
+                            <div class="symbol">😱</div>
+                            <div class="symbol">😐</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="spin-btn" id="spinBtn" role="button" aria-label="Spin the slot machine to reveal current market sentiment">
+                    <span class="spin-text">SPIN</span>
+                </button>
+                <div class="payout-display">
+                    <div class="payout-label">MARKET SENTIMENT</div>
+                    <div class="payout-score" id="slotScore">--</div>
+                    <div class="payout-text" id="slotStatus">...</div>
+                    <div class="streak-info" id="streakInfo"></div>
+                </div>
+            </div>
+            
+            <div class="degen" id="degenStatus">...</div>
+
+            <div class="sentiment-quote" id="sentimentQuote">
+                <span class="quote-icon" id="quoteIcon">💎</span>
+                <div class="quote-text" id="quoteText">Loading wisdom...</div>
+            </div>
+
+            <div class="portfolio-advice" id="portfolioAdvice" style="display:none;">
+                <div class="advice-title">Portfolio Recommendation</div>
+                <div class="advice-text" id="adviceText">...</div>
+            </div>
+
+            <button class="share-btn" id="shareBtn" aria-label="Share current market sentiment on X (formerly Twitter)">Share on <span style="font-size:1.3em">𝕏</span></button>
+
+            <button class="btn" id="refreshBtn" aria-label="Refresh all market data and sentiment">[  REFRESH  ]</button>
+            <div style="color:#00ff00;font-size:0.8em;opacity:0.6;margin-top:10px;" id="timestamp">> Last Updated: --:--:--</div>
+        </div>
+        
+        <div class="chart-container">
+            <div class="chart-title" id="chartTitle">30-Day Sentiment History</div>
+            <canvas id="historyChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Portfolio Modal -->
+    <div id="portfolioModal" class="modal" role="dialog" aria-labelledby="portfolioTitle" aria-hidden="true">
+        <div class="modal-content" role="document">
+            <div class="modal-header">
+                <h2 id="portfolioTitle">My Portfolio</h2>
+                <span class="close" role="button" aria-label="Close portfolio modal" tabindex="0">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label for="cryptoInput">Crypto Holdings ($)</label>
+                    <input type="number" id="cryptoInput" placeholder="5000" min="0" step="100">
+                </div>
+                <div class="input-group">
+                    <label for="stablesInput">Stablecoins ($)</label>
+                    <input type="number" id="stablesInput" placeholder="3000" min="0" step="100">
+                </div>
+                <div class="input-group">
+                    <label for="cashInput">Cash/Fiat ($)</label>
+                    <input type="number" id="cashInput" placeholder="2000" min="0" step="100">
+                </div>
+                <button class="btn" id="savePortfolioBtn">Save Portfolio</button>
+
+                <div id="portfolioChart" style="display:none;">
+                    <div class="chart-title" style="margin-top:30px;font-size:1.1em;">Allocation Breakdown</div>
+                    <canvas id="allocationChart" style="max-height:250px;"></canvas>
+                    <div id="allocationStats" class="allocation-stats"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentScore=0,particlesEnabled=true,notificationsEnabled=false,lastNotificationScore=null,isSpinning=false;
+        let audioContext;
+        let lastScrollTop=0;
+        
+        // Hide controls when scrolling down on mobile
+        if(window.innerWidth<=768){
+            let scrollTimeout;
+            window.addEventListener('scroll',function(){
+                clearTimeout(scrollTimeout);
+                const controls=document.getElementById('controls');
+                const st=window.pageYOffset||document.documentElement.scrollTop;
+                
+                if(st>lastScrollTop&&st>100){
+                    controls.classList.add('hidden');
+                }else{
+                    controls.classList.remove('hidden');
+                }
+                
+                scrollTimeout=setTimeout(()=>{
+                    controls.classList.remove('hidden');
+                },2000);
+                
+                lastScrollTop=st<=0?0:st;
+            },false);
+        }
+        
+        function initAudio(){
+            if(!audioContext){
+                audioContext=new(window.AudioContext||window.webkitAudioContext)();
+            }
+        }
+        
+        function playJackpotSound(){
+            initAudio();
+            const now=audioContext.currentTime;
+            const notes=[523.25,659.25,783.99,1046.50];
+            notes.forEach((freq,i)=>{
+                const osc=audioContext.createOscillator();
+                const gain=audioContext.createGain();
+                osc.type='sine';
+                osc.frequency.setValueAtTime(freq,now+(i*0.15));
+                gain.gain.setValueAtTime(0,now+(i*0.15));
+                gain.gain.linearRampToValueAtTime(0.3,now+(i*0.15)+0.01);
+                gain.gain.exponentialRampToValueAtTime(0.01,now+(i*0.15)+0.4);
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.start(now+(i*0.15));
+                osc.stop(now+(i*0.15)+0.5);
+            });
+            setTimeout(()=>{
+                [523.25,659.25,783.99].forEach(freq=>{
+                    const osc=audioContext.createOscillator();
+                    const gain=audioContext.createGain();
+                    const time=audioContext.currentTime;
+                    osc.type='sine';
+                    osc.frequency.setValueAtTime(freq,time);
+                    gain.gain.setValueAtTime(0.2,time);
+                    gain.gain.exponentialRampToValueAtTime(0.01,time+0.8);
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    osc.start(time);
+                    osc.stop(time+0.8);
+                });
+            },600);
+        }
+        
+        const canvas=document.getElementById('matrix-canvas'),ctx=canvas.getContext('2d');
+        canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+        const matrix="ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%₿🧮📊🎰💀😱😰😐😏🤑";
+        const fontSize=14,columns=canvas.width/fontSize;
+        const drops=[];
+        for(let i=0;i<columns;i++)drops[i]=1;
+
+        let matrixAnimationId = null;
+        let lastMatrixFrame = 0;
+
+        function drawMatrix(timestamp){
+            if(!particlesEnabled){
+                matrixAnimationId = requestAnimationFrame(drawMatrix);
+                return;
+            }
+
+            // Throttle to 20 FPS (50ms) instead of 28 FPS for better performance
+            if(timestamp - lastMatrixFrame < 50){
+                matrixAnimationId = requestAnimationFrame(drawMatrix);
+                return;
+            }
+            lastMatrixFrame = timestamp;
+
+            ctx.fillStyle='rgba(0,0,0,0.05)';
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle='#0F0';
+            ctx.font=fontSize+'px monospace';
+            for(let i=0;i<drops.length;i++){
+                const text=matrix[Math.floor(Math.random()*matrix.length)];
+                ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+                if(drops[i]*fontSize>canvas.height&&Math.random()>0.975)drops[i]=0;
+                drops[i]++;
+            }
+
+            matrixAnimationId = requestAnimationFrame(drawMatrix);
+        }
+
+        matrixAnimationId = requestAnimationFrame(drawMatrix);
+        window.addEventListener('resize',()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;});
+        
+        function getColorForScore(s){
+            if(s<20)return '#ff4444';
+            if(s<40)return '#ff8844';
+            if(s<60)return '#ffd700';
+            if(s<80)return '#88ff44';
+            return '#44ff88';
+        }
+        
+        function getSymbolForScore(s){
+            if(s<=24)return '💀';  // Extreme Fear: 0-24
+            if(s<=44)return '😱';  // Fear: 25-44
+            if(s<=59)return '😐';  // Neutral: 45-59
+            if(s<=79)return '😏';  // Greed: 60-79
+            return '🤑';           // Extreme Greed: 80-100
+        }
+
+        function getQuoteForScore(s){
+            if(s<25){
+                return {
+                    icon: '💎',
+                    text: 'Be greedy when others are fearful. Blood in the streets means diamonds in the wallet.'
+                };
+            }
+            if(s<45){
+                return {
+                    icon: '🤔',
+                    text: 'The best buys happen when everyone\'s too scared to click. Your future self will thank you.'
+                };
+            }
+            if(s<60){
+                return {
+                    icon: '😐',
+                    text: 'Boring markets build wealth. Patience pays more than FOMO ever will.'
+                };
+            }
+            if(s<80){
+                return {
+                    icon: '🚨',
+                    text: 'When your barber\'s giving crypto tips, it\'s time to secure the bag. Bulls make money, bears make money, pigs get slaughtered.'
+                };
+            }
+            return {
+                icon: '⚠️',
+                text: 'Euphoria is expensive. Everyone\'s a genius in a bull market until the music stops. Cash out before the rug pull.'
+            };
+        }
+
+        function updateSentimentQuote(score, color){
+            const quote = getQuoteForScore(score);
+            document.getElementById('quoteIcon').textContent = quote.icon;
+            document.getElementById('quoteText').textContent = quote.text;
+            document.getElementById('sentimentQuote').style.borderColor = color;
+            document.getElementById('sentimentQuote').style.color = color;
+        }
+
+        function triggerWinEffect(color){
+            const machine=document.getElementById('slotMachine');
+
+            // Add flash effect only (confetti removed for performance)
+            const flash=document.createElement('div');
+            flash.className='win-flash';
+            machine.appendChild(flash);
+            setTimeout(()=>flash.remove(),500);
+        }
+
+        function spinSlots(){
+            if(isSpinning){
+                console.log('Already spinning, ignoring click');
+                return;
+            }
+            isSpinning=true;
+            console.log('Spin started, isSpinning =', isSpinning);
+
+            playJackpotSound();
+            refreshAll();
+        }
+
+        function updateSlotMachine(score){
+            const symbol=getSymbolForScore(score);
+            const color=getColorForScore(score);
+
+            // Map symbol to index position (0-4)
+            const symbolMap = {'💀':0, '😱':1, '😐':2, '😏':3, '🤑':4};
+            const targetIndex = symbolMap[symbol] || 0;
+            const targetPosition = -targetIndex * 170; // Each symbol is 170px tall
+
+            const reels = document.querySelectorAll('.reel');
+            const machine = document.getElementById('slotMachine');
+
+            // Add spinning class for CSS animation
+            machine.classList.add('spinning');
+            reels.forEach(reel => reel.classList.add('spinning'));
+
+            // Stop reels with stagger
+            reels.forEach((reel, index) => {
+                setTimeout(() => {
+                    // Remove spinning animation
+                    reel.classList.remove('spinning');
+
+                    // Position reel to show target symbol
+                    const strip = reel.querySelector('.reel-strip');
+                    strip.style.transform = `translateY(${targetPosition}px) translateZ(0)`;
+
+                    // Last reel complete
+                    if (index === 2) {
+                        machine.classList.remove('spinning');
+
+                        setTimeout(() => {
+                            document.getElementById('slotScore').textContent = score;
+                            document.getElementById('slotScore').style.color = color;
+                            const extreme = score <= 20 || score >= 80;
+                            if (extreme) {
+                                document.getElementById('slotScore').classList.add('jackpot');
+                                triggerWinEffect(color);
+                            } else {
+                                document.getElementById('slotScore').classList.remove('jackpot');
+                            }
+
+                            // Trigger raining emoji effect
+                            triggerEmojiRain(symbol);
+
+                            // Reset AFTER everything completes
+                            isSpinning = false;
+                            console.log('Spin complete, isSpinning =', isSpinning);
+                        }, 200);
+                    }
+                }, 600 + (index * 300));
+            });
+        }
+
+        // Raining emoji jackpot effect - OPTIMIZED
+        function triggerEmojiRain(emoji) {
+            const container = document.getElementById('slotMachine');
+            const numEmojis = 20;
+            const fragment = document.createDocumentFragment();
+            const emojis = [];
+
+            // Create all elements in memory first (no DOM reflows)
+            for (let i = 0; i < numEmojis; i++) {
+                const emojiEl = document.createElement('div');
+                emojiEl.textContent = emoji;
+                emojiEl.className = 'emoji-rain';
+                emojiEl.style.left = Math.random() * 100 + '%';
+                emojiEl.style.animationDelay = (i * 0.1) + 's';
+                emojis.push(emojiEl);
+                fragment.appendChild(emojiEl);
+            }
+
+            // Single DOM append (only 1 reflow instead of 20)
+            requestAnimationFrame(() => {
+                container.appendChild(fragment);
+
+                // Single cleanup timer instead of 20
+                setTimeout(() => {
+                    emojis.forEach(el => el.remove());
+                }, 2100);
+            });
+        }
+        
+        document.getElementById('particlesToggle').addEventListener('click',function(){
+            particlesEnabled=!particlesEnabled;
+            this.classList.toggle('active');
+            this.setAttribute('aria-pressed', particlesEnabled ? 'true' : 'false');
+            const canvas = document.getElementById('matrix-canvas');
+            if(!particlesEnabled){
+                canvas.classList.add('hidden');
+                cancelAnimationFrame(matrixAnimationId);
+                setTimeout(() => {
+                    ctx.fillStyle='#000';
+                    ctx.fillRect(0,0,canvas.width,canvas.height);
+                }, 500); // Wait for fade out
+            }else{
+                canvas.classList.remove('hidden');
+                matrixAnimationId = requestAnimationFrame(drawMatrix);
+            }
+        });
+        
+        document.getElementById('notifyToggle').addEventListener('click',async function(){
+            if(!notificationsEnabled&&'Notification'in window){
+                const p=await Notification.requestPermission();
+                if(p==='granted'){
+                    notificationsEnabled=true;
+                    this.classList.add('active');
+                    this.setAttribute('aria-pressed', 'true');
+                    new Notification('🔔 Alerts Enabled!',{body:'Extreme level notifications on'});
+                }
+            }else{
+                notificationsEnabled=false;
+                this.classList.remove('active');
+                this.setAttribute('aria-pressed', 'false');
+            }
+        });
+        
+        async function fetchBTCPrice(){
+            try{
+                const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true');
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                const d=await r.json();
+                if (!d.bitcoin) throw new Error('Invalid data');
+                const p=d.bitcoin.usd,c=d.bitcoin.usd_24h_change;
+                document.getElementById('btcPrice').textContent='$'+p.toLocaleString('en-US',{maximumFractionDigits:0});
+                const e=document.getElementById('btcChange');
+                e.textContent=(c>0?'+':'')+c.toFixed(2)+'% (24h)';
+                e.className='btc-change '+(c>0?'positive':'negative');
+            }catch(e){
+                console.error('BTC price error:',e);
+                document.getElementById('btcPrice').textContent='Price unavailable';
+                document.getElementById('btcChange').textContent='';
+            }
+        }
+        
+        async function fetchHistoricalData(){
+            try{
+                const r=await fetch('https://api.alternative.me/fng/?limit=30&format=json');
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                const d=await r.json();
+                if(d.data&&Array.isArray(d.data)&&d.data.length>0){
+                    const history=d.data.reverse().map(item=>({
+                        date:new Date(item.timestamp*1000).toLocaleDateString('en-US',{month:'short',day:'numeric'}),
+                        score:parseInt(item.value),
+                        timestamp:item.timestamp
+                    }));
+                    renderChart(history);
+                }else{
+                    throw new Error('No historical data available');
+                }
+            }catch(e){
+                console.error('History error:',e);
+                document.getElementById('chartTitle').innerHTML='30-Day Sentiment History - <span style="color:#ff6666">Connection Error</span>';
+            }
+        }
+        
+        function renderChart(h){
+            const el=document.getElementById('historyChart');
+            if(!el||typeof Chart==='undefined')return;
+            const c=el.getContext('2d');
+            if(window.chartInstance)window.chartInstance.destroy();
+            const isMobile=window.innerWidth<=768;
+            try{
+                window.chartInstance=new Chart(c,{
+                    type:'line',
+                    data:{
+                        labels:h.map(d=>d.date),
+                        datasets:[{
+                            label:'Fear & Greed',
+                            data:h.map(d=>d.score),
+                            borderColor:'#00ff00',
+                            backgroundColor:'rgba(0,255,0,0.1)',
+                            borderWidth:3,
+                            tension:0.4,
+                            fill:true,
+                            pointBackgroundColor:h.map(d=>getColorForScore(d.score)),
+                            pointBorderColor:'#fff',
+                            pointBorderWidth:2,
+                            pointRadius:isMobile?3:5,
+                            pointHoverRadius:isMobile?5:7
+                        }]
+                    },
+                    options:{
+                        responsive:true,
+                        maintainAspectRatio:true,
+                        plugins:{
+                            legend:{labels:{color:'#00ff00',font:{family:'Courier New',size:isMobile?12:14}}},
+                            tooltip:{
+                                backgroundColor:'rgba(0,0,0,0.9)',
+                                titleColor:'#00ff00',
+                                bodyColor:'#fff',
+                                borderColor:'#00ff00',
+                                borderWidth:2,
+                                padding:12,
+                                displayColors:false,
+                                titleFont:{family:'Courier New',size:14,weight:'bold'},
+                                bodyFont:{family:'Courier New',size:13},
+                                callbacks:{
+                                    title:function(context){
+                                        return context[0].label;
+                                    },
+                                    label:function(context){
+                                        const score=context.parsed.y;
+                                        const sentiment=getSentimentCategory(score);
+                                        const emoji=getSymbolForScore(score);
+                                        return [
+                                            emoji+' '+sentiment,
+                                            'Score: '+score+'/100'
+                                        ];
+                                    }
+                                }
+                            }
+                        },
+                        scales:{
+                            y:{beginAtZero:true,max:100,grid:{color:'rgba(0,255,0,0.2)'},ticks:{color:'#00ff00',font:{family:'Courier New',size:isMobile?9:11}}},
+                            x:{grid:{color:'rgba(0,255,0,0.1)'},ticks:{color:'#00ff00',font:{family:'Courier New',size:isMobile?8:11},maxRotation:45,minRotation:45,autoSkip:true,maxTicksLimit:isMobile?8:15}}
+                        }
+                    }
+                });
+            }catch(e){console.error('Chart error:',e);}
+        }
+        
+        // Sentiment Streak Functions
+        function getSentimentCategory(score) {
+            if (score <= 24) return 'Extreme Fear';
+            if (score <= 44) return 'Fear';
+            if (score <= 59) return 'Neutral';
+            if (score <= 79) return 'Greed';
+            return 'Extreme Greed';
+        }
+
+        async function fetchHistoricalStreakData() {
+            try {
+                const r = await fetch('https://api.alternative.me/fng/?limit=365&format=json');
+                const d = await r.json();
+                if (!d.data || !Array.isArray(d.data)) {
+                    throw new Error('Invalid historical data');
+                }
+                return d.data; // Newest first (index 0 = today)
+            } catch (e) {
+                console.error('Historical streak data fetch error:', e);
+                return null;
+            }
+        }
+
+        function calculateCurrentStreak(historicalData, currentCategory) {
+            let streak = 0;
+            for (let i = 0; i < historicalData.length; i++) {
+                const score = parseInt(historicalData[i].value);
+                const category = getSentimentCategory(score);
+                if (category === currentCategory) {
+                    streak++;
+                } else {
+                    break; // Stop when category changes
+                }
+            }
+            return streak;
+        }
+
+        function calculateHistoricalStats(historicalData) {
+            const categories = ['Extreme Fear', 'Fear', 'Neutral', 'Greed', 'Extreme Greed'];
+            const stats = {};
+
+            categories.forEach(cat => {
+                stats[cat] = { longestStreak: 0, totalDays: 0, streakCount: 0, recordDate: null };
+            });
+
+            // Track current streak as we iterate
+            let currentCat = null;
+            let currentStreakLen = 0;
+            let streakStartIndex = 0;
+
+            for (let i = historicalData.length - 1; i >= 0; i--) { // Go oldest to newest
+                const score = parseInt(historicalData[i].value);
+                const category = getSentimentCategory(score);
+
+                if (category === currentCat) {
+                    currentStreakLen++;
+                } else {
+                    // Save previous streak
+                    if (currentCat && currentStreakLen > 0) {
+                        if (currentStreakLen > stats[currentCat].longestStreak) {
+                            stats[currentCat].longestStreak = currentStreakLen;
+                            // Record the date when this streak ended (most recent day of the streak)
+                            stats[currentCat].recordDate = historicalData[streakStartIndex].timestamp;
+                        }
+                        stats[currentCat].totalDays += currentStreakLen;
+                        stats[currentCat].streakCount++;
+                    }
+                    // Start new streak
+                    currentCat = category;
+                    currentStreakLen = 1;
+                    streakStartIndex = i;
+                }
+            }
+
+            // Don't include the LAST streak because it's the CURRENT ONGOING streak
+            // We only want COMPLETED historical streaks for comparison
+            // (The last streak ends at index 0 which is today - still active!)
+
+            // Calculate averages
+            categories.forEach(cat => {
+                if (stats[cat].streakCount > 0) {
+                    stats[cat].average = Math.round((stats[cat].totalDays / stats[cat].streakCount) * 10) / 10;
+                } else {
+                    stats[cat].average = 0;
+                }
+            });
+
+            return stats;
+        }
+
+        // Helper function to format timestamp to "Month Year"
+        function formatRecordDate(timestamp) {
+            if (!timestamp) return '';
+            const date = new Date(parseInt(timestamp) * 1000);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${months[date.getMonth()]} ${date.getFullYear()}`;
+        }
+
+        async function updateStreakDisplay(currentScore) {
+            try {
+                const historicalData = await fetchHistoricalStreakData();
+                if (!historicalData || historicalData.length === 0) {
+                    document.getElementById('streakInfo').textContent = '';
+                    return;
+                }
+
+                const currentCategory = getSentimentCategory(currentScore);
+                const currentStreak = calculateCurrentStreak(historicalData, currentCategory);
+                const stats = calculateHistoricalStats(historicalData);
+
+                const catStats = stats[currentCategory];
+                const record = catStats.longestStreak;
+                const average = catStats.average;
+                const recordDate = catStats.recordDate;
+
+                const streakInfoEl = document.getElementById('streakInfo');
+
+                // Format record date string
+                const recordDateStr = recordDate ? ` in ${formatRecordDate(recordDate)}` : '';
+
+                // Check if it's a new record
+                if (currentStreak > record) {
+                    // BREAKING RECORD - current streak is longer than previous record
+                    streakInfoEl.innerHTML = `Day ${currentStreak} of ${currentCategory} 🔥 RECORD BROKEN!${record > 0 ? ` (Previous: ${record} days${recordDateStr})` : ''}`;
+                    streakInfoEl.classList.add('record');
+                } else if (currentStreak === 1) {
+                    // Just started
+                    streakInfoEl.innerHTML = `Day 1 of ${currentCategory} (Just started!)`;
+                    streakInfoEl.classList.remove('record');
+                } else if (currentStreak < record && currentStreak >= record - 1 && record > 0) {
+                    // Near record (within 1 day of breaking it, but NOT equal or greater)
+                    streakInfoEl.innerHTML = `Day ${currentStreak} of ${currentCategory} (Near record! Longest: ${record} days${recordDateStr})`;
+                    streakInfoEl.classList.remove('record');
+                } else if (average > 0 && currentStreak > average * 1.3) {
+                    // Above average
+                    streakInfoEl.innerHTML = `Day ${currentStreak} of ${currentCategory} (Above avg! Typical: ${average} days | Record: ${record} days${recordDateStr})`;
+                    streakInfoEl.classList.remove('record');
+                } else {
+                    // Normal
+                    streakInfoEl.innerHTML = `Day ${currentStreak} of ${currentCategory} (Avg: ${average} days | Record: ${record} days${recordDateStr})`;
+                    streakInfoEl.classList.remove('record');
+                }
+            } catch (e) {
+                console.error('Streak display error:', e);
+                document.getElementById('streakInfo').textContent = '';
+            }
+        }
+
+        async function fetchData(){
+            try{
+                const r=await fetch('https://api.alternative.me/fng/?limit=1&format=json');
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                const d=await r.json();
+                if(!d.data||!d.data[0]){throw new Error('Invalid API response');}
+                const fgiData=d.data[0];
+                currentScore=parseInt(fgiData.value);
+                const statusMap={'Extreme Fear':'EXTREME FEAR','Fear':'FEAR','Neutral':'NEUTRAL','Greed':'GREED','Extreme Greed':'EXTREME GREED'};
+                const status=statusMap[fgiData.value_classification]||fgiData.value_classification.toUpperCase();
+                const degenMap={'Extreme Fear':'💎 Accumulate','Fear':'🤔 Good Entry','Neutral':'😐 Wait & See','Greed':'🚨 Take Profits','Extreme Greed':'⚠️ Exit Now'};
+                const degenStatus=degenMap[fgiData.value_classification]||'...';
+                const color=getColorForScore(currentScore);
+                updateSlotMachine(currentScore);
+                document.getElementById('slotStatus').textContent=status;
+                document.getElementById('slotStatus').style.color=color;
+                document.getElementById('degenStatus').textContent=degenStatus;
+                document.getElementById('degenStatus').style.color=color;
+                document.getElementById('timestamp').textContent='> Last Updated: '+new Date(fgiData.timestamp*1000).toLocaleTimeString();
+                updateSentimentQuote(currentScore, color);
+
+                // Update streak display
+                await updateStreakDisplay(currentScore);
+
+                const extreme=currentScore<=20||currentScore>=80;
+                if(extreme&&notificationsEnabled&&(lastNotificationScore===null||Math.abs(lastNotificationScore-currentScore)>10)){
+                    new Notification(currentScore<=20?'🔥 JACKPOT - EXTREME FEAR!':'⚠️ JACKPOT - EXTREME GREED!',{body:'Score: '+currentScore});
+                    lastNotificationScore=currentScore;
+                }else if(!extreme){lastNotificationScore=null;}
+
+                // Update portfolio advice if portfolio exists
+                if(portfolioData){
+                    updatePortfolioAdvice();
+                }
+            }catch(e){
+                console.error('Data fetch error:',e);
+                document.getElementById('slotStatus').textContent='CONNECTION ERROR';
+                document.getElementById('slotStatus').style.color='#ff0000';
+                document.getElementById('degenStatus').textContent='🔄 Pull lever to retry';
+                document.getElementById('degenStatus').style.color='#ffaa00';
+                document.getElementById('quoteText').textContent='Unable to fetch data. Please try again.';
+            }
+        }
+        
+        function shareToX(){
+            const s=currentScore<20?'BLOOD IN THE STREETS':currentScore<40?'PAPER HANDS EVERYWHERE':currentScore<60?'CRAB MARKET':currentScore<80?'FOMO KICKING IN':'EUPHORIA - TOP IS IN';
+            const e=currentScore<20?'🔥':currentScore<40?'💎':currentScore<60?'🦀':currentScore<80?'🚀':'⚠️';
+            const symbol=getSymbolForScore(currentScore);
+            const t=e+' '+symbol+' Crypto F&G: '+currentScore+'/100\n\nStatus: '+s+'\n\nCheck it live:';
+            window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(t)+'&url='+encodeURIComponent(window.location.href),'_blank','width=550,height=420');
+        }
+        
+        function refreshAll(){
+            fetchData();
+            fetchBTCPrice();
+            fetchHistoricalData();
+        }
+        
+        setTimeout(()=>{
+            fetchData();
+            fetchBTCPrice();
+            fetchHistoricalData();
+        },500);
+        
+        setInterval(fetchBTCPrice,30000);
+        setInterval(fetchData,60000);
+
+        // Portfolio Management
+        let portfolioData = null;
+        let allocationChartInstance = null;
+
+        function loadPortfolio() {
+            const saved = localStorage.getItem('portfolio');
+            if (saved) {
+                portfolioData = JSON.parse(saved);
+                return portfolioData;
+            }
+            return null;
+        }
+
+        function savePortfolio() {
+            const crypto = parseFloat(document.getElementById('cryptoInput').value) || 0;
+            const stablecoins = parseFloat(document.getElementById('stablesInput').value) || 0;
+            const cash = parseFloat(document.getElementById('cashInput').value) || 0;
+
+            // Validate for negative values
+            if (crypto < 0 || stablecoins < 0 || cash < 0) {
+                alert('Please enter positive values only. Negative amounts are not allowed.');
+                return;
+            }
+
+            if (crypto === 0 && stablecoins === 0 && cash === 0) {
+                alert('Please enter at least one value');
+                return;
+            }
+
+            portfolioData = { crypto, stablecoins, cash };
+            localStorage.setItem('portfolio', JSON.stringify(portfolioData));
+
+            renderAllocationChart();
+            updatePortfolioAdvice();
+        }
+
+        function calculateAllocation() {
+            if (!portfolioData) return null;
+            const total = portfolioData.crypto + portfolioData.stablecoins + portfolioData.cash;
+            if (total === 0) return null;
+
+            return {
+                cryptoRatio: portfolioData.crypto / total,
+                stablesRatio: portfolioData.stablecoins / total,
+                cashRatio: portfolioData.cash / total,
+                total: total
+            };
+        }
+
+        function getPortfolioAdvice(fgiScore, cryptoRatio) {
+            // Extreme Fear (0-24) + High Cash (cryptoRatio < 30%)
+            if (fgiScore < 25 && cryptoRatio < 0.3) {
+                return {
+                    text: "Deploy your cash - great entry point!",
+                    color: "#44ff88",
+                    borderColor: "#44ff88"
+                };
+            }
+
+            // Extreme Greed (80-100) + High Crypto (cryptoRatio > 70%)
+            if (fgiScore > 79 && cryptoRatio > 0.7) {
+                return {
+                    text: "Take profits - you're overexposed!",
+                    color: "#ff4444",
+                    borderColor: "#ff4444"
+                };
+            }
+
+            // Fear + Low Crypto (opportunity)
+            if (fgiScore < 40 && cryptoRatio < 0.4) {
+                return {
+                    text: "Good time to increase crypto allocation",
+                    color: "#88ff44",
+                    borderColor: "#88ff44"
+                };
+            }
+
+            // Greed + High Crypto (warning)
+            if (fgiScore > 65 && cryptoRatio > 0.6) {
+                return {
+                    text: "Consider taking some profits",
+                    color: "#ff8844",
+                    borderColor: "#ff8844"
+                };
+            }
+
+            // Balanced
+            return {
+                text: "Your allocation looks good",
+                color: "#ffd700",
+                borderColor: "#ffd700"
+            };
+        }
+
+        function updatePortfolioAdvice() {
+            const allocation = calculateAllocation();
+            if (!allocation || currentScore === 0) return;
+
+            const advice = getPortfolioAdvice(currentScore, allocation.cryptoRatio);
+            const adviceElement = document.getElementById('portfolioAdvice');
+            const adviceText = document.getElementById('adviceText');
+
+            adviceText.textContent = advice.text;
+            adviceText.style.color = advice.color;
+            adviceElement.style.borderColor = advice.borderColor;
+            adviceElement.style.display = 'block';
+        }
+
+        function renderAllocationChart() {
+            if (!portfolioData) return;
+
+            const allocation = calculateAllocation();
+            if (!allocation) return;
+
+            document.getElementById('portfolioChart').style.display = 'block';
+
+            const ctx = document.getElementById('allocationChart').getContext('2d');
+
+            if (allocationChartInstance) {
+                allocationChartInstance.destroy();
+            }
+
+            allocationChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Crypto', 'Stablecoins', 'Cash'],
+                    datasets: [{
+                        data: [portfolioData.crypto, portfolioData.stablecoins, portfolioData.cash],
+                        backgroundColor: ['#f7931a', '#26a17b', '#44ff88'],
+                        borderColor: ['#fff', '#fff', '#fff'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#00ff00',
+                                font: {
+                                    family: 'Courier New',
+                                    size: 12
+                                },
+                                padding: 15
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Display allocation stats
+            const statsHTML = `
+                <div class="stat-item">
+                    <span class="stat-label">Crypto:</span>
+                    <span class="stat-value">$${portfolioData.crypto.toLocaleString()} (${(allocation.cryptoRatio * 100).toFixed(1)}%)</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Stablecoins:</span>
+                    <span class="stat-value">$${portfolioData.stablecoins.toLocaleString()} (${(allocation.stablesRatio * 100).toFixed(1)}%)</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Cash:</span>
+                    <span class="stat-value">$${portfolioData.cash.toLocaleString()} (${(allocation.cashRatio * 100).toFixed(1)}%)</span>
+                </div>
+                <div class="stat-item" style="margin-top:10px;border-top:2px solid rgba(0,255,0,0.5);padding-top:10px;">
+                    <span class="stat-label">Total:</span>
+                    <span class="stat-value">$${allocation.total.toLocaleString()}</span>
+                </div>
+            `;
+            document.getElementById('allocationStats').innerHTML = statsHTML;
+        }
+
+        // Initialize modal handlers after DOM is ready
+        function initPortfolioModal() {
+            const modal = document.getElementById('portfolioModal');
+            const portfolioBtn = document.getElementById('portfolioToggle');
+            const closeBtn = document.getElementsByClassName('close')[0];
+            const saveBtn = document.getElementById('savePortfolioBtn');
+
+            if (!modal || !portfolioBtn || !closeBtn || !saveBtn) {
+                console.error('Portfolio modal elements not found', {modal, portfolioBtn, closeBtn, saveBtn});
+                return;
+            }
+
+            console.log('Portfolio modal initialized successfully');
+
+            portfolioBtn.addEventListener('click', function() {
+                console.log('Portfolio button clicked');
+                modal.style.display = 'block';
+                modal.setAttribute('aria-hidden', 'false');
+                portfolioBtn.setAttribute('aria-pressed', 'true');
+                const saved = loadPortfolio();
+                if (saved) {
+                    document.getElementById('cryptoInput').value = saved.crypto;
+                    document.getElementById('stablesInput').value = saved.stablecoins;
+                    document.getElementById('cashInput').value = saved.cash;
+                    renderAllocationChart();
+                }
+                // Focus first input for keyboard users
+                document.getElementById('cryptoInput').focus();
+            });
+
+            const closeModal = function() {
+                console.log('Modal closed');
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+                portfolioBtn.setAttribute('aria-pressed', 'false');
+                portfolioBtn.focus(); // Return focus to trigger button
+            };
+
+            closeBtn.addEventListener('click', closeModal);
+
+            // Keyboard support for close button
+            closeBtn.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    closeModal();
+                }
+            });
+
+            // ESC key to close modal
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.style.display === 'block') {
+                    closeModal();
+                }
+            });
+
+            saveBtn.addEventListener('click', function() {
+                console.log('Save button clicked');
+                savePortfolio();
+            });
+
+            window.addEventListener('click', function(event) {
+                if (event.target == modal) {
+                    closeModal();
+                }
+            });
+        }
+
+        // Load portfolio on page load
+        loadPortfolio();
+
+        // Initialize modal immediately (modal is now defined before script)
+        initPortfolioModal();
+
+        // Add event listeners for all interactive elements (CSP-friendly)
+        document.getElementById('spinBtn').addEventListener('click', spinSlots);
+
+        // Keyboard support for spin button
+        document.getElementById('spinBtn').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                spinSlots();
+            }
+        });
+
+        document.getElementById('shareBtn').addEventListener('click', shareToX);
+
+        // Keyboard support for share button
+        document.getElementById('shareBtn').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                shareToX();
+            }
+        });
+
+        document.getElementById('refreshBtn').addEventListener('click', refreshAll);
+
+        // Keyboard support for refresh button
+        document.getElementById('refreshBtn').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                refreshAll();
+            }
+        });
+    </script>
+</body>
+</html>

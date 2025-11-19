@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hindsight Score - Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #fff;
+            padding: 40px 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+
+        h1 {
+            color: #00ff00;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 40px;
+            font-size: 0.9em;
+        }
+
+        /* Hindsight Score Section */
+        .hindsight-container {
+            background: linear-gradient(145deg, #1a1f3a 0%, #0f1424 50%, #1a1f3a 100%);
+            border: 4px solid;
+            border-image: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%) 1;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.95), 0 0 60px rgba(255,215,0,0.3);
+        }
+
+        .hindsight-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .hindsight-title {
+            font-size: 1.8em;
+            color: #ffd700;
+            text-shadow: 0 0 10px #ffd700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .current-range {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid #ffd700;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #ffd700;
+        }
+
+        .hindsight-description {
+            color: #aaa;
+            margin-bottom: 25px;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .time-periods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .period-card {
+            background: linear-gradient(145deg, #0a0e1a 0%, #060912 100%);
+            border: 3px solid rgba(255, 215, 0, 0.4);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .period-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 215, 0, 0.7);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.2);
+        }
+
+        .period-label {
+            color: #ffd700;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+
+        .period-return {
+            font-size: 2.2em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .period-winrate {
+            color: #aaa;
+            font-size: 0.9em;
+        }
+
+        .historical-stats {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .stat-label {
+            color: #aaa;
+            font-size: 0.9em;
+        }
+
+        .stat-value {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .insight-box {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05));
+            border-left: 4px solid #ffd700;
+            padding: 15px 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .insight-icon {
+            font-size: 1.3em;
+            margin-right: 10px;
+        }
+
+        .insight-text {
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        .comparison-toggle {
+            background: rgba(255, 215, 0, 0.2);
+            border: 2px solid #ffd700;
+            color: #ffd700;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .comparison-toggle:hover {
+            background: rgba(255, 215, 0, 0.3);
+            transform: scale(1.02);
+        }
+
+        .comparison-table {
+            display: none;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .comparison-table.visible {
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        th {
+            color: #ffd700;
+            font-weight: bold;
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .current-row {
+            background: rgba(0, 255, 0, 0.1);
+            border-left: 4px solid #00ff00;
+        }
+
+        .current-indicator {
+            color: #00ff00;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+
+        .positive { color: #44ff88; }
+        .negative { color: #ff4444; }
+        .neutral { color: #ffd700; }
+
+        @media (max-width: 768px) {
+            .hindsight-title { font-size: 1.4em; }
+            .time-periods { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr; }
+            table { font-size: 0.85em; }
+            th, td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔮 HINDSIGHT SCORE - DEMO</h1>
+        <p class="subtitle">What historically happens next at current Fear & Greed levels?</p>
+
+        <div class="hindsight-container">
+            <div class="hindsight-header">
+                <div class="hindsight-title">
+                    <span>🔮</span>
+                    <span>HINDSIGHT SCORE</span>
+                </div>
+                <div class="current-range" id="currentRange">
+                    Fear (25-44)
+                </div>
+            </div>
+
+            <div class="hindsight-description">
+                Based on <span style="color: #ffd700; font-weight: bold;">5.5 years (2,000 days)</span> of historical data,
+                here's what typically happens when FGI is in the <strong id="rangeNameText">Fear</strong> range:
+            </div>
+
+            <div class="time-periods">
+                <div class="period-card">
+                    <div class="period-label">7 DAYS</div>
+                    <div class="period-return positive" id="return7">+0.15%</div>
+                    <div class="period-winrate" id="winrate7">48.6% win rate (36/74)</div>
+                </div>
+
+                <div class="period-card">
+                    <div class="period-label">14 DAYS</div>
+                    <div class="period-return positive" id="return14">+0.95%</div>
+                    <div class="period-winrate" id="winrate14">46.5% win rate (33/71)</div>
+                </div>
+
+                <div class="period-card">
+                    <div class="period-label">30 DAYS</div>
+                    <div class="period-return positive" id="return30">+4.77%</div>
+                    <div class="period-winrate" id="winrate30">62.7% win rate (37/59)</div>
+                </div>
+            </div>
+
+            <div class="historical-stats">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">💎 Historical Best (30d):</span>
+                        <span class="stat-value positive" id="best">+31.45%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">⚠️ Historical Worst (30d):</span>
+                        <span class="stat-value negative" id="worst">-16.37%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">📊 Sample Size:</span>
+                        <span class="stat-value" id="sampleSize">59 occurrences</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">📅 Data Period:</span>
+                        <span class="stat-value">May 2020 - Nov 2025</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="insight-box" id="insightBox">
+                <span class="insight-icon">💡</span>
+                <span class="insight-text" id="insightText">
+                    <strong>SMART INSIGHT:</strong> Fear (25-44) is the best contrarian entry zone.
+                    +4.54% avg return with 56.8% win rate over 440 historical occurrences.
+                    Momentum beats contrarian - Extreme Greed (+21.87%) is the top performer!
+                </span>
+            </div>
+
+            <button class="comparison-toggle" onclick="toggleComparison()">
+                📊 Compare All FGI Ranges
+            </button>
+
+            <div class="comparison-table" id="comparisonTable">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>FGI Range</th>
+                            <th>30d Avg Return</th>
+                            <th>Win Rate</th>
+                            <th>Sample Size</th>
+                            <th>Risk/Reward</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Extreme Fear (0-24)</td>
+                            <td class="negative">-0.85%</td>
+                            <td class="negative">48.4%</td>
+                            <td>275</td>
+                            <td class="negative">⚠️ Losing Bet</td>
+                        </tr>
+                        <tr class="current-row">
+                            <td>Fear (25-44)<span class="current-indicator">← YOU ARE HERE</span></td>
+                            <td class="positive">+4.54%</td>
+                            <td class="positive">56.8%</td>
+                            <td>440</td>
+                            <td class="positive">Good Entry</td>
+                        </tr>
+                        <tr>
+                            <td>Neutral (45-59)</td>
+                            <td class="positive">+6.82%</td>
+                            <td class="positive">59.6%</td>
+                            <td>433</td>
+                            <td class="positive">🥈 2nd Best</td>
+                        </tr>
+                        <tr>
+                            <td>Greed (60-79)</td>
+                            <td class="positive">+3.97%</td>
+                            <td class="neutral">50.8%</td>
+                            <td>671</td>
+                            <td class="positive">Hold Trend</td>
+                        </tr>
+                        <tr>
+                            <td>Extreme Greed (80-100)</td>
+                            <td class="positive">+21.87%</td>
+                            <td class="positive">74.8%</td>
+                            <td>151</td>
+                            <td class="positive">🥇 BEST!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; color: #666; font-size: 0.85em;">
+            <p>This is a demo using real backtest data from <strong>May 2020 - Nov 2025 (5.5 years, 2,000 days)</strong></p>
+            <p style="margin-top: 10px;">Data updates automatically when integrated into your website</p>
+        </div>
+    </div>
+
+    <script>
+        // Real backtest data - 5.5 YEARS (May 2020 - Nov 2025)
+        const backtestData = {
+            "Extreme Fear": {
+                "day7": { avgReturn: 0.14, winRate: 50.4, wins: 141, total: 280 },
+                "day14": { avgReturn: 0.24, winRate: 52.9, wins: 146, total: 276 },
+                "day30": { avgReturn: -0.85, winRate: 48.4, wins: 133, total: 275, best: 56.94, worst: -37.41 }
+            },
+            "Fear": {
+                "day7": { avgReturn: 0.69, winRate: 51.6, wins: 235, total: 455 },
+                "day14": { avgReturn: 1.49, winRate: 51.5, wins: 233, total: 452 },
+                "day30": { avgReturn: 4.54, winRate: 56.8, wins: 250, total: 440, best: 74.11, worst: -30.99 }
+            },
+            "Neutral": {
+                "day7": { avgReturn: 1.03, winRate: 52.3, wins: 228, total: 436 },
+                "day14": { avgReturn: 2.40, winRate: 54.8, wins: 239, total: 436 },
+                "day30": { avgReturn: 6.82, winRate: 59.6, wins: 258, total: 433, best: 53.80, worst: -38.26 }
+            },
+            "Greed": {
+                "day7": { avgReturn: 1.08, winRate: 55.4, wins: 372, total: 671 },
+                "day14": { avgReturn: 2.20, winRate: 55.6, wins: 373, total: 671 },
+                "day30": { avgReturn: 3.97, winRate: 50.8, wins: 341, total: 671, best: 81.26, worst: -43.02 }
+            },
+            "Extreme Greed": {
+                "day7": { avgReturn: 5.00, winRate: 61.6, wins: 93, total: 151 },
+                "day14": { avgReturn: 9.54, winRate: 62.3, wins: 94, total: 151 },
+                "day30": { avgReturn: 21.87, winRate: 74.8, wins: 113, total: 151, best: 120.47, worst: -28.90 }
+            }
+        };
+
+        function toggleComparison() {
+            const table = document.getElementById('comparisonTable');
+            table.classList.toggle('visible');
+
+            const button = document.querySelector('.comparison-toggle');
+            if (table.classList.contains('visible')) {
+                button.textContent = '🔼 Hide Comparison';
+            } else {
+                button.textContent = '📊 Compare All FGI Ranges';
+            }
+        }
+
+        // Simulate live update with different range
+        function updateToRange(rangeName) {
+            const data = backtestData[rangeName];
+            if (!data) return;
+
+            document.getElementById('currentRange').textContent = `${rangeName} (${getRangeNumbers(rangeName)})`;
+            document.getElementById('rangeNameText').textContent = rangeName;
+
+            // Update cards
+            if (data.day7) {
+                document.getElementById('return7').textContent = formatReturn(data.day7.avgReturn);
+                document.getElementById('winrate7').textContent = `${data.day7.winRate}% win rate (${data.day7.wins}/${data.day7.total})`;
+                updateReturnColor('return7', data.day7.avgReturn);
+            }
+
+            if (data.day14) {
+                document.getElementById('return14').textContent = formatReturn(data.day14.avgReturn);
+                document.getElementById('winrate14').textContent = `${data.day14.winRate}% win rate (${data.day14.wins}/${data.day14.total})`;
+                updateReturnColor('return14', data.day14.avgReturn);
+            }
+
+            if (data.day30) {
+                document.getElementById('return30').textContent = formatReturn(data.day30.avgReturn);
+                document.getElementById('winrate30').textContent = `${data.day30.winRate}% win rate (${data.day30.wins}/${data.day30.total})`;
+                updateReturnColor('return30', data.day30.avgReturn);
+
+                document.getElementById('best').textContent = formatReturn(data.day30.best);
+                document.getElementById('worst').textContent = formatReturn(data.day30.worst);
+                document.getElementById('sampleSize').textContent = `${data.day30.total} occurrences`;
+            }
+
+            // Update insight
+            updateInsight(rangeName, data.day30);
+        }
+
+        function getRangeNumbers(rangeName) {
+            const ranges = {
+                "Extreme Fear": "0-24",
+                "Fear": "25-44",
+                "Neutral": "45-59",
+                "Greed": "60-79",
+                "Extreme Greed": "80-100"
+            };
+            return ranges[rangeName] || "";
+        }
+
+        function formatReturn(value) {
+            return (value >= 0 ? '+' : '') + value.toFixed(2) + '%';
+        }
+
+        function updateReturnColor(elementId, value) {
+            const el = document.getElementById(elementId);
+            el.classList.remove('positive', 'negative', 'neutral');
+            if (value > 1) {
+                el.classList.add('positive');
+            } else if (value < -1) {
+                el.classList.add('negative');
+            } else {
+                el.classList.add('neutral');
+            }
+        }
+
+        function updateInsight(rangeName, data) {
+            const insights = {
+                "Extreme Fear": `<strong>⚠️ VALUE TRAP:</strong> Extreme Fear shows NEGATIVE returns (${data.avgReturn.toFixed(2)}% avg) over 5.5 years. Win rate: ${data.winRate}%. Often occurs during sustained bear markets. Wait for Fear (25-44) instead - better risk/reward.`,
+
+                "Fear": `<strong>✅ BEST CONTRARIAN ENTRY:</strong> Fear (25-44) delivers +${data.avgReturn.toFixed(2)}% avg returns with ${data.winRate}% win rate across ${data.total} occurrences. This is the TRUE "buy fear" zone. Most reliable accumulation opportunity.`,
+
+                "Neutral": `<strong>🥈 UNDERRATED GEM:</strong> Neutral delivers +${data.avgReturn.toFixed(2)}% avg (2nd best!) with ${data.winRate}% win rate. The "calm before the storm" - historically leads to strong rallies. Don't overlook this range!`,
+
+                "Greed": `<strong>📈 MOMENTUM PLAY:</strong> Greed shows +${data.avgReturn.toFixed(2)}% avg with ~50/50 odds across ${data.total} occurrences (most common state). Don't fade the trend - momentum works in Bitcoin.`,
+
+                "Extreme Greed": `<strong>🚀 PARABOLIC SIGNAL:</strong> Extreme Greed delivers +${data.avgReturn.toFixed(2)}% avg (BEST!) with ${data.winRate}% win rate. Signals parabolic bull runs, not tops. High volatility but highest returns. Consider partial profits if nervous.`
+            };
+
+            document.getElementById('insightText').innerHTML = insights[rangeName] || "";
+
+            // Update insight box color
+            const box = document.getElementById('insightBox');
+            box.style.borderLeftColor = data.avgReturn > 2 ? '#44ff88' : data.avgReturn < 0 ? '#ff4444' : '#ffd700';
+        }
+
+        // Demo: Cycle through ranges every 4 seconds
+        const ranges = ["Fear", "Neutral", "Greed", "Extreme Greed", "Extreme Fear"];
+        let currentIndex = 0;
+
+        console.log("💡 Demo Mode: Data will cycle through different FGI ranges every 4 seconds");
+
+        setInterval(() => {
+            currentIndex = (currentIndex + 1) % ranges.length;
+            updateToRange(ranges[currentIndex]);
+            console.log(`📊 Updated to: ${ranges[currentIndex]}`);
+        }, 4000);
+    </script>
+</body>
+</html>
