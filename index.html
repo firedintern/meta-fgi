@@ -1573,29 +1573,6 @@
     <script>
         let currentScore=0,particlesEnabled=true,notificationsEnabled=false,lastNotificationScore=null,isSpinning=false;
         let audioContext;
-        let lastScrollTop=0;
-        
-        // Hide controls when scrolling down on mobile
-        if(window.innerWidth<=768){
-            let scrollTimeout;
-            window.addEventListener('scroll',function(){
-                clearTimeout(scrollTimeout);
-                const controls=document.getElementById('controls');
-                const st=window.pageYOffset||document.documentElement.scrollTop;
-                
-                if(st>lastScrollTop&&st>100){
-                    controls.classList.add('hidden');
-                }else{
-                    controls.classList.remove('hidden');
-                }
-                
-                scrollTimeout=setTimeout(()=>{
-                    controls.classList.remove('hidden');
-                },2000);
-                
-                lastScrollTop=st<=0?0:st;
-            },false);
-        }
         
         function initAudio(){
             if(!audioContext){
