@@ -2708,46 +2708,75 @@
         const mobileFooter = document.getElementById('controlsMobile');
 
         if (mobileFooter) {
-            console.log('Mobile footer found, width:', window.innerWidth);
-
             // Set up click handlers for mobile footer buttons
-            // Use 'button.control-btn' to exclude the <a> tag (Telegram button)
+            // Direct function calls instead of clicking hidden desktop buttons
             const mobileHindsightBtn = mobileFooter.querySelector('.hindsight-btn');
             const mobileControlButtons = mobileFooter.querySelectorAll('button.control-btn');
             const mobileParticlesBtn = mobileControlButtons[0]; // ✨ Matrix button
             const mobilePortfolioBtn = mobileControlButtons[1]; // 💼 Portfolio button
 
-            console.log('Mobile buttons found:', {
-                hindsight: !!mobileHindsightBtn,
-                particles: !!mobileParticlesBtn,
-                portfolio: !!mobilePortfolioBtn
-            });
-
+            // Hindsight button - open hindsight modal directly
             if (mobileHindsightBtn) {
                 mobileHindsightBtn.addEventListener('click', function(e) {
-                    console.log('Hindsight mobile clicked');
                     e.preventDefault();
+                    const modal = document.getElementById('hindsightModal');
                     const desktopBtn = document.getElementById('hindsightToggle');
-                    console.log('Desktop hindsight button:', desktopBtn);
-                    if (desktopBtn) desktopBtn.click();
+                    if (modal && desktopBtn) {
+                        modal.style.display = 'block';
+                        modal.setAttribute('aria-hidden', 'false');
+                        desktopBtn.setAttribute('aria-pressed', 'true');
+                        if (currentScore > 0) {
+                            updateHindsightModal(currentScore);
+                        }
+                    }
                 });
             }
+
+            // Matrix/Particles toggle - toggle directly
             if (mobileParticlesBtn) {
                 mobileParticlesBtn.addEventListener('click', function(e) {
-                    console.log('Particles mobile clicked');
                     e.preventDefault();
                     const desktopBtn = document.getElementById('particlesToggle');
-                    console.log('Desktop particles button:', desktopBtn);
-                    if (desktopBtn) desktopBtn.click();
+                    particlesEnabled = !particlesEnabled;
+                    if (desktopBtn) {
+                        desktopBtn.classList.toggle('active');
+                        desktopBtn.setAttribute('aria-pressed', particlesEnabled ? 'true' : 'false');
+                    }
+                    this.classList.toggle('active');
+                    const canvas = document.getElementById('matrix-canvas');
+                    if (!particlesEnabled) {
+                        canvas.classList.add('hidden');
+                        cancelAnimationFrame(matrixAnimationId);
+                        setTimeout(() => {
+                            const ctx = canvas.getContext('2d');
+                            ctx.fillStyle = '#000';
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        }, 500);
+                    } else {
+                        canvas.classList.remove('hidden');
+                        animateMatrix();
+                    }
                 });
             }
+
+            // Portfolio button - open portfolio modal directly
             if (mobilePortfolioBtn) {
                 mobilePortfolioBtn.addEventListener('click', function(e) {
-                    console.log('Portfolio mobile clicked');
                     e.preventDefault();
+                    const modal = document.getElementById('portfolioModal');
                     const desktopBtn = document.getElementById('portfolioToggle');
-                    console.log('Desktop portfolio button:', desktopBtn);
-                    if (desktopBtn) desktopBtn.click();
+                    if (modal && desktopBtn) {
+                        modal.style.display = 'block';
+                        modal.setAttribute('aria-hidden', 'false');
+                        desktopBtn.setAttribute('aria-pressed', 'true');
+                        const saved = loadPortfolio();
+                        if (saved) {
+                            document.getElementById('cryptoInput').value = saved.crypto;
+                            document.getElementById('stablesInput').value = saved.stablecoins;
+                            document.getElementById('cashInput').value = saved.cash;
+                            updatePortfolioDisplay(saved.crypto, saved.stablecoins, saved.cash);
+                        }
+                    }
                 });
             }
 
