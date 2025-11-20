@@ -804,13 +804,50 @@
 
             .controls-mobile {
                 display: flex;
+                justify-content: space-around;
+                align-items: center;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: rgba(10, 15, 30, 0.95);
+                backdrop-filter: blur(10px);
+                padding: 12px 15px;
+                border-top: 1px solid rgba(0, 255, 0, 0.2);
+                z-index: 999;
+                transition: transform 0.3s ease;
+            }
+
+            .controls-mobile.hidden-scroll {
+                transform: translateY(100%);
+            }
+
+            .controls-mobile .control-btn,
+            .controls-mobile .hindsight-btn,
+            .controls-mobile .telegram-btn {
+                flex: 1;
+                max-width: 80px;
+                padding: 12px;
+                margin: 0 4px;
+                font-size: 1.3em;
+                display: flex;
+                align-items: center;
                 justify-content: center;
-                gap: 8px;
-                margin: 15px auto 0;
-                max-width: 95%;
-                background: rgba(0, 0, 0, 0.7);
-                padding: 10px;
-                border-radius: 10px;
+                min-height: 48px;
+            }
+
+            .controls-mobile .telegram-btn {
+                background: rgba(0, 100, 0, 0.3);
+                border-color: #00aa00;
+                color: #00ff00;
+            }
+
+            .controls-mobile .telegram-btn:hover {
+                background: rgba(0, 150, 0, 0.4);
+            }
+
+            .controls-mobile .telegram-btn svg {
+                fill: #00ff00;
             }
             .control-btn { 
                 padding: 8px 12px; 
@@ -1342,17 +1379,6 @@
             <div class="btc-label">₿ Bitcoin</div>
             <div class="btc-price" id="btcPrice">Loading...</div>
             <div class="btc-change" id="btcChange"></div>
-        </div>
-
-        <div class="controls-mobile" id="controlsMobile">
-            <button class="hindsight-btn" onclick="document.getElementById('hindsightToggle').click()">🔮</button>
-            <button class="control-btn active" onclick="document.getElementById('particlesToggle').click()">✨</button>
-            <a href="https://t.me/fgichadbot" target="_blank" rel="noopener noreferrer" class="control-btn telegram-btn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.461-1.901-.903-1.056-.692-1.653-1.123-2.678-1.799-1.185-.781-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.302.481-.428-.009-1.252-.242-1.865-.442-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635.099-.002.321.023.465.14.121.098.155.23.171.324.016.094.036.308.02.475z"/>
-                </svg>
-            </a>
-            <button class="control-btn" onclick="document.getElementById('portfolioToggle').click()">💼</button>
         </div>
         
         <div id="content">
@@ -2670,6 +2696,38 @@
                 refreshAll();
             }
         });
+
+        // Mobile footer hide on scroll (like X/Twitter)
+        let lastScrollTop = 0;
+        const mobileFooter = document.getElementById('controlsMobile');
+
+        if (mobileFooter && window.innerWidth <= 800) {
+            window.addEventListener('scroll', function() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+                if (scrollTop > lastScrollTop && scrollTop > 100) {
+                    // Scrolling down & past threshold - hide footer
+                    mobileFooter.classList.add('hidden-scroll');
+                } else if (scrollTop < lastScrollTop) {
+                    // Scrolling up - show footer
+                    mobileFooter.classList.remove('hidden-scroll');
+                }
+
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }, false);
+        }
     </script>
+
+    <!-- Mobile Footer Controls (only visible on mobile) -->
+    <div class="controls-mobile" id="controlsMobile">
+        <button class="hindsight-btn" onclick="document.getElementById('hindsightToggle').click()" aria-label="Hindsight Tool">🔮</button>
+        <button class="control-btn active" onclick="document.getElementById('particlesToggle').click()" aria-label="Toggle Matrix">✨</button>
+        <a href="https://t.me/fgichadbot" target="_blank" rel="noopener noreferrer" class="control-btn telegram-btn" aria-label="Telegram Alerts">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.461-1.901-.903-1.056-.692-1.653-1.123-2.678-1.799-1.185-.781-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.302.481-.428-.009-1.252-.242-1.865-.442-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635.099-.002.321.023.465.14.121.098.155.23.171.324.016.094.036.308.02.475z"/>
+            </svg>
+        </a>
+        <button class="control-btn" onclick="document.getElementById('portfolioToggle').click()" aria-label="My Portfolio">💼</button>
+    </div>
 </body>
 </html>
