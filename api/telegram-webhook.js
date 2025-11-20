@@ -7,7 +7,7 @@ const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const KV_REST_API_URL = process.env.KV_REST_API_URL;
 const KV_REST_API_TOKEN = process.env.KV_REST_API_TOKEN;
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -35,11 +35,11 @@ module.exports = async (req, res) => {
 
       // Send welcome message
       await sendTelegramMessage(chatId,
-        `🔔 *FGI Extreme Alerts Activated!*\n\n` +
-        `You'll receive notifications when:\n` +
-        `• 🔴 Extreme Fear (0-24)\n` +
-        `• 🟢 Extreme Greed (80-100)\n\n` +
-        `Stay informed about extreme market sentiment!\n\n` +
+        `🔔 *FGI Extreme Alerts Activated!*\\n\\n` +
+        `You'll receive notifications when:\\n` +
+        `• 🔴 Extreme Fear (0-24)\\n` +
+        `• 🟢 Extreme Greed (80-100)\\n\\n` +
+        `Stay informed about extreme market sentiment!\\n\\n` +
         `Use /stop to unsubscribe anytime.`,
         { parse_mode: 'Markdown' }
       );
@@ -56,7 +56,7 @@ module.exports = async (req, res) => {
       });
 
       await sendTelegramMessage(chatId,
-        `✅ You've been unsubscribed from FGI alerts.\n\n` +
+        `✅ You've been unsubscribed from FGI alerts.\\n\\n` +
         `Use /start to subscribe again anytime.`
       );
     }
@@ -70,9 +70,9 @@ module.exports = async (req, res) => {
       const emoji = getEmojiForScore(fgiScore);
 
       await sendTelegramMessage(chatId,
-        `📊 *Current FGI Status*\n\n` +
-        `${emoji} *${fgiName}*\n` +
-        `Score: ${fgiScore}/100\n\n` +
+        `📊 *Current FGI Status*\\n\\n` +
+        `${emoji} *${fgiName}*\\n` +
+        `Score: ${fgiScore}/100\\n\\n` +
         `Check live: https://meta-fgi.vercel.app`,
         { parse_mode: 'Markdown' }
       );
@@ -83,7 +83,7 @@ module.exports = async (req, res) => {
     console.error('Webhook error:', error);
     return res.status(200).json({ ok: true }); // Always return 200 to Telegram
   }
-};
+}
 
 async function sendTelegramMessage(chatId, text, options = {}) {
   const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;

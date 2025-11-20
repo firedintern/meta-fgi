@@ -8,7 +8,7 @@ const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const KV_REST_API_URL = process.env.KV_REST_API_URL;
 const KV_REST_API_TOKEN = process.env.KV_REST_API_TOKEN;
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   // Verify cron secret to prevent unauthorized calls
   const cronSecret = req.headers['x-vercel-cron-secret'];
   if (cronSecret !== process.env.CRON_SECRET) {
@@ -56,10 +56,10 @@ module.exports = async (req, res) => {
       : 'Historical data shows strong performance (+21.87% avg over 30 days). Momentum is real!';
 
     const message =
-      `${emoji} *${level} ALERT!* ${emoji}\n\n` +
-      `📊 Current Score: *${fgiScore}/100*\n` +
-      `Status: ${fgiName}\n\n` +
-      `💡 ${advice}\n\n` +
+      `${emoji} *${level} ALERT!* ${emoji}\\n\\n` +
+      `📊 Current Score: *${fgiScore}/100*\\n` +
+      `Status: ${fgiName}\\n\\n` +
+      `💡 ${advice}\\n\\n` +
       `🔮 Check Hindsight Score: https://meta-fgi.vercel.app`;
 
     // Send to all subscribers
@@ -91,7 +91,7 @@ module.exports = async (req, res) => {
     console.error('Cron error:', error);
     return res.status(500).json({ error: error.message });
   }
-};
+}
 
 async function getAllSubscribers() {
   try {
