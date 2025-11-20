@@ -2703,100 +2703,6 @@
             }
         });
 
-        // Mobile footer hide on scroll (like X/Twitter)
-        let lastScrollTop = 0;
-        const mobileFooter = document.getElementById('controlsMobile');
-
-        if (mobileFooter) {
-            // Set up click handlers for mobile footer buttons
-            // Direct function calls instead of clicking hidden desktop buttons
-            const mobileHindsightBtn = mobileFooter.querySelector('.hindsight-btn');
-            const mobileControlButtons = mobileFooter.querySelectorAll('button.control-btn');
-            const mobileParticlesBtn = mobileControlButtons[0]; // ✨ Matrix button
-            const mobilePortfolioBtn = mobileControlButtons[1]; // 💼 Portfolio button
-
-            // Hindsight button - open hindsight modal directly
-            if (mobileHindsightBtn) {
-                mobileHindsightBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const modal = document.getElementById('hindsightModal');
-                    const desktopBtn = document.getElementById('hindsightToggle');
-                    if (modal && desktopBtn) {
-                        modal.style.display = 'block';
-                        modal.setAttribute('aria-hidden', 'false');
-                        desktopBtn.setAttribute('aria-pressed', 'true');
-                        if (currentScore > 0) {
-                            updateHindsightModal(currentScore);
-                        }
-                    }
-                });
-            }
-
-            // Matrix/Particles toggle - toggle directly
-            if (mobileParticlesBtn) {
-                mobileParticlesBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const desktopBtn = document.getElementById('particlesToggle');
-                    particlesEnabled = !particlesEnabled;
-                    if (desktopBtn) {
-                        desktopBtn.classList.toggle('active');
-                        desktopBtn.setAttribute('aria-pressed', particlesEnabled ? 'true' : 'false');
-                    }
-                    this.classList.toggle('active');
-                    const canvas = document.getElementById('matrix-canvas');
-                    if (!particlesEnabled) {
-                        canvas.classList.add('hidden');
-                        cancelAnimationFrame(matrixAnimationId);
-                        setTimeout(() => {
-                            const ctx = canvas.getContext('2d');
-                            ctx.fillStyle = '#000';
-                            ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        }, 500);
-                    } else {
-                        canvas.classList.remove('hidden');
-                        animateMatrix();
-                    }
-                });
-            }
-
-            // Portfolio button - open portfolio modal directly
-            if (mobilePortfolioBtn) {
-                mobilePortfolioBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const modal = document.getElementById('portfolioModal');
-                    const desktopBtn = document.getElementById('portfolioToggle');
-                    if (modal && desktopBtn) {
-                        modal.style.display = 'block';
-                        modal.setAttribute('aria-hidden', 'false');
-                        desktopBtn.setAttribute('aria-pressed', 'true');
-                        const saved = loadPortfolio();
-                        if (saved) {
-                            document.getElementById('cryptoInput').value = saved.crypto;
-                            document.getElementById('stablesInput').value = saved.stablecoins;
-                            document.getElementById('cashInput').value = saved.cash;
-                            updatePortfolioDisplay(saved.crypto, saved.stablecoins, saved.cash);
-                        }
-                    }
-                });
-            }
-
-            // Scroll hide/show behavior
-            if (window.innerWidth <= 800) {
-                window.addEventListener('scroll', function() {
-                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-                    if (scrollTop > lastScrollTop && scrollTop > 100) {
-                        // Scrolling down & past threshold - hide footer
-                        mobileFooter.classList.add('hidden-scroll');
-                    } else if (scrollTop < lastScrollTop) {
-                        // Scrolling up - show footer
-                        mobileFooter.classList.remove('hidden-scroll');
-                    }
-
-                    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-                }, false);
-            }
-        }
     </script>
 
     <!-- Mobile Footer Controls (only visible on mobile) -->
@@ -2810,5 +2716,103 @@
         </a>
         <button class="control-btn" aria-label="My Portfolio">💼</button>
     </div>
+
+    <!-- Mobile footer button handlers - MUST run after HTML exists -->
+    <script>
+        // Mobile footer hide on scroll (like X/Twitter)
+            let lastScrollTop = 0;
+            const mobileFooter = document.getElementById('controlsMobile');
+
+            if (mobileFooter) {
+                // Set up click handlers for mobile footer buttons
+                // Direct function calls instead of clicking hidden desktop buttons
+                const mobileHindsightBtn = mobileFooter.querySelector('.hindsight-btn');
+                const mobileControlButtons = mobileFooter.querySelectorAll('button.control-btn');
+                const mobileParticlesBtn = mobileControlButtons[0]; // ✨ Matrix button
+                const mobilePortfolioBtn = mobileControlButtons[1]; // 💼 Portfolio button
+
+                // Hindsight button - open hindsight modal directly
+                if (mobileHindsightBtn) {
+                    mobileHindsightBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const modal = document.getElementById('hindsightModal');
+                        const desktopBtn = document.getElementById('hindsightToggle');
+                        if (modal && desktopBtn) {
+                            modal.style.display = 'block';
+                            modal.setAttribute('aria-hidden', 'false');
+                            desktopBtn.setAttribute('aria-pressed', 'true');
+                            if (currentScore > 0) {
+                                updateHindsightModal(currentScore);
+                            }
+                        }
+                    });
+                }
+
+                // Matrix/Particles toggle - toggle directly
+                if (mobileParticlesBtn) {
+                    mobileParticlesBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const desktopBtn = document.getElementById('particlesToggle');
+                        particlesEnabled = !particlesEnabled;
+                        if (desktopBtn) {
+                            desktopBtn.classList.toggle('active');
+                            desktopBtn.setAttribute('aria-pressed', particlesEnabled ? 'true' : 'false');
+                        }
+                        this.classList.toggle('active');
+                        const canvas = document.getElementById('matrix-canvas');
+                        if (!particlesEnabled) {
+                            canvas.classList.add('hidden');
+                            cancelAnimationFrame(matrixAnimationId);
+                            setTimeout(() => {
+                                const ctx = canvas.getContext('2d');
+                                ctx.fillStyle = '#000';
+                                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                            }, 500);
+                        } else {
+                            canvas.classList.remove('hidden');
+                            matrixAnimationId = requestAnimationFrame(drawMatrix);
+                        }
+                    });
+                }
+
+                // Portfolio button - open portfolio modal directly
+                if (mobilePortfolioBtn) {
+                    mobilePortfolioBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const modal = document.getElementById('portfolioModal');
+                        const desktopBtn = document.getElementById('portfolioToggle');
+                        if (modal && desktopBtn) {
+                            modal.style.display = 'block';
+                            modal.setAttribute('aria-hidden', 'false');
+                            desktopBtn.setAttribute('aria-pressed', 'true');
+                            const saved = loadPortfolio();
+                            if (saved) {
+                                document.getElementById('cryptoInput').value = saved.crypto;
+                                document.getElementById('stablesInput').value = saved.stablecoins;
+                                document.getElementById('cashInput').value = saved.cash;
+                                updatePortfolioDisplay(saved.crypto, saved.stablecoins, saved.cash);
+                            }
+                        }
+                    });
+                }
+
+                // Scroll hide/show behavior
+                if (window.innerWidth <= 800) {
+                    window.addEventListener('scroll', function() {
+                        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+                        if (scrollTop > lastScrollTop && scrollTop > 100) {
+                            // Scrolling down & past threshold - hide footer
+                            mobileFooter.classList.add('hidden-scroll');
+                        } else if (scrollTop < lastScrollTop) {
+                            // Scrolling up - show footer
+                            mobileFooter.classList.remove('hidden-scroll');
+                        }
+
+                        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+                    }, false);
+                }
+            }
+    </script>
 </body>
 </html>
