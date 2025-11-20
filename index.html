@@ -2707,7 +2707,9 @@
         let lastScrollTop = 0;
         const mobileFooter = document.getElementById('controlsMobile');
 
-        if (mobileFooter && window.innerWidth <= 800) {
+        if (mobileFooter) {
+            console.log('Mobile footer found, width:', window.innerWidth);
+
             // Set up click handlers for mobile footer buttons
             // Use 'button.control-btn' to exclude the <a> tag (Telegram button)
             const mobileHindsightBtn = mobileFooter.querySelector('.hindsight-btn');
@@ -2715,35 +2717,56 @@
             const mobileParticlesBtn = mobileControlButtons[0]; // ✨ Matrix button
             const mobilePortfolioBtn = mobileControlButtons[1]; // 💼 Portfolio button
 
+            console.log('Mobile buttons found:', {
+                hindsight: !!mobileHindsightBtn,
+                particles: !!mobileParticlesBtn,
+                portfolio: !!mobilePortfolioBtn
+            });
+
             if (mobileHindsightBtn) {
-                mobileHindsightBtn.addEventListener('click', function() {
-                    document.getElementById('hindsightToggle').click();
+                mobileHindsightBtn.addEventListener('click', function(e) {
+                    console.log('Hindsight mobile clicked');
+                    e.preventDefault();
+                    const desktopBtn = document.getElementById('hindsightToggle');
+                    console.log('Desktop hindsight button:', desktopBtn);
+                    if (desktopBtn) desktopBtn.click();
                 });
             }
             if (mobileParticlesBtn) {
-                mobileParticlesBtn.addEventListener('click', function() {
-                    document.getElementById('particlesToggle').click();
+                mobileParticlesBtn.addEventListener('click', function(e) {
+                    console.log('Particles mobile clicked');
+                    e.preventDefault();
+                    const desktopBtn = document.getElementById('particlesToggle');
+                    console.log('Desktop particles button:', desktopBtn);
+                    if (desktopBtn) desktopBtn.click();
                 });
             }
             if (mobilePortfolioBtn) {
-                mobilePortfolioBtn.addEventListener('click', function() {
-                    document.getElementById('portfolioToggle').click();
+                mobilePortfolioBtn.addEventListener('click', function(e) {
+                    console.log('Portfolio mobile clicked');
+                    e.preventDefault();
+                    const desktopBtn = document.getElementById('portfolioToggle');
+                    console.log('Desktop portfolio button:', desktopBtn);
+                    if (desktopBtn) desktopBtn.click();
                 });
             }
 
-            window.addEventListener('scroll', function() {
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            // Scroll hide/show behavior
+            if (window.innerWidth <= 800) {
+                window.addEventListener('scroll', function() {
+                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-                if (scrollTop > lastScrollTop && scrollTop > 100) {
-                    // Scrolling down & past threshold - hide footer
-                    mobileFooter.classList.add('hidden-scroll');
-                } else if (scrollTop < lastScrollTop) {
-                    // Scrolling up - show footer
-                    mobileFooter.classList.remove('hidden-scroll');
-                }
+                    if (scrollTop > lastScrollTop && scrollTop > 100) {
+                        // Scrolling down & past threshold - hide footer
+                        mobileFooter.classList.add('hidden-scroll');
+                    } else if (scrollTop < lastScrollTop) {
+                        // Scrolling up - show footer
+                        mobileFooter.classList.remove('hidden-scroll');
+                    }
 
-                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-            }, false);
+                    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+                }, false);
+            }
         }
     </script>
 
