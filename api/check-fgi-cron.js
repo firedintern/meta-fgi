@@ -56,10 +56,10 @@ export default async function handler(req, res) {
       : 'Historical data shows strong performance (+21.87% avg over 30 days). Momentum is real!';
 
     const message =
-      `${emoji} *${level} ALERT!* ${emoji}\\n\\n` +
-      `📊 Current Score: *${fgiScore}/100*\\n` +
-      `Status: ${fgiName}\\n\\n` +
-      `💡 ${advice}\\n\\n` +
+      `${emoji} *${level} ALERT!* ${emoji}\n\n` +
+      `📊 Current Score: *${fgiScore}/100*\n` +
+      `Status: ${fgiName}\n\n` +
+      `💡 ${advice}\n\n` +
       `🔮 Check Hindsight Score: https://meta-fgi.vercel.app`;
 
     // Send to all subscribers

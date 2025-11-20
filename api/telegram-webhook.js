@@ -35,11 +35,11 @@ export default async function handler(req, res) {
 
       // Send welcome message
       await sendTelegramMessage(chatId,
-        `🔔 *FGI Extreme Alerts Activated!*\\n\\n` +
-        `You'll receive notifications when:\\n` +
-        `• 🔴 Extreme Fear (0-24)\\n` +
-        `• 🟢 Extreme Greed (80-100)\\n\\n` +
-        `Stay informed about extreme market sentiment!\\n\\n` +
+        `🔔 *FGI Extreme Alerts Activated!*\n\n` +
+        `You'll receive notifications when:\n` +
+        `• 🔴 Extreme Fear (0-24)\n` +
+        `• 🟢 Extreme Greed (80-100)\n\n` +
+        `Stay informed about extreme market sentiment!\n\n` +
         `Use /stop to unsubscribe anytime.`,
         { parse_mode: 'Markdown' }
       );
@@ -56,7 +56,7 @@ export default async function handler(req, res) {
       });
 
       await sendTelegramMessage(chatId,
-        `✅ You've been unsubscribed from FGI alerts.\\n\\n` +
+        `✅ You've been unsubscribed from FGI alerts.\n\n` +
         `Use /start to subscribe again anytime.`
       );
     }
@@ -70,9 +70,9 @@ export default async function handler(req, res) {
       const emoji = getEmojiForScore(fgiScore);
 
       await sendTelegramMessage(chatId,
-        `📊 *Current FGI Status*\\n\\n` +
-        `${emoji} *${fgiName}*\\n` +
-        `Score: ${fgiScore}/100\\n\\n` +
+        `📊 *Current FGI Status*\n\n` +
+        `${emoji} *${fgiName}*\n` +
+        `Score: ${fgiScore}/100\n\n` +
         `Check live: https://meta-fgi.vercel.app`,
         { parse_mode: 'Markdown' }
       );
