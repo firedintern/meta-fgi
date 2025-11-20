@@ -4,6 +4,17 @@
       "path": "/api/check-fgi-cron",
       "schedule": "0 16 * * *"
     }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
   ]
 }
 
