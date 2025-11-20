@@ -827,27 +827,53 @@
             .controls-mobile .telegram-btn {
                 flex: 1;
                 max-width: 80px;
-                padding: 12px;
+                min-width: 80px;
+                width: 80px;
+                padding: 12px !important;
                 margin: 0 4px;
-                font-size: 1.3em;
-                display: flex;
+                font-size: 1.3em !important;
+                display: flex !important;
                 align-items: center;
                 justify-content: center;
                 min-height: 48px;
+                max-height: 48px;
+                height: 48px;
+                border-radius: 5px;
+                cursor: pointer;
+                box-sizing: border-box;
+            }
+
+            /* Override hindsight button styles on mobile */
+            .controls-mobile .hindsight-btn {
+                background: linear-gradient(145deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%) !important;
+                border: 2px solid #d4af37 !important;
+                color: #000 !important;
+                box-shadow: none;
+                animation: none;
+            }
+
+            /* Override control button styles on mobile */
+            .controls-mobile .control-btn {
+                background: rgba(0, 100, 0, 0.3) !important;
+                border: 1px solid #00aa00 !important;
+                color: #00ff00 !important;
             }
 
             .controls-mobile .telegram-btn {
-                background: rgba(0, 100, 0, 0.3);
-                border-color: #00aa00;
-                color: #00ff00;
+                background: rgba(0, 100, 0, 0.3) !important;
+                border: 1px solid #00aa00 !important;
+                color: #00ff00 !important;
+                text-decoration: none;
             }
 
             .controls-mobile .telegram-btn:hover {
-                background: rgba(0, 150, 0, 0.4);
+                background: rgba(0, 150, 0, 0.4) !important;
             }
 
             .controls-mobile .telegram-btn svg {
                 fill: #00ff00;
+                width: 20px;
+                height: 20px;
             }
             .control-btn { 
                 padding: 8px 12px; 
@@ -2680,9 +2706,11 @@
 
         if (mobileFooter && window.innerWidth <= 800) {
             // Set up click handlers for mobile footer buttons
+            // Use 'button.control-btn' to exclude the <a> tag (Telegram button)
             const mobileHindsightBtn = mobileFooter.querySelector('.hindsight-btn');
-            const mobileParticlesBtn = mobileFooter.querySelectorAll('.control-btn')[0];
-            const mobilePortfolioBtn = mobileFooter.querySelectorAll('.control-btn')[2];
+            const mobileControlButtons = mobileFooter.querySelectorAll('button.control-btn');
+            const mobileParticlesBtn = mobileControlButtons[0]; // ✨ Matrix button
+            const mobilePortfolioBtn = mobileControlButtons[1]; // 💼 Portfolio button
 
             if (mobileHindsightBtn) {
                 mobileHindsightBtn.addEventListener('click', function() {
