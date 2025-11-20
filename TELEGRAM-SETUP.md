@@ -4,7 +4,7 @@
 - **Bot Name:** FGI Chad Bot
 - **Username:** @fgichadbot
 - **Link:** https://t.me/fgichadbot
-- **Token:** `8371325192:AAGBFtu7l8ROMmEnkt4XZBnOi1Wm1Z4CpbA`
+- **Token:** [STORED IN VERCEL ENVIRONMENT VARIABLES ONLY - NEVER COMMIT THIS]
 
 ## 🚀 Deployment Steps
 
@@ -27,7 +27,7 @@ In your Vercel project settings:
 2. Add these variables:
 
 ```
-TELEGRAM_BOT_TOKEN = 8371325192:AAGBFtu7l8ROMmEnkt4XZBnOi1Wm1Z4CpbA
+TELEGRAM_BOT_TOKEN = [Get from @BotFather - NEVER COMMIT THIS]
 CRON_SECRET = [generate a random string, e.g., use: openssl rand -hex 32]
 KV_REST_API_URL = [from Vercel KV setup]
 KV_REST_API_TOKEN = [from Vercel KV setup]
@@ -38,7 +38,7 @@ KV_REST_API_TOKEN = [from Vercel KV setup]
 After deploying to Vercel, run this command (replace URL with your actual Vercel URL):
 
 ```bash
-curl https://api.telegram.org/bot8371325192:AAGBFtu7l8ROMmEnkt4XZBnOi1Wm1Z4CpbA/setWebhook?url=https://meta-fgi.vercel.app/api/telegram-webhook
+curl https://api.telegram.org/bot[YOUR_BOT_TOKEN]/setWebhook?url=https://meta-fgi.vercel.app/api/telegram-webhook
 ```
 
 Expected response:
