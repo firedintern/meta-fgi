@@ -1397,6 +1397,7 @@
                 <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.461-1.901-.903-1.056-.692-1.653-1.123-2.678-1.799-1.185-.781-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.302.481-.428-.009-1.252-.242-1.865-.442-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635.099-.002.321.023.465.14.121.098.155.23.171.324.016.094.036.308.02.475z"/>
             </svg>
         </a>
+        <button class="control-btn" id="backtesterToggle" data-tooltip="Strategy Backtester" aria-label="Backtest investment strategies" aria-pressed="false">♟️</button>
         <button class="control-btn" id="portfolioToggle" data-tooltip="My Portfolio" aria-label="View and manage your portfolio" aria-pressed="false">💼</button>
     </div>
 
@@ -1593,6 +1594,137 @@
                     <div class="chart-title" style="margin-top:30px;font-size:1.1em;">Allocation Breakdown</div>
                     <canvas id="allocationChart" style="max-height:250px;"></canvas>
                     <div id="allocationStats" class="allocation-stats"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Backtester Modal -->
+    <div id="backtesterModal" class="modal" role="dialog" aria-labelledby="backtesterTitle" aria-hidden="true">
+        <div class="modal-content backtester-modal-content" role="document" style="max-width: 1000px;">
+            <div class="modal-header">
+                <h2 id="backtesterTitle">Strategy Backtester</h2>
+                <span class="close" role="button" aria-label="Close backtester modal" tabindex="0">&times;</span>
+            </div>
+            <div class="modal-body" id="backtesterContent">
+                <div class="badge" style="background: rgba(0, 200, 100, 0.15); border: 1px solid #00c864; color: #00ff88; padding: 12px 20px; margin: 20px 0; border-radius: 8px; text-align: center; font-size: 0.95em;">
+                    Based on 8 years of historical data | 97 Extreme Fear streaks analyzed
+                </div>
+
+                <div class="slider-section" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 30px; margin: 30px 0;">
+                    <label class="slider-label" style="color: #c0c0c0; font-size: 1em; margin-bottom: 15px; display: block;">Investment Amount</label>
+                    <div class="slider-value" style="color: #ffd700; font-size: 2.5em; font-weight: bold; text-align: center; margin: 20px 0;">$<span id="investmentValue">1,000</span></div>
+                    <input type="range" id="investmentSlider" min="100" max="10000" step="100" value="1000" style="width: 100%; height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.1); outline: none; -webkit-appearance: none;">
+                    <div style="display: flex; justify-content: space-between; margin-top: 10px; color: #666; font-size: 0.85em;">
+                        <span>$100</span>
+                        <span>$10,000</span>
+                    </div>
+                </div>
+
+                <div class="strategy-card" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 30px; margin: 25px 0;">
+                    <div class="strategy-title" style="color: #ffd700; font-size: 1.4em; margin-bottom: 10px; font-weight: 600;">Buy During Extreme Fear, Sell at Greed</div>
+                    <div class="strategy-desc" style="color: #a0a0a0; font-size: 0.95em; margin-bottom: 25px; line-height: 1.5;">
+                        Compare returns based on which day of an Extreme Fear streak you enter.
+                        Exit when FGI reaches Greed (≥60) vs Extreme Greed (≥80).
+                    </div>
+
+                    <div class="day-selector" id="daySelector" style="display: flex; gap: 8px; flex-wrap: wrap; margin: 20px 0;"></div>
+
+                    <div class="comparison-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 25px 0;">
+                        <div class="comparison-col" style="background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 20px;">
+                            <div class="comparison-title" style="color: #00c864; font-size: 1.1em; margin-bottom: 15px; font-weight: 600;">Sell at Greed (FGI ≥ 60)</div>
+                            <div class="stat-row" style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                <span class="stat-label" style="color: #909090; font-size: 0.9em;">Sample Size</span>
+                                <span class="stat-value" id="greed-samples" style="color: #e0e0e0; font-weight: 600;">-</span>
+                            </div>
+                            <div class="stat-row" style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                <span class="stat-label" style="color: #909090; font-size: 0.9em;">Avg Return</span>
+                                <span class="stat-value positive" id="greed-roi" style="color: #00ff88; font-weight: 600;">-</span>
+                            </div>
+                            <div class="stat-row" style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                <span class="stat-label" style="color: #909090; font-size: 0.9em;">Win Rate</span>
+                                <span class="stat-value" id="greed-winrate" style="color: #e0e0e0; font-weight: 600;">-</span>
+                            </div>
+                            <div class="stat-row" style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                <span class="stat-label" style="color: #909090; font-size: 0.9em;">Avg Hold Time</span>
+                                <span class="stat-value" id="greed-days" style="color: #e0e0e0; font-weight: 600;">-</span>
+                            </div>
+                            <div class="profit-box" style="background: linear-gradient(135deg, rgba(0, 200, 100, 0.15), rgba(0, 150, 100, 0.1)); border: 1px solid #00c864; border-radius: 10px; padding: 25px; margin-top: 20px; text-align: center;">
+                                <div class="label" style="color: #a0a0a0; font-size: 0.95em;">Your investment becomes</div>
+                                <div class="amount" id="greed-profit" style="color: #00ff88; font-size: 2.5em; font-weight: bold; margin: 10px 0;">-</div>
+                            </div>
+                        </div>
+
+                        <div class="comparison-col" style="background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 20px;">
+                            <div class="comparison-title" style="color: #00c864; font-size: 1.1em; margin-bottom: 15px; font-weight: 600;">Sell at Extreme Greed (FGI ≥ 80)</div>
+                            <div class="stat-row" style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                <span class="stat-label" style="color: #909090; font-size: 0.9em;">Sample Size</span>
+                                <span class="stat-value" id="xgreed-samples" style="color: #e0e0e0; font-weight: 600;">-</span>
+                            </div>
+                            <div class="stat-row" style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                <span class="stat-label" style="color: #909090; font-size: 0.9em;">Avg Return</span>
+                                <span class="stat-value positive" id="xgreed-roi" style="color: #00ff88; font-weight: 600;">-</span>
+                            </div>
+                            <div class="stat-row" style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                <span class="stat-label" style="color: #909090; font-size: 0.9em;">Win Rate</span>
+                                <span class="stat-value" id="xgreed-winrate" style="color: #e0e0e0; font-weight: 600;">-</span>
+                            </div>
+                            <div class="stat-row" style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                <span class="stat-label" style="color: #909090; font-size: 0.9em;">Avg Hold Time</span>
+                                <span class="stat-value" id="xgreed-days" style="color: #e0e0e0; font-weight: 600;">-</span>
+                            </div>
+                            <div class="profit-box" style="background: linear-gradient(135deg, rgba(0, 200, 100, 0.15), rgba(0, 150, 100, 0.1)); border: 1px solid #00c864; border-radius: 10px; padding: 25px; margin-top: 20px; text-align: center;">
+                                <div class="label" style="color: #a0a0a0; font-size: 0.95em;">Your investment becomes</div>
+                                <div class="amount" id="xgreed-profit" style="color: #00ff88; font-size: 2.5em; font-weight: bold; margin: 10px 0;">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="note" style="background: rgba(255, 200, 0, 0.1); border-left: 3px solid #ffc800; padding: 15px 20px; margin: 20px 0; border-radius: 5px; color: #e0e0e0; font-size: 0.9em;">
+                        Data shows later entry days (15-20) historically had better returns but fewer occurrences.
+                        Extreme Greed exits required much longer hold times (~1 year+) but never lost money historically.
+                    </div>
+                </div>
+
+                <div class="strategy-card" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 30px; margin: 25px 0;">
+                    <div class="strategy-title" style="color: #ffd700; font-size: 1.4em; margin-bottom: 10px; font-weight: 600;">Day 1 Entry + 90-Day Hold</div>
+                    <div class="strategy-desc" style="color: #a0a0a0; font-size: 0.95em; margin-bottom: 25px; line-height: 1.5;">
+                        Buy on the first day of Extreme Fear and hold for exactly 90 days regardless of FGI.
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
+                        <div class="stat-row" style="flex-direction: column; align-items: flex-start; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 10px 0;">
+                            <span class="stat-label" style="color: #909090; font-size: 0.9em;">Sample Size</span>
+                            <span class="stat-value" style="color: #e0e0e0; font-weight: 600;">92 trades</span>
+                        </div>
+                        <div class="stat-row" style="flex-direction: column; align-items: flex-start; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 10px 0;">
+                            <span class="stat-label" style="color: #909090; font-size: 0.9em;">Avg Return</span>
+                            <span class="stat-value negative" style="color: #ff6b6b; font-weight: 600;">-1.13%</span>
+                        </div>
+                        <div class="stat-row" style="flex-direction: column; align-items: flex-start; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 10px 0;">
+                            <span class="stat-label" style="color: #909090; font-size: 0.9em;">Win Rate</span>
+                            <span class="stat-value" style="color: #e0e0e0; font-weight: 600;">42.4%</span>
+                        </div>
+                        <div class="stat-row" style="flex-direction: column; align-items: flex-start; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 10px 0;">
+                            <span class="stat-label" style="color: #909090; font-size: 0.9em;">Best Case</span>
+                            <span class="stat-value positive" style="color: #00ff88; font-weight: 600;">+79.05%</span>
+                        </div>
+                        <div class="stat-row" style="flex-direction: column; align-items: flex-start; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 10px 0;">
+                            <span class="stat-label" style="color: #909090; font-size: 0.9em;">Worst Case</span>
+                            <span class="stat-value negative" style="color: #ff6b6b; font-weight: 600;">-50.23%</span>
+                        </div>
+                    </div>
+
+                    <div class="profit-box" style="background: linear-gradient(135deg, rgba(0, 200, 100, 0.15), rgba(0, 150, 100, 0.1)); border: 1px solid #00c864; border-radius: 10px; padding: 25px; margin: 20px 0; text-align: center;">
+                        <div class="label" style="color: #a0a0a0; font-size: 0.95em;">Your <span id="hodl-invest">$1,000</span> would become</div>
+                        <div class="amount negative" id="hodl-profit" style="color: #ff6b6b; font-size: 2.5em; font-weight: bold; margin: 10px 0;">$989</div>
+                        <div class="label" style="font-size: 0.9em; margin-top: 5px; color: #a0a0a0;">Average outcome after 90 days</div>
+                    </div>
+
+                    <div class="note" style="background: rgba(255, 200, 0, 0.1); border-left: 3px solid #ffc800; padding: 15px 20px; margin: 20px 0; border-radius: 5px; color: #e0e0e0; font-size: 0.9em;">
+                        Historical data shows 90-day holds from Extreme Fear Day 1 underperformed.
+                        Waiting for sentiment signals (Greed/Extreme Greed) was more profitable.
+                    </div>
                 </div>
             </div>
         </div>
@@ -2464,6 +2596,169 @@
         // Initialize modal immediately (modal is now defined before script)
         initPortfolioModal();
 
+        // Initialize Backtester Modal
+        function initBacktesterModal() {
+            const modal = document.getElementById('backtesterModal');
+            const backtesterBtn = document.getElementById('backtesterToggle');
+            const closeBtn = modal?.querySelector('.close');
+
+            if (!modal || !backtesterBtn || !closeBtn) {
+                console.error('Backtester modal elements not found');
+                return;
+            }
+
+            // Strategy data
+            const strategyData = {
+                greed: {
+                    1: {roi: 1.38, samples: 92, winRate: 63.0, days: 100.0},
+                    2: {roi: 1.95, samples: 61, winRate: 65.6, days: 103.2},
+                    3: {roi: 2.44, samples: 41, winRate: 68.3, days: 104.4},
+                    4: {roi: 5.52, samples: 31, winRate: 64.5, days: 110.5},
+                    5: {roi: 5.06, samples: 26, winRate: 69.2, days: 110.3},
+                    6: {roi: 9.46, samples: 23, winRate: 69.6, days: 100.2},
+                    7: {roi: 5.55, samples: 19, winRate: 68.4, days: 113.2},
+                    8: {roi: 7.95, samples: 15, winRate: 66.7, days: 117.3},
+                    9: {roi: 8.12, samples: 13, winRate: 61.5, days: 112.9},
+                    10: {roi: 8.22, samples: 12, winRate: 58.3, days: 115.8},
+                    11: {roi: 5.65, samples: 12, winRate: 58.3, days: 114.8},
+                    12: {roi: 13.02, samples: 10, winRate: 70.0, days: 102.8},
+                    13: {roi: 12.76, samples: 9, winRate: 66.7, days: 112.4},
+                    14: {roi: 15.25, samples: 9, winRate: 77.8, days: 111.4},
+                    15: {roi: 20.27, samples: 8, winRate: 75.0, days: 103.4},
+                    16: {roi: 16.43, samples: 7, winRate: 85.7, days: 107.9},
+                    17: {roi: 15.76, samples: 6, winRate: 83.3, days: 105.2},
+                    18: {roi: 19.14, samples: 6, winRate: 83.3, days: 104.2},
+                    19: {roi: 21.31, samples: 5, winRate: 80.0, days: 121.6},
+                    20: {roi: 22.58, samples: 4, winRate: 75.0, days: 126.8}
+                },
+                extremeGreed: {
+                    1: {roi: 69.26, samples: 88, winRate: 100.0, days: 393.3},
+                    2: {roi: 74.96, samples: 57, winRate: 100.0, days: 357.3},
+                    3: {roi: 83.74, samples: 39, winRate: 100.0, days: 343.1},
+                    4: {roi: 93.42, samples: 30, winRate: 100.0, days: 348.8},
+                    5: {roi: 94.87, samples: 26, winRate: 100.0, days: 364.1},
+                    6: {roi: 102.18, samples: 23, winRate: 100.0, days: 334.2},
+                    7: {roi: 102.09, samples: 19, winRate: 100.0, days: 339.7},
+                    8: {roi: 103.53, samples: 15, winRate: 100.0, days: 359.3},
+                    9: {roi: 109.50, samples: 13, winRate: 100.0, days: 369.4},
+                    10: {roi: 112.47, samples: 12, winRate: 100.0, days: 386.9},
+                    11: {roi: 109.94, samples: 12, winRate: 100.0, days: 385.9},
+                    12: {roi: 121.08, samples: 10, winRate: 100.0, days: 404.5},
+                    13: {roi: 126.33, samples: 9, winRate: 100.0, days: 438.7},
+                    14: {roi: 129.56, samples: 9, winRate: 100.0, days: 437.7},
+                    15: {roi: 139.61, samples: 8, winRate: 100.0, days: 455.6},
+                    16: {roi: 118.24, samples: 7, winRate: 100.0, days: 454.1},
+                    17: {roi: 102.35, samples: 6, winRate: 100.0, days: 443.5},
+                    18: {roi: 108.47, samples: 6, winRate: 100.0, days: 442.5},
+                    19: {roi: 125.97, samples: 5, winRate: 100.0, days: 444.2},
+                    20: {roi: 102.42, samples: 4, winRate: 100.0, days: 431.5}
+                }
+            };
+
+            let selectedDay = 1;
+            let investmentAmount = 1000;
+
+            // Create day selector buttons
+            const daySelector = modal.querySelector('#daySelector');
+            if (daySelector) {
+                for (let i = 1; i <= 20; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'day-btn' + (i === 1 ? ' selected' : '');
+                    btn.textContent = `Day ${i}`;
+                    btn.style.cssText = 'background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); color: #c0c0c0; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9em; transition: all 0.2s;';
+                    btn.onclick = () => selectDay(i);
+                    daySelector.appendChild(btn);
+                }
+            }
+
+            function selectDay(day) {
+                selectedDay = day;
+                const buttons = daySelector.querySelectorAll('.day-btn');
+                buttons.forEach((btn, idx) => {
+                    if (idx + 1 === day) {
+                        btn.classList.add('selected');
+                        btn.style.cssText += ' background: rgba(255, 215, 0, 0.2); border-color: #ffd700; color: #ffd700; font-weight: 600;';
+                    } else {
+                        btn.classList.remove('selected');
+                        btn.style.cssText = 'background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); color: #c0c0c0; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9em; transition: all 0.2s;';
+                    }
+                });
+                updateDisplay();
+            }
+
+            function updateDisplay() {
+                const greed = strategyData.greed[selectedDay];
+                const xgreed = strategyData.extremeGreed[selectedDay];
+
+                modal.querySelector('#greed-samples').textContent = `${greed.samples} trades`;
+                modal.querySelector('#greed-roi').textContent = `+${greed.roi.toFixed(2)}%`;
+                modal.querySelector('#greed-winrate').textContent = `${greed.winRate.toFixed(1)}%`;
+                modal.querySelector('#greed-days').textContent = `~${Math.round(greed.days)} days`;
+                modal.querySelector('#greed-profit').textContent = `$${Math.round(investmentAmount * (1 + greed.roi / 100)).toLocaleString()}`;
+
+                modal.querySelector('#xgreed-samples').textContent = `${xgreed.samples} trades`;
+                modal.querySelector('#xgreed-roi').textContent = `+${xgreed.roi.toFixed(2)}%`;
+                modal.querySelector('#xgreed-winrate').textContent = `${xgreed.winRate.toFixed(1)}%`;
+                modal.querySelector('#xgreed-days').textContent = `~${Math.round(xgreed.days)} days`;
+                modal.querySelector('#xgreed-profit').textContent = `$${Math.round(investmentAmount * (1 + xgreed.roi / 100)).toLocaleString()}`;
+
+                modal.querySelector('#hodl-invest').textContent = `$${investmentAmount.toLocaleString()}`;
+                modal.querySelector('#hodl-profit').textContent = `$${Math.round(investmentAmount * (1 - 0.0113)).toLocaleString()}`;
+            }
+
+            // Slider handler
+            const slider = modal.querySelector('#investmentSlider');
+            const valueDisplay = modal.querySelector('#investmentValue');
+
+            slider.addEventListener('input', function() {
+                investmentAmount = parseInt(this.value);
+                valueDisplay.textContent = investmentAmount.toLocaleString();
+                updateDisplay();
+            });
+
+            // Open modal
+            backtesterBtn.addEventListener('click', function() {
+                modal.style.display = 'block';
+                modal.setAttribute('aria-hidden', 'false');
+                backtesterBtn.setAttribute('aria-pressed', 'true');
+                updateDisplay();
+            });
+
+            // Close modal
+            const closeModal = function() {
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+                backtesterBtn.setAttribute('aria-pressed', 'false');
+                backtesterBtn.focus();
+            };
+
+            closeBtn.addEventListener('click', closeModal);
+
+            closeBtn.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    closeModal();
+                }
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.style.display === 'block') {
+                    closeModal();
+                }
+            });
+
+            window.addEventListener('click', function(event) {
+                if (event.target == modal) {
+                    closeModal();
+                }
+            });
+
+            // Initialize display
+            updateDisplay();
+        }
+
+        initBacktesterModal();
+
         // Hindsight Score Data and Functions
         const hindsightData = {
             "Extreme Fear": {
@@ -2694,6 +2989,7 @@
                 <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.461-1.901-.903-1.056-.692-1.653-1.123-2.678-1.799-1.185-.781-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.302.481-.428-.009-1.252-.242-1.865-.442-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635.099-.002.321.023.465.14.121.098.155.23.171.324.016.094.036.308.02.475z"/>
             </svg>
         </a>
+        <button class="control-btn" aria-label="Strategy Backtester">♟️</button>
         <button class="control-btn" aria-label="My Portfolio">💼</button>
     </div>
 
@@ -2706,7 +3002,9 @@
             if (mobileFooter) {
                 // Set up click handlers for mobile footer buttons
                 const mobileHindsightBtn = mobileFooter.querySelector('.hindsight-btn');
-                const mobilePortfolioBtn = mobileFooter.querySelector('button.control-btn'); // 💼 Portfolio button
+                const mobileButtons = mobileFooter.querySelectorAll('button.control-btn');
+                const mobileBacktesterBtn = mobileButtons[0]; // ♟️ Backtester button (first)
+                const mobilePortfolioBtn = mobileButtons[1]; // 💼 Portfolio button (second)
 
                 // Hindsight button - open hindsight modal directly
                 if (mobileHindsightBtn) {
@@ -2721,6 +3019,20 @@
                             if (currentScore > 0) {
                                 updateHindsightModal(currentScore);
                             }
+                        }
+                    });
+                }
+
+                // Backtester button - open backtester modal directly
+                if (mobileBacktesterBtn) {
+                    mobileBacktesterBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const modal = document.getElementById('backtesterModal');
+                        const desktopBtn = document.getElementById('backtesterToggle');
+                        if (modal && desktopBtn) {
+                            modal.style.display = 'block';
+                            modal.setAttribute('aria-hidden', 'false');
+                            desktopBtn.setAttribute('aria-pressed', 'true');
                         }
                     });
                 }
