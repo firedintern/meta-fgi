@@ -60,7 +60,7 @@ export default async function handler(req, res) {
       `📊 Current Score: *${fgiScore}/100*\n` +
       `Status: ${fgiName}\n\n` +
       `💡 ${advice}\n\n` +
-      `🔮 Check Hindsight Score: https://meta-fgi.vercel.app`;
+      `🔮 Check Hindsight Score: www.fgichad.xyz`;
 
     // Send to all subscribers
     let successCount = 0;
