@@ -1677,11 +1677,7 @@
                 </div>
                 <div class="input-group">
                     <label for="stablesInput">Stablecoins ($)</label>
-                    <input type="number" id="stablesInput" placeholder="3000" min="0" step="100">
-                </div>
-                <div class="input-group">
-                    <label for="cashInput">Cash/Fiat ($)</label>
-                    <input type="number" id="cashInput" placeholder="2000" min="0" step="100">
+                    <input type="number" id="stablesInput" placeholder="5000" min="0" step="100">
                 </div>
                 <button class="btn" id="savePortfolioBtn">Save Portfolio</button>
 
@@ -2460,20 +2456,19 @@
         function savePortfolio() {
             const crypto = parseFloat(document.getElementById('cryptoInput').value) || 0;
             const stablecoins = parseFloat(document.getElementById('stablesInput').value) || 0;
-            const cash = parseFloat(document.getElementById('cashInput').value) || 0;
 
             // Validate for negative values
-            if (crypto < 0 || stablecoins < 0 || cash < 0) {
+            if (crypto < 0 || stablecoins < 0) {
                 alert('Please enter positive values only. Negative amounts are not allowed.');
                 return;
             }
 
-            if (crypto === 0 && stablecoins === 0 && cash === 0) {
+            if (crypto === 0 && stablecoins === 0) {
                 alert('Please enter at least one value');
                 return;
             }
 
-            portfolioData = { crypto, stablecoins, cash };
+            portfolioData = { crypto, stablecoins };
             localStorage.setItem('portfolio', JSON.stringify(portfolioData));
 
             renderAllocationChart();
@@ -2482,13 +2477,12 @@
 
         function calculateAllocation() {
             if (!portfolioData) return null;
-            const total = portfolioData.crypto + portfolioData.stablecoins + portfolioData.cash;
+            const total = portfolioData.crypto + portfolioData.stablecoins;
             if (total === 0) return null;
 
             return {
                 cryptoRatio: portfolioData.crypto / total,
                 stablesRatio: portfolioData.stablecoins / total,
-                cashRatio: portfolioData.cash / total,
                 total: total
             };
         }
@@ -2569,11 +2563,11 @@
             allocationChartInstance = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Crypto', 'Stablecoins', 'Cash'],
+                    labels: ['Crypto', 'Stablecoins'],
                     datasets: [{
-                        data: [portfolioData.crypto, portfolioData.stablecoins, portfolioData.cash],
-                        backgroundColor: ['#f7931a', '#26a17b', '#44ff88'],
-                        borderColor: ['#fff', '#fff', '#fff'],
+                        data: [portfolioData.crypto, portfolioData.stablecoins],
+                        backgroundColor: ['#f7931a', '#26a17b'],
+                        borderColor: ['#fff', '#fff'],
                         borderWidth: 2
                     }]
                 },
@@ -2606,10 +2600,6 @@
                     <span class="stat-label">Stablecoins:</span>
                     <span class="stat-value">$${portfolioData.stablecoins.toLocaleString()} (${(allocation.stablesRatio * 100).toFixed(1)}%)</span>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-label">Cash:</span>
-                    <span class="stat-value">$${portfolioData.cash.toLocaleString()} (${(allocation.cashRatio * 100).toFixed(1)}%)</span>
-                </div>
                 <div class="stat-item" style="margin-top:10px;border-top:2px solid rgba(0,255,0,0.5);padding-top:10px;">
                     <span class="stat-label">Total:</span>
                     <span class="stat-value">$${allocation.total.toLocaleString()}</span>
@@ -2641,7 +2631,6 @@
                 if (saved) {
                     document.getElementById('cryptoInput').value = saved.crypto;
                     document.getElementById('stablesInput').value = saved.stablecoins;
-                    document.getElementById('cashInput').value = saved.cash;
                     renderAllocationChart();
                 }
                 // Focus first input for keyboard users
@@ -3146,8 +3135,7 @@
                             if (saved) {
                                 document.getElementById('cryptoInput').value = saved.crypto;
                                 document.getElementById('stablesInput').value = saved.stablecoins;
-                                document.getElementById('cashInput').value = saved.cash;
-                                updatePortfolioDisplay(saved.crypto, saved.stablecoins, saved.cash);
+                                renderAllocationChart();
                             }
                         }
                     });
