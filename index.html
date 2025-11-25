@@ -588,6 +588,35 @@
                 inset 0 -2px 8px rgba(0,0,0,0.2),
                 0 0 25px rgba(255,170,0,0.4);
         }
+
+        /* Pulsing animation for initial attention - only affects glow, not scale */
+        .spin-btn.pulse {
+            animation: pulse-glow 1.5s ease-in-out infinite;
+        }
+
+        /* Disable pulse animation on hover/active */
+        .spin-btn.pulse:hover,
+        .spin-btn.pulse:active {
+            animation: none;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow:
+                    0 8px 25px rgba(0,0,0,0.6),
+                    inset 0 2px 10px rgba(255,255,255,0.5),
+                    inset 0 -2px 10px rgba(0,0,0,0.3),
+                    0 0 30px rgba(255,170,0,0.5);
+            }
+            50% {
+                box-shadow:
+                    0 8px 25px rgba(0,0,0,0.6),
+                    inset 0 2px 10px rgba(255,255,255,0.5),
+                    inset 0 -2px 10px rgba(0,0,0,0.3),
+                    0 0 60px rgba(255,170,0,0.9),
+                    0 0 100px rgba(255,215,0,0.6);
+            }
+        }
         
         .payout-display {
             background: linear-gradient(145deg, #0a0e14 0%, #151a23 100%);
@@ -2493,13 +2522,9 @@
         }
 
         function triggerWinEffect(color){
-            const machine=document.getElementById('slotMachine');
-
-            // Add flash effect only (confetti removed for performance)
-            const flash=document.createElement('div');
-            flash.className='win-flash';
-            machine.appendChild(flash);
-            setTimeout(()=>flash.remove(),500);
+            // Flash effect disabled per user request
+            // Users should see the result without the distracting flash animation
+            return;
         }
 
         function spinSlots(){
@@ -3744,13 +3769,23 @@
         // Initialize hindsight modal
         initHindsightModal();
 
+        // Add pulse animation to SPIN button on page load
+        const spinBtn = document.getElementById('spinBtn');
+        spinBtn.classList.add('pulse');
+
         // Add event listeners for all interactive elements (CSP-friendly)
-        document.getElementById('spinBtn').addEventListener('click', spinSlots);
+        document.getElementById('spinBtn').addEventListener('click', function() {
+            // Remove pulse animation after first click
+            spinBtn.classList.remove('pulse');
+            spinSlots();
+        });
 
         // Keyboard support for spin button
         document.getElementById('spinBtn').addEventListener('keydown', function(e) {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
+                // Remove pulse animation after first interaction
+                spinBtn.classList.remove('pulse');
                 spinSlots();
             }
         });
