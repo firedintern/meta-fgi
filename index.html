@@ -592,6 +592,10 @@
         /* Pulsing animation for initial attention - only affects glow, not scale */
         .spin-btn.pulse {
             animation: pulse-glow 1.5s ease-in-out infinite;
+            /* Hardware acceleration for smooth mobile performance */
+            will-change: box-shadow;
+            transform: translateZ(0);
+            backface-visibility: hidden;
         }
 
         /* Disable pulse animation on hover/active */
