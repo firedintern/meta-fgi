@@ -173,7 +173,7 @@
         }
         .btc-label { font-size: 0.65em; color: #0a0e14; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
         .btc-price { font-size: 1.4em; font-weight: bold; color: #0a0e14; margin: 2px 0; }
-        .btc-change { font-size: 0.8em; font-weight: bold; margin-top: 2px; }
+        .btc-change { font-size: 0.8em; font-weight: bold; margin-top: 2px; color: #a0a0a0; }
         .positive { color: #00ff88; }
         .negative { color: #ff3366; }
 
@@ -205,12 +205,22 @@
         }
 
         .info-card-inline.btc-card {
-            background: linear-gradient(145deg, #f7931a 0%, #ffb74d 50%, #f7931a 100%);
-            border: 3px solid #d97706;
-            box-shadow:
-                0 8px 25px rgba(0,0,0,0.6),
-                inset 0 2px 10px rgba(255,255,255,0.5),
-                inset 0 -2px 10px rgba(0,0,0,0.3);
+            /* Use same dark/gold style as streak card */
+            background: rgba(255, 170, 0, 0.1);
+            border: 2px solid rgba(255, 170, 0, 0.3);
+        }
+
+        .info-card-inline.btc-card .card-label {
+            color: #ffaa00;
+        }
+
+        .info-card-inline.btc-card .card-value {
+            color: #ff8844;  /* Orange like streak number */
+            text-shadow: 0 0 15px currentColor;
+        }
+
+        .info-card-inline.btc-card .card-change {
+            color: #a0a0a0;  /* Gray like "Total value" */
         }
 
         .info-card-inline .card-label {
@@ -235,7 +245,7 @@
         }
 
         .info-card-inline.streak-card .card-value {
-            color: #e6e8eb;
+            color: #ff8844;  /* Orange */
             text-shadow: 0 0 15px currentColor;
         }
 
@@ -257,31 +267,35 @@
         }
 
         .info-card-inline.dominance-card {
-            background: linear-gradient(145deg, rgba(57, 255, 20, 0.15), rgba(26, 122, 10, 0.15));
-            border-color: rgba(57, 255, 20, 0.5);
+            /* Use same dark/gold style as streak card */
+            background: rgba(255, 170, 0, 0.1);
+            border: 2px solid rgba(255, 170, 0, 0.3);
         }
 
         .info-card-inline.dominance-card .card-label {
-            color: #39ff14;
+            color: #ffaa00;
             font-weight: 600;
         }
 
         .info-card-inline.dominance-card .card-value {
-            color: #39ff14;
+            color: #ff8844;  /* Orange like streak number */
+            text-shadow: 0 0 15px currentColor;
         }
 
         .info-card-inline.marketcap-card {
-            background: linear-gradient(145deg, rgba(0, 255, 136, 0.15), rgba(57, 255, 20, 0.15));
-            border-color: rgba(0, 255, 136, 0.5);
+            /* Use same dark/gold style as streak card */
+            background: rgba(255, 170, 0, 0.1);
+            border: 2px solid rgba(255, 170, 0, 0.3);
         }
 
         .info-card-inline.marketcap-card .card-label {
-            color: #00ff88;
+            color: #ffaa00;
             font-weight: 600;
         }
 
         .info-card-inline.marketcap-card .card-value {
-            color: #00ff88;
+            color: #ff8844;  /* Orange like streak number */
+            text-shadow: 0 0 15px currentColor;
         }
 
         .slot-machine {
@@ -329,7 +343,12 @@
             50% { transform: translateX(2px) translateY(1px) translateZ(0); }
             75% { transform: translateX(-1px) translateY(1px) translateZ(0); }
         }
-        
+
+        /* Hide mobile info box on desktop */
+        .mobile-info-box {
+            display: none;
+        }
+
         .mobile-spin-hint {
             display: none;
             position: absolute;
@@ -1044,7 +1063,7 @@
                 padding: 20px 10px 15px;
                 border-width: 4px;
                 margin: 20px 0;
-                margin-bottom: 70px;
+                margin-bottom: 20px; /* Reduced from 70px */
                 transform: perspective(800px) rotateX(1deg);
                 grid-template-columns: 1fr; /* Single column on mobile */
                 gap: 20px;
@@ -1056,6 +1075,31 @@
 
             .slot-left {
                 gap: 10px; /* Reduce gap on mobile to save space */
+            }
+
+            /* MOBILE: Hide slot-right inside slot-machine, show it as separate box below */
+            .slot-machine .slot-right {
+                display: none;
+            }
+
+            /* MOBILE: Create new info cards box below slot machine */
+            .mobile-info-box {
+                display: block;
+                width: 100%;
+                padding: 20px 15px;
+                background: linear-gradient(145deg, #151a23 0%, #0a0e14 50%, #151a23 100%);
+                border: 4px solid;
+                border-image: linear-gradient(135deg, #ffd700 0%, #ffd700 50%, #ffd700 100%) 1;
+                border-radius: 20px;
+                margin: 20px 0 70px;
+            }
+
+            .mobile-info-box .info-card-inline {
+                margin-bottom: 15px;
+            }
+
+            .mobile-info-box .info-card-inline:last-child {
+                margin-bottom: 0;
             }
 
             .info-card-inline.streak-card .card-value {
@@ -1975,6 +2019,37 @@
                 </div>
             </div>
 
+            <!-- Mobile Info Box (visible only on mobile) -->
+            <div class="mobile-info-box">
+                <!-- BTC Price Card -->
+                <div class="info-card-inline btc-card">
+                    <div class="card-label">₿ BITCOIN</div>
+                    <div class="card-value" id="btcPriceMobile">Loading...</div>
+                    <div class="card-change" id="btcChangeMobile"></div>
+                </div>
+
+                <!-- BTC Dominance Card -->
+                <div class="info-card-inline dominance-card">
+                    <div class="card-label">BTC DOMINANCE</div>
+                    <div class="card-value" id="btcDominanceMobile">--%</div>
+                    <div class="card-desc">Market share</div>
+                </div>
+
+                <!-- BTC Market Cap Card -->
+                <div class="info-card-inline marketcap-card">
+                    <div class="card-label">BTC MARKET CAP</div>
+                    <div class="card-value" id="btcMarketCapMobile">$--</div>
+                    <div class="card-desc">Total value</div>
+                </div>
+
+                <!-- Extreme Fear Streak Card -->
+                <div class="info-card-inline streak-card">
+                    <div class="card-label">EXTREME FEAR STREAK</div>
+                    <div class="card-value" id="streakValueInlineMobile">0</div>
+                    <div class="card-desc" id="streakDescInlineMobile">Consecutive days below FGI 25</div>
+                </div>
+            </div>
+
             <!-- Info Cards Grid -->
             <div class="info-cards-grid">
                 <!-- Degen Status Card -->
@@ -2563,10 +2638,20 @@
             // Check cache first
             if (isCacheValid('btcPrice')) {
                 const cached = apiCache.btcPrice.data;
-                document.getElementById('btcPrice').textContent='$'+cached.price.toLocaleString('en-US',{maximumFractionDigits:0});
+                const priceText = '$'+cached.price.toLocaleString('en-US',{maximumFractionDigits:0});
+                const changeText = (cached.change>0?'+':'')+cached.change.toFixed(2)+'% (24h)';
+
+                // Update desktop
+                document.getElementById('btcPrice').textContent = priceText;
                 const e=document.getElementById('btcChange');
-                e.textContent=(cached.change>0?'+':'')+cached.change.toFixed(2)+'% (24h)';
-                e.className='btc-change '+(cached.change>0?'positive':'negative');
+                e.textContent = changeText;
+                e.className='btc-change';  // Keep gray, no color change
+
+                // Update mobile
+                document.getElementById('btcPriceMobile').textContent = priceText;
+                const eMobile=document.getElementById('btcChangeMobile');
+                eMobile.textContent = changeText;
+                eMobile.className='btc-change';  // Keep gray, no color change
                 return;
             }
 
@@ -2584,10 +2669,20 @@
                 // Cache the result
                 apiCache.btcPrice = { data: { price: p, change: c }, timestamp: Date.now() };
 
-                document.getElementById('btcPrice').textContent='$'+p.toLocaleString('en-US',{maximumFractionDigits:0});
+                const priceText = '$'+p.toLocaleString('en-US',{maximumFractionDigits:0});
+                const changeText = (c>0?'+':'')+c.toFixed(2)+'% (24h)';
+
+                // Update desktop
+                document.getElementById('btcPrice').textContent = priceText;
                 const e=document.getElementById('btcChange');
-                e.textContent=(c>0?'+':'')+c.toFixed(2)+'% (24h)';
-                e.className='btc-change '+(c>0?'positive':'negative');
+                e.textContent = changeText;
+                e.className='btc-change';  // Keep gray, no color change
+
+                // Update mobile
+                document.getElementById('btcPriceMobile').textContent = priceText;
+                const eMobile=document.getElementById('btcChangeMobile');
+                eMobile.textContent = changeText;
+                eMobile.className='btc-change';  // Keep gray, no color change
             }catch(e){
                 console.error('BTC price error:',e);
                 // Retry with alternative API
@@ -2600,14 +2695,26 @@
                     // Cache the fallback result
                     apiCache.btcPrice = { data: { price: p, change: c }, timestamp: Date.now() };
 
-                    document.getElementById('btcPrice').textContent='$'+p.toLocaleString('en-US',{maximumFractionDigits:0});
+                    const priceText = '$'+p.toLocaleString('en-US',{maximumFractionDigits:0});
+                    const changeText = (c>0?'+':'')+c.toFixed(2)+'% (24h)';
+
+                    // Update desktop
+                    document.getElementById('btcPrice').textContent = priceText;
                     const e2=document.getElementById('btcChange');
-                    e2.textContent=(c>0?'+':'')+c.toFixed(2)+'% (24h)';
-                    e2.className='btc-change '+(c>0?'positive':'negative');
+                    e2.textContent = changeText;
+                    e2.className='btc-change';  // Keep gray, no color change
+
+                    // Update mobile
+                    document.getElementById('btcPriceMobile').textContent = priceText;
+                    const e2Mobile=document.getElementById('btcChangeMobile');
+                    e2Mobile.textContent = changeText;
+                    e2Mobile.className='btc-change';  // Keep gray, no color change
                 } catch(e2) {
                     console.error('Fallback BTC price error:',e2);
                     document.getElementById('btcPrice').textContent='Price unavailable';
                     document.getElementById('btcChange').textContent='';
+                    document.getElementById('btcPriceMobile').textContent='Price unavailable';
+                    document.getElementById('btcChangeMobile').textContent='';
                 }
             }
         }
@@ -2616,9 +2723,12 @@
             const globalData = await fetchGlobalData();
             if (globalData && globalData.market_cap_percentage && globalData.market_cap_percentage.btc) {
                 const dominance = globalData.market_cap_percentage.btc;
-                document.getElementById('btcDominance').textContent = dominance.toFixed(2) + '%';
+                const dominanceText = dominance.toFixed(2) + '%';
+                document.getElementById('btcDominance').textContent = dominanceText;
+                document.getElementById('btcDominanceMobile').textContent = dominanceText;
             } else {
                 document.getElementById('btcDominance').textContent = 'N/A';
+                document.getElementById('btcDominanceMobile').textContent = 'N/A';
             }
         }
 
@@ -2642,10 +2752,12 @@
                 }
 
                 document.getElementById('btcMarketCap').textContent = formatted;
+                document.getElementById('btcMarketCapMobile').textContent = formatted;
                 console.log('BTC Market Cap updated:', formatted);
             } else {
                 console.error('Invalid market cap data');
                 document.getElementById('btcMarketCap').textContent = 'N/A';
+                document.getElementById('btcMarketCapMobile').textContent = 'N/A';
             }
         }
 
@@ -2906,31 +3018,52 @@
 
                 const streakInfoEl = document.getElementById('streakInfo');
 
-                // Update the streak inline display (inside slot machine)
+                // Update the streak inline display (inside slot machine AND mobile box)
                 if (currentCategory === 'Extreme Fear') {
                     const streakValueInlineEl = document.getElementById('streakValueInline');
                     const streakDescInlineEl = document.getElementById('streakDescInline');
+                    const streakValueInlineMobileEl = document.getElementById('streakValueInlineMobile');
+                    const streakDescInlineMobileEl = document.getElementById('streakDescInlineMobile');
 
-                    if (streakValueInlineEl) {
-                        streakValueInlineEl.textContent = currentStreak;
-                        streakValueInlineEl.style.color = getColorForScore(currentScore);
+                    const streakColor = getColorForScore(currentScore);
+                    let descText;
+
+                    if (currentStreak === 0) {
+                        descText = 'No active extreme fear streak';
+                    } else if (currentStreak === 1) {
+                        descText = 'Day 1 of extreme fear';
+                    } else {
+                        descText = `${currentStreak} consecutive days of extreme fear`;
                     }
 
+                    // Update desktop
+                    if (streakValueInlineEl) {
+                        streakValueInlineEl.textContent = currentStreak;
+                        streakValueInlineEl.style.color = streakColor;
+                    }
                     if (streakDescInlineEl) {
-                        if (currentStreak === 0) {
-                            streakDescInlineEl.textContent = 'No active extreme fear streak';
-                        } else if (currentStreak === 1) {
-                            streakDescInlineEl.textContent = 'Day 1 of extreme fear';
-                        } else {
-                            streakDescInlineEl.textContent = `${currentStreak} consecutive days of extreme fear`;
-                        }
+                        streakDescInlineEl.textContent = descText;
+                    }
+
+                    // Update mobile
+                    if (streakValueInlineMobileEl) {
+                        streakValueInlineMobileEl.textContent = currentStreak;
+                        streakValueInlineMobileEl.style.color = streakColor;
+                    }
+                    if (streakDescInlineMobileEl) {
+                        streakDescInlineMobileEl.textContent = descText;
                     }
                 } else {
                     // Not Extreme Fear - show 0
                     const streakValueInlineEl = document.getElementById('streakValueInline');
                     const streakDescInlineEl = document.getElementById('streakDescInline');
+                    const streakValueInlineMobileEl = document.getElementById('streakValueInlineMobile');
+                    const streakDescInlineMobileEl = document.getElementById('streakDescInlineMobile');
+
                     if (streakValueInlineEl) streakValueInlineEl.textContent = '0';
                     if (streakDescInlineEl) streakDescInlineEl.textContent = 'No active extreme fear streak';
+                    if (streakValueInlineMobileEl) streakValueInlineMobileEl.textContent = '0';
+                    if (streakDescInlineMobileEl) streakDescInlineMobileEl.textContent = 'No active extreme fear streak';
                 }
 
                 // Format record date string
@@ -3024,9 +3157,8 @@
             fetchHistoricalData();
         }
 
-        // Initial load - fetch data on page load
-        // No setTimeout to avoid CSP issues
-        fetchData();
+        // Initial load - fetch BTC data and chart, but NOT slot machine
+        // Slot machine only spins when user clicks SPIN button
         fetchBTCPrice();
         fetchBTCDominance();
         fetchBTCMarketCap();

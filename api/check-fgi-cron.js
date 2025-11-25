@@ -10,10 +10,27 @@ const KV_REST_API_TOKEN = process.env.KV_REST_API_TOKEN;
 
 export default async function handler(req, res) {
   // Verify cron secret to prevent unauthorized calls
+  // Vercel's automatic cron jobs send "vercel-cron/1.0" as user-agent
+  // Manual triggers use x-vercel-cron-secret header
   const cronSecret = req.headers['x-vercel-cron-secret'];
-  if (cronSecret !== process.env.CRON_SECRET) {
+  const userAgent = req.headers['user-agent'] || '';
+  const isVercelCron = userAgent.toLowerCase().includes('vercel-cron');
+
+  console.log('Cron auth check:', {
+    hasSecret: !!cronSecret,
+    isVercelCron,
+    userAgent
+  });
+
+  // Allow if either:
+  // 1. Manual trigger with correct CRON_SECRET
+  // 2. Automatic Vercel cron job (identified by user-agent "vercel-cron/1.0")
+  if (!isVercelCron && cronSecret !== process.env.CRON_SECRET) {
+    console.log('Auth failed: Not a Vercel cron and invalid/missing secret');
     return res.status(401).json({ error: 'Unauthorized' });
   }
+
+  console.log('Auth passed:', isVercelCron ? 'Vercel cron job' : 'Manual trigger');
 
   try {
     // Fetch current FGI
