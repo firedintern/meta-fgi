@@ -1,0 +1,43 @@
+# Secrets and sensitive files
+trigger-cron.sh
+.env
+.env.local
+.env.*.local
+*.secret
+*.key
+*_credentials.json
+
+# Node modules
+node_modules/
+
+# System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Vercel
+.vercel
+
+# Temporary files
+*.tmp
+*.log
+*.bak
+*.backup
+*-backup-*.html
+*-old.html
+
+# Test/Debug files
+test-*.js
+debug-*.js
+diagnose-*.js
