@@ -1967,38 +1967,38 @@
                     <div class="reels-container">
                         <div class="reel" id="reel1">
                             <div class="reel-strip">
-                                <div class="symbol">💀</div>
-                                <div class="symbol">😱</div>
-                                <div class="symbol">😐</div>
-                                <div class="symbol">😏</div>
-                                <div class="symbol">🤑</div>
-                                <div class="symbol">💀</div>
-                                <div class="symbol">😱</div>
-                                <div class="symbol">😐</div>
+                                <div class="symbol" data-actual="💀">🍀</div>
+                                <div class="symbol" data-actual="😱">🍀</div>
+                                <div class="symbol" data-actual="😐">🍀</div>
+                                <div class="symbol" data-actual="😏">🍀</div>
+                                <div class="symbol" data-actual="🤑">🍀</div>
+                                <div class="symbol" data-actual="💀">🍀</div>
+                                <div class="symbol" data-actual="😱">🍀</div>
+                                <div class="symbol" data-actual="😐">🍀</div>
                             </div>
                         </div>
                         <div class="reel" id="reel2">
                             <div class="reel-strip">
-                                <div class="symbol">💀</div>
-                                <div class="symbol">😱</div>
-                                <div class="symbol">😐</div>
-                                <div class="symbol">😏</div>
-                                <div class="symbol">🤑</div>
-                                <div class="symbol">💀</div>
-                                <div class="symbol">😱</div>
-                                <div class="symbol">😐</div>
+                                <div class="symbol" data-actual="💀">🍀</div>
+                                <div class="symbol" data-actual="😱">🍀</div>
+                                <div class="symbol" data-actual="😐">🍀</div>
+                                <div class="symbol" data-actual="😏">🍀</div>
+                                <div class="symbol" data-actual="🤑">🍀</div>
+                                <div class="symbol" data-actual="💀">🍀</div>
+                                <div class="symbol" data-actual="😱">🍀</div>
+                                <div class="symbol" data-actual="😐">🍀</div>
                             </div>
                         </div>
                         <div class="reel" id="reel3">
                             <div class="reel-strip">
-                                <div class="symbol">💀</div>
-                                <div class="symbol">😱</div>
-                                <div class="symbol">😐</div>
-                                <div class="symbol">😏</div>
-                                <div class="symbol">🤑</div>
-                                <div class="symbol">💀</div>
-                                <div class="symbol">😱</div>
-                                <div class="symbol">😐</div>
+                                <div class="symbol" data-actual="💀">🍀</div>
+                                <div class="symbol" data-actual="😱">🍀</div>
+                                <div class="symbol" data-actual="😐">🍀</div>
+                                <div class="symbol" data-actual="😏">🍀</div>
+                                <div class="symbol" data-actual="🤑">🍀</div>
+                                <div class="symbol" data-actual="💀">🍀</div>
+                                <div class="symbol" data-actual="😱">🍀</div>
+                                <div class="symbol" data-actual="😐">🍀</div>
                             </div>
                         </div>
                     </div>
@@ -2547,6 +2547,11 @@
 
             const reels = document.querySelectorAll('.reel');
             const machine = document.getElementById('slotMachine');
+
+            // Replace dice emojis with actual sentiment emojis when spinning starts
+            document.querySelectorAll('.symbol[data-actual]').forEach(symbolEl => {
+                symbolEl.textContent = symbolEl.getAttribute('data-actual');
+            });
 
             // Add spinning class for CSS animation
             machine.classList.add('spinning');
