@@ -3254,8 +3254,8 @@
         }
 
         function getPortfolioAdvice(fgiScore, cryptoRatio) {
-            // Extreme Fear (0-24) + High Cash (cryptoRatio < 30%)
-            if (fgiScore < 25 && cryptoRatio < 0.3) {
+            // Extreme Fear (0-25) + High Cash (cryptoRatio < 30%)
+            if (fgiScore <= 25 && cryptoRatio < 0.3) {
                 return {
                     text: "Deploy your cash - great entry point!",
                     color: "#44ff88",
@@ -3263,8 +3263,8 @@
                 };
             }
 
-            // Extreme Greed (80-100) + High Crypto (cryptoRatio > 70%)
-            if (fgiScore > 79 && cryptoRatio > 0.7) {
+            // Extreme Greed (75-100) + High Crypto (cryptoRatio > 70%)
+            if (fgiScore >= 75 && cryptoRatio > 0.7) {
                 return {
                     text: "Take profits - you're overexposed!",
                     color: "#ff4444",
@@ -3272,8 +3272,8 @@
                 };
             }
 
-            // Fear + Low Crypto (opportunity)
-            if (fgiScore < 40 && cryptoRatio < 0.4) {
+            // Fear (26-45) + Low Crypto (opportunity)
+            if (fgiScore <= 45 && cryptoRatio < 0.4) {
                 return {
                     text: "Good time to increase crypto allocation",
                     color: "#88ff44",
@@ -3281,8 +3281,8 @@
                 };
             }
 
-            // Greed + High Crypto (warning)
-            if (fgiScore > 65 && cryptoRatio > 0.6) {
+            // Greed (55-74) + High Crypto (warning)
+            if (fgiScore >= 55 && cryptoRatio > 0.6) {
                 return {
                     text: "Consider taking some profits",
                     color: "#ff8844",
