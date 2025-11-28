@@ -2472,11 +2472,11 @@
         }
         
         function getSymbolForScore(s){
-            if(s<=24)return '💀';  // Extreme Fear: 0-24
-            if(s<=44)return '😱';  // Fear: 25-44
-            if(s<=59)return '😐';  // Neutral: 45-59
-            if(s<=79)return '😏';  // Greed: 60-79
-            return '🤑';           // Extreme Greed: 80-100
+            if(s<=25)return '💀';  // Extreme Fear: 0-25 (matches API classification)
+            if(s<=45)return '😱';  // Fear: 26-45
+            if(s<=54)return '😐';  // Neutral: 46-54
+            if(s<=74)return '😏';  // Greed: 55-74
+            return '🤑';           // Extreme Greed: 75-100
         }
 
         function getQuoteForScore(s){
@@ -2543,15 +2543,28 @@
             // Map symbol to index position (0-4)
             const symbolMap = {'💀':0, '😱':1, '😐':2, '😏':3, '🤑':4};
             const targetIndex = symbolMap[symbol] || 0;
-            const targetPosition = -targetIndex * 170; // Each symbol is 170px tall
+            const targetPosition = -targetIndex * 120; // Each symbol is 120px tall
 
             const reels = document.querySelectorAll('.reel');
             const machine = document.getElementById('slotMachine');
 
-            // Replace dice emojis with actual sentiment emojis when spinning starts
-            document.querySelectorAll('.symbol[data-actual]').forEach(symbolEl => {
-                symbolEl.textContent = symbolEl.getAttribute('data-actual');
+            // First, reset all reels to show clovers at position 0
+            reels.forEach(reel => {
+                const strip = reel.querySelector('.reel-strip');
+                strip.style.transform = 'translateY(0) translateZ(0)';
             });
+
+            // Reset symbols to clovers before spinning
+            document.querySelectorAll('.symbol[data-actual]').forEach(symbolEl => {
+                symbolEl.textContent = '🍀';
+            });
+
+            // Small delay to ensure visual reset, then replace with actual emojis
+            setTimeout(() => {
+                document.querySelectorAll('.symbol[data-actual]').forEach(symbolEl => {
+                    symbolEl.textContent = symbolEl.getAttribute('data-actual');
+                });
+            }, 50);
 
             // Add spinning class for CSS animation
             machine.classList.add('spinning');
@@ -2930,11 +2943,11 @@
         
         // Sentiment Streak Functions
         function getSentimentCategory(score) {
-            if (score <= 24) return 'Extreme Fear';
-            if (score <= 44) return 'Fear';
-            if (score <= 59) return 'Neutral';
-            if (score <= 79) return 'Greed';
-            return 'Extreme Greed';
+            if (score <= 25) return 'Extreme Fear';  // 0-25 (matches API)
+            if (score <= 45) return 'Fear';          // 26-45
+            if (score <= 54) return 'Neutral';       // 46-54
+            if (score <= 74) return 'Greed';         // 55-74
+            return 'Extreme Greed';                  // 75-100
         }
 
         async function fetchHistoricalStreakData() {
