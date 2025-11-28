@@ -2480,31 +2480,31 @@
         }
 
         function getQuoteForScore(s){
-            if(s<25){
+            if(s<=25){  // Extreme Fear: 0-25
                 return {
                     icon: '💎',
                     text: 'Be greedy when others are fearful. Blood in the streets means diamonds in the wallet.'
                 };
             }
-            if(s<45){
+            if(s<=45){  // Fear: 26-45
                 return {
                     icon: '🤔',
                     text: 'The best buys happen when everyone\'s too scared to click. Your future self will thank you.'
                 };
             }
-            if(s<60){
+            if(s<=54){  // Neutral: 46-54
                 return {
                     icon: '😐',
                     text: 'Boring markets build wealth. Patience pays more than FOMO ever will.'
                 };
             }
-            if(s<80){
+            if(s<=74){  // Greed: 55-74
                 return {
                     icon: '🚨',
                     text: 'When your barber\'s giving crypto tips, it\'s time to secure the bag. Bulls make money, bears make money, pigs get slaughtered.'
                 };
             }
-            return {
+            return {  // Extreme Greed: 75-100
                 icon: '⚠️',
                 text: 'Euphoria is expensive. Everyone\'s a genius in a bull market until the music stops. Cash out before the rug pull.'
             };
