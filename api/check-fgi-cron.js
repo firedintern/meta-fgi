@@ -42,8 +42,8 @@ export default async function handler(req, res) {
     console.log(`Current FGI: ${fgiScore} (${fgiName})`);
 
     // Check if extreme
-    const isExtremeFear = fgiScore <= 24;
-    const isExtremeGreed = fgiScore >= 80;
+    const isExtremeFear = fgiScore <= 25;
+    const isExtremeGreed = fgiScore >= 75;
 
     if (!isExtremeFear && !isExtremeGreed) {
       console.log('Not at extreme levels, no alerts sent');
