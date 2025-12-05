@@ -138,8 +138,28 @@
             50% { box-shadow: 0 0 35px rgba(255, 170, 0, 0.8); }
         }
         
-        .title { font-size: 2.2em; color: #39ff14; margin-bottom: 40px; font-weight: bold; letter-spacing: 3px; text-shadow: 0 0 10px #39ff14, 0 0 20px #39ff14; animation: terminal-flicker 3s ease-in-out infinite; }
+        .title { font-size: 3.15em; color: #39ff14; margin-bottom: 40px; font-weight: bold; letter-spacing: 4px; text-shadow: 0 0 15px #39ff14, 0 0 30px #39ff14, 0 0 45px #39ff14; animation: terminal-flicker 3s ease-in-out infinite; position: relative; }
         @keyframes terminal-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.95; } }
+
+        /* Santa Emoji for the D */
+        .santa-hat {
+            position: relative;
+            display: inline-block;
+        }
+
+        .santa-hat::before {
+            content: '🎅';
+            position: absolute;
+            top: -0.6em;
+            right: -0.1em;
+            font-size: 0.5em;
+            animation: santa-bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes santa-bounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-3px) rotate(5deg); }
+        }
         
         .btc-ticker {
             background: linear-gradient(145deg, #f7931a 0%, #ffb74d 50%, #f7931a 100%);
@@ -1071,10 +1091,10 @@
         }
 
         /* MOBILE OPTIMIZATIONS */
-        @media (max-width: 768px) { 
+        @media (max-width: 768px) {
             body { overflow-x: hidden; }
-            .container { padding: 60px 10px 10px; }
-            .title { font-size: 1.3em; letter-spacing: 1px; margin-bottom: 10px; }
+            .container { padding: 20px 10px 10px; }
+            .title { font-size: 2em; letter-spacing: 2px; margin-bottom: 20px; margin-top: 10px; }
             
             /* More visible matrix on mobile */
             #matrix-canvas { opacity: 0.3; }
@@ -1335,7 +1355,7 @@
         }
         
         @media (max-width: 400px) {
-            .title { font-size: 1.1em; }
+            .title { font-size: 1.6em; }
             .btc-price { font-size: 1.2em; }
             .slot-machine { padding: 15px 8px 10px; }
             .light {
@@ -1958,7 +1978,7 @@
     </div>
 
     <div class="container">
-        <h1 class="title">&gt; FGI_CHAD &lt;</h1>
+        <h1 class="title">&gt; FGI_CHA<span class="santa-hat">D</span> &lt;</h1>
 
         <div id="content">
             <div class="slot-machine" id="slotMachine">
