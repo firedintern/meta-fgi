@@ -2036,11 +2036,11 @@
                         <div class="card-desc">Total value</div>
                     </div>
 
-                    <!-- Extreme Fear Streak Card (bottom) -->
+                    <!-- Sentiment Streak Card (bottom) -->
                     <div class="info-card-inline streak-card">
-                        <div class="card-label">EXTREME FEAR STREAK</div>
+                        <div class="card-label" id="streakLabelInline">SENTIMENT STREAK</div>
                         <div class="card-value" id="streakValueInline">0</div>
-                        <div class="card-desc" id="streakDescInline">Consecutive days below FGI 25</div>
+                        <div class="card-desc" id="streakDescInline">Current sentiment streak</div>
                     </div>
                 </div>
             </div>
@@ -2068,11 +2068,11 @@
                     <div class="card-desc">Total value</div>
                 </div>
 
-                <!-- Extreme Fear Streak Card -->
+                <!-- Sentiment Streak Card -->
                 <div class="info-card-inline streak-card">
-                    <div class="card-label">EXTREME FEAR STREAK</div>
+                    <div class="card-label" id="streakLabelInlineMobile">SENTIMENT STREAK</div>
                     <div class="card-value" id="streakValueInlineMobile">0</div>
-                    <div class="card-desc" id="streakDescInlineMobile">Consecutive days below FGI 25</div>
+                    <div class="card-desc" id="streakDescInlineMobile">Current sentiment streak</div>
                 </div>
             </div>
 
@@ -3058,52 +3058,52 @@
 
                 const streakInfoEl = document.getElementById('streakInfo');
 
-                // Update the streak inline display (inside slot machine AND mobile box)
-                if (currentCategory === 'Extreme Fear') {
-                    const streakValueInlineEl = document.getElementById('streakValueInline');
-                    const streakDescInlineEl = document.getElementById('streakDescInline');
-                    const streakValueInlineMobileEl = document.getElementById('streakValueInlineMobile');
-                    const streakDescInlineMobileEl = document.getElementById('streakDescInlineMobile');
+                // Update the streak inline display (inside slot machine AND mobile box) for ALL sentiments
+                const streakLabelInlineEl = document.getElementById('streakLabelInline');
+                const streakValueInlineEl = document.getElementById('streakValueInline');
+                const streakDescInlineEl = document.getElementById('streakDescInline');
+                const streakLabelInlineMobileEl = document.getElementById('streakLabelInlineMobile');
+                const streakValueInlineMobileEl = document.getElementById('streakValueInlineMobile');
+                const streakDescInlineMobileEl = document.getElementById('streakDescInlineMobile');
 
-                    const streakColor = getColorForScore(currentScore);
-                    let descText;
+                const streakColor = getColorForScore(currentScore);
 
-                    if (currentStreak === 0) {
-                        descText = 'No active extreme fear streak';
-                    } else if (currentStreak === 1) {
-                        descText = 'Day 1 of extreme fear';
-                    } else {
-                        descText = `${currentStreak} consecutive days of extreme fear`;
-                    }
+                // Generate label based on current sentiment
+                const streakLabel = `${currentCategory.toUpperCase()} STREAK`;
 
-                    // Update desktop
-                    if (streakValueInlineEl) {
-                        streakValueInlineEl.textContent = currentStreak;
-                        streakValueInlineEl.style.color = streakColor;
-                    }
-                    if (streakDescInlineEl) {
-                        streakDescInlineEl.textContent = descText;
-                    }
-
-                    // Update mobile
-                    if (streakValueInlineMobileEl) {
-                        streakValueInlineMobileEl.textContent = currentStreak;
-                        streakValueInlineMobileEl.style.color = streakColor;
-                    }
-                    if (streakDescInlineMobileEl) {
-                        streakDescInlineMobileEl.textContent = descText;
-                    }
+                // Generate description text
+                let descText;
+                const categoryLower = currentCategory.toLowerCase();
+                if (currentStreak === 0) {
+                    descText = `No active ${categoryLower} streak`;
+                } else if (currentStreak === 1) {
+                    descText = `Day 1 of ${categoryLower}`;
                 } else {
-                    // Not Extreme Fear - show 0
-                    const streakValueInlineEl = document.getElementById('streakValueInline');
-                    const streakDescInlineEl = document.getElementById('streakDescInline');
-                    const streakValueInlineMobileEl = document.getElementById('streakValueInlineMobile');
-                    const streakDescInlineMobileEl = document.getElementById('streakDescInlineMobile');
+                    descText = `${currentStreak} consecutive days of ${categoryLower}`;
+                }
 
-                    if (streakValueInlineEl) streakValueInlineEl.textContent = '0';
-                    if (streakDescInlineEl) streakDescInlineEl.textContent = 'No active extreme fear streak';
-                    if (streakValueInlineMobileEl) streakValueInlineMobileEl.textContent = '0';
-                    if (streakDescInlineMobileEl) streakDescInlineMobileEl.textContent = 'No active extreme fear streak';
+                // Update desktop
+                if (streakLabelInlineEl) {
+                    streakLabelInlineEl.textContent = streakLabel;
+                }
+                if (streakValueInlineEl) {
+                    streakValueInlineEl.textContent = currentStreak;
+                    streakValueInlineEl.style.color = streakColor;
+                }
+                if (streakDescInlineEl) {
+                    streakDescInlineEl.textContent = descText;
+                }
+
+                // Update mobile
+                if (streakLabelInlineMobileEl) {
+                    streakLabelInlineMobileEl.textContent = streakLabel;
+                }
+                if (streakValueInlineMobileEl) {
+                    streakValueInlineMobileEl.textContent = currentStreak;
+                    streakValueInlineMobileEl.style.color = streakColor;
+                }
+                if (streakDescInlineMobileEl) {
+                    streakDescInlineMobileEl.textContent = descText;
                 }
 
                 // Format record date string
