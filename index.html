@@ -1038,6 +1038,11 @@
             min-height: 350px;
         }
 
+        /* Distribution Chart Specific Styling */
+        .distribution-chart-container {
+            /* Same width as history chart container */
+        }
+
         .chart-title {
             color: #ffaa00;
             font-size: 1.3em;
@@ -2145,6 +2150,12 @@
             <canvas id="historyChart"></canvas>
         </div>
 
+        <!-- Sentiment Distribution Chart (NEW) -->
+        <div class="chart-container distribution-chart-container">
+            <div class="chart-title">Sentiment Distribution (30 Days)</div>
+            <canvas id="distributionChart" style="max-height: 350px;"></canvas>
+        </div>
+
         <div class="footer">
             Made by <a href="https://x.com/firedintern" target="_blank" rel="noopener noreferrer">firedintern</a>
         </div>
@@ -2848,6 +2859,7 @@
                         };
                     });
                     renderChart(history);
+                    renderDistributionChart(history);
                 }else{
                     throw new Error('No historical data available');
                 }
@@ -2855,6 +2867,105 @@
                 console.error('History error:',e);
                 document.getElementById('chartTitle').innerHTML='30-Day Sentiment History - <span style="color:#ff6666">Connection Error</span>';
             }
+        }
+
+        function renderDistributionChart(history){
+            const el=document.getElementById('distributionChart');
+            if(!el||typeof Chart==='undefined')return;
+
+            // Calculate distribution
+            const distribution={
+                extremeFear:0,  // 0-24
+                fear:0,         // 25-44
+                neutral:0,      // 45-55
+                greed:0,        // 56-75
+                extremeGreed:0  // 76-100
+            };
+
+            history.forEach(item=>{
+                const score=item.score;
+                if(score<=24) distribution.extremeFear++;
+                else if(score<=44) distribution.fear++;
+                else if(score<=55) distribution.neutral++;
+                else if(score<=75) distribution.greed++;
+                else distribution.extremeGreed++;
+            });
+
+            const total=history.length;
+            const data=[
+                distribution.extremeFear,
+                distribution.fear,
+                distribution.neutral,
+                distribution.greed,
+                distribution.extremeGreed
+            ];
+
+            const percentages=data.map(val=>((val/total)*100).toFixed(1));
+
+            if(window.distributionChartInstance){
+                window.distributionChartInstance.destroy();
+            }
+
+            const ctx=el.getContext('2d');
+            window.distributionChartInstance=new Chart(ctx,{
+                type:'doughnut',
+                data:{
+                    labels:[
+                        `Extreme Fear 💀 (${percentages[0]}%)`,
+                        `Fear 😱 (${percentages[1]}%)`,
+                        `Neutral 😐 (${percentages[2]}%)`,
+                        `Greed 😏 (${percentages[3]}%)`,
+                        `Extreme Greed 🤑 (${percentages[4]}%)`
+                    ],
+                    datasets:[{
+                        data:data,
+                        backgroundColor:[
+                            '#ff3366',  // Extreme Fear - Red
+                            '#ff8844',  // Fear - Orange
+                            '#ffd700',  // Neutral - Yellow
+                            '#7cfc00',  // Greed - Light Green
+                            '#39ff14'   // Extreme Greed - Neon Green
+                        ],
+                        borderColor:'#0a0e14',
+                        borderWidth:3
+                    }]
+                },
+                options:{
+                    responsive:true,
+                    maintainAspectRatio:true,
+                    plugins:{
+                        legend:{
+                            position:'bottom',
+                            labels:{
+                                color:'#e6e8eb',
+                                font:{
+                                    size:12,
+                                    family:'Chakra Petch'
+                                },
+                                padding:15,
+                                usePointStyle:true,
+                                pointStyle:'circle'
+                            }
+                        },
+                        tooltip:{
+                            backgroundColor:'rgba(10, 14, 20, 0.95)',
+                            titleColor:'#39ff14',
+                            bodyColor:'#e6e8eb',
+                            borderColor:'#39ff14',
+                            borderWidth:1,
+                            padding:12,
+                            displayColors:true,
+                            callbacks:{
+                                label:function(context){
+                                    const days=context.parsed;
+                                    const percentage=percentages[context.dataIndex];
+                                    return ` ${days} days (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         }
         
         function renderChart(h){
