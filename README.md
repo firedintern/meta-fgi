@@ -138,6 +138,32 @@ Each sentiment level has contextual trading wisdom:
 - **Greed (60-79)**: 🚨 _"When your barber's giving crypto tips, it's time to secure the bag."_
 - **Extreme Greed (80-100)**: ⚠️ _"Euphoria is expensive. Everyone's a genius in a bull market until the music stops."_
 
+## 📁 Project Structure
+
+```
+meta-fgi/
+├── index.html                 # Production website
+├── api/                       # Vercel serverless functions
+│   ├── fgi.js                 # FGI proxy API
+│   ├── telegram-webhook.js    # Telegram bot webhook
+│   ├── check-fgi-cron.js      # Daily cron for alerts
+│   └── admin-subscribers.js   # Admin endpoint
+├── scripts/                   # Utility & data processing scripts
+├── data/                      # Backtest results & cached data
+├── drafts/                    # Experimental HTML versions
+├── docs/                      # Project documentation
+│   ├── DATA-SOURCES.md        # API & data source docs
+│   ├── BACKTEST-COMPARISON.md # 1yr vs 5.5yr analysis
+│   ├── INTEGRATION-SUMMARY.md # Hindsight Score integration
+│   └── TELEGRAM-SETUP.md     # Telegram bot deployment
+├── .claude/
+│   ├── commands/              # Slash commands (/design-review, /code-review, /security-review)
+│   └── agents/                # Subagent definitions
+├── .mcp.json                  # MCP server configuration
+├── CLAUDE.md                  # Claude Code project instructions
+└── vercel.json                # Vercel cron config
+```
+
 ## 🏃 Running Locally
 ```bash
 # Clone the repository
@@ -146,11 +172,27 @@ git clone https://github.com/firedintern/meta-fgi.git
 # Navigate to the directory
 cd meta-fgi
 
+# Install dependencies (only needed for scripts)
+npm install
+
 # Open index.html in your browser
 open index.html
 ```
 
 No build process needed! It's vanilla JavaScript.
+
+## 🤖 Claude Code Integration
+
+This repo includes [Claude Code](https://docs.anthropic.com/en/docs/claude-code) configuration for AI-assisted development:
+
+- **`CLAUDE.md`** — Project context and rules for Claude Code sessions
+- **`.mcp.json`** — MCP servers (Playwright for UI testing, Context7 for docs, Fetch for APIs)
+- **Slash Commands:**
+  - `/design-review` — Comprehensive UI/UX design review with Playwright screenshots
+  - `/code-review` — Pragmatic code quality review of branch changes
+  - `/security-review` — Security-focused vulnerability assessment
+- **Subagents:**
+  - `@design-review` — Specialized design review agent with Playwright tooling
 
 ## 🎨 Customization
 
