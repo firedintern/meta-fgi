@@ -279,7 +279,7 @@ MIT License - feel free to use this project for anything!
 
 - **Live Site**: [fgichad.xyz](https://www.fgichad.xyz)
 - **GitHub**: [github.com/firedintern/meta-fgi](https://github.com/firedintern/meta-fgi)
-- **Twitter/X**: [@0xfiredintern](https://twitter.com/0xfiredintern)
+- **Twitter/X**: [@firedintern](https://twitter.com/firedintern)
 
 ---
 
