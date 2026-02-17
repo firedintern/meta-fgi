@@ -37,7 +37,10 @@ Thumbs.db
 *-backup-*.html
 *-old.html
 
-# Test/Debug files
-test-*.js
-debug-*.js
-diagnose-*.js
+# Test/Debug files (root level only)
+/test-*.js
+/debug-*.js
+/diagnose-*.js
+
+# Playwright screenshots (test artifacts)
+.playwright-mcp/

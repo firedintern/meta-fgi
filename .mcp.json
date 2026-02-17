@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@anthropic-ai/mcp-playwright@latest"],
+      "description": "Browser automation for design reviews and UI testing"
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "description": "Library documentation lookup"
+    },
+    "fetch": {
+      "command": "npx",
+      "args": ["-y", "@anthropic-ai/mcp-fetch@latest"],
+      "description": "Fetch web content and API responses"
+    }
+  }
+}
