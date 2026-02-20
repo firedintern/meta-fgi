@@ -1,71 +1,97 @@
-# 🎰 Fear & Greed Protocol
+# Fear & Greed Protocol
 
-> Real-time crypto market sentiment tracker with casino-style visualization, portfolio management, and intelligent trading advice
+> Real-time crypto market sentiment tracker with casino-style visualization, portfolio management, Telegram bot alerts, historical backtesting, and Hindsight Score analysis
 
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://www.fgichad.xyz)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## 🌟 Features
+## Features
 
-### 📊 Real-Time Market Data
-- **Fear & Greed Index** - Live crypto market sentiment (0-100)
+### Real-Time Market Data
+- **Fear & Greed Index** - Live crypto market sentiment (0-100), updated daily
 - **Bitcoin Price Tracker** - Real-time BTC price with 24h change percentage
-- **30-Day Historical Chart** - Interactive Chart.js visualization with color-coded sentiment points
+- **30-Day Historical Chart** - Interactive Chart.js line chart with color-coded sentiment points
+- **Sentiment Distribution Chart** - Donut chart showing how sentiment breaks down across the last 30 days
 - **Auto-Refresh** - Market data updates every 60 seconds, BTC price every 30 seconds
 
-### 🎰 Casino-Style Interface
+### Casino-Style Interface
 - **Slot Machine Visualization** - Three-reel emoji-based sentiment display
-- **Jackpot Sounds** - Pleasant musical audio feedback using Web Audio API
+- **Jackpot Sounds** - Musical audio feedback via Web Audio API
 - **Animated Spinning Reels** - Smooth staggered animations with shake effects
 - **Matrix Rain Effect** - Toggleable Matrix-style background animation (✨ button)
 - **Win Flash Effects** - Visual burst effects for extreme market conditions
 - **Emoji Rain** - Cascading emoji particles after each spin
 
-### 💼 Portfolio Management
+### Portfolio Management
 - **Portfolio Tracker** - Input and save your crypto, stablecoin, and cash holdings
-- **Smart Allocation Advice** - AI-driven recommendations based on Fear & Greed Index and your portfolio balance
-- **Visual Portfolio Chart** - Interactive doughnut chart showing your allocation breakdown
+- **Smart Allocation Advice** - Recommendations based on Fear & Greed Index and your portfolio balance
+- **Visual Portfolio Chart** - Interactive doughnut chart showing allocation breakdown
 - **Persistent Storage** - Portfolio data saved locally in browser
 - **Real-time Suggestions** - Dynamic advice like "Deploy your cash - great entry point!" or "Take profits - you're overexposed!"
 
-### 📈 Sentiment Intelligence
-- **Streak Tracking** - Shows consecutive days in current sentiment category
-- **Historical Records** - Displays longest streak records with dates (e.g., "Record: 15 days in March 2024")
-- **Contextual Quotes** - Smart trading wisdom tailored to current market sentiment
+### Hindsight Score
+- **Historical Analysis Modal** - Click the 🔮 button to open a full breakdown of how Bitcoin has performed after each FGI range
+- **5.5-Year Dataset** - Based on 2,000 days of data (May 2020 - Nov 2025), covering multiple full market cycles
+- **Three Time Horizons** - Forward returns at 7, 14, and 30 days for each sentiment range
+- **Win Rate Stats** - Sample sizes, win rates, best/worst cases for each range
+- **Live-Linked** - Auto-updates to reflect the current FGI score whenever you spin or refresh
+
+**Key finding (5.5-year data):**
+
+| FGI Range | 30d Avg Return | Win Rate |
+|-----------|---------------|----------|
+| Extreme Fear (0-24) | -0.85% | 48.4% |
+| Fear (25-44) | +4.54% | 56.8% |
+| Neutral (45-59) | +6.82% | 59.6% |
+| Greed (60-79) | +3.97% | 50.8% |
+| Extreme Greed (80-100) | +21.87% | 74.8% |
+
+### Sentiment Intelligence
+- **Streak Tracking** - Consecutive days in the current sentiment category
+- **Historical Records** - Longest streak records with dates (e.g., "Record: 15 days in March 2024")
+- **Contextual Quotes** - Trading wisdom tailored to current market sentiment
 - **Sentiment Categories** - 5 levels from Extreme Fear to Extreme Greed with emoji indicators
 
-### 🔔 Smart Notifications & Sharing
+### Telegram Bot Alerts
+- **Bot**: [@fgichadbot](https://t.me/fgichadbot)
+- **Subscribe** with `/start` to receive Telegram alerts at extreme FGI levels
+- **Unsubscribe** with `/stop` at any time
+- **Status check** with `/status` to get the current FGI score
+- **Daily cron** runs at 4 PM UTC and sends alerts when FGI reaches extreme levels
+- Subscriber data stored in Vercel KV (Redis-compatible key-value store)
+
+### Smart Notifications & Sharing
 - **Extreme Alerts** - Browser notifications for extreme fear/greed levels (score ≤20 or ≥80)
 - **Degen Advice** - Trading suggestions from "💎 Accumulate" to "⚠️ Exit Now"
 - **Share on X** - One-click Twitter/X sharing with custom formatted text
-- **Smart Control Hiding** - Controls auto-hide on mobile scroll for cleaner view
 
-### 📱 Fully Responsive & Accessible
+### Fully Responsive & Accessible
 - **Mobile-Optimized Layout** - Touch-friendly with adaptive sizing
 - **Keyboard Navigation** - Full keyboard support with visible focus indicators
 - **ARIA Labels** - Screen reader friendly with proper roles and states
 - **Performance Optimized** - GPU-accelerated animations, throttled matrix effect
-- **Progressive Enhancement** - Works without JavaScript (graceful degradation)
 
-## 🚀 Live Demo
+## Live Demo
 
 **[fgichad.xyz](https://www.fgichad.xyz)**
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: Vanilla JavaScript (ES6+), HTML5, CSS3
-- **Charts**: Chart.js 4.4.0 (Line & Doughnut charts)
+- **Charts**: Chart.js 4.4.0 (Line, Doughnut, and Sentiment Distribution charts)
 - **Storage**: LocalStorage API (portfolio persistence)
+- **Bot Storage**: Vercel KV (Telegram subscriber list)
 - **APIs**:
   - [Alternative.me Fear & Greed Index](https://alternative.me/crypto/fear-and-greed-index/) (current + 365-day history)
-  - [CoinGecko API v3](https://www.coingecko.com/en/api) (BTC price & 24h change)
-- **Deployment**: Vercel
+  - [CoinGecko API v3](https://www.coingecko.com/en/api) (real-time BTC price & 24h change)
+  - [CryptoCompare](https://min-api.cryptocompare.com/) (5.5-year BTC price history for backtesting)
+- **Deployment**: Vercel (serverless functions + daily cron)
 - **Audio**: Web Audio API (dynamic jackpot sounds)
 - **Animations**: CSS3 animations with GPU acceleration
 - **Accessibility**: ARIA labels, keyboard navigation support
-- **Fonts**: Comic Sans (for degen vibes), Courier New (terminal aesthetic)
+- **Fonts**: Comic Sans (degen vibes), Courier New (terminal aesthetic)
 
-## 🎮 How to Use
+## How to Use
 
 ### Basic Usage
 1. Visit [fgichad.xyz](https://www.fgichad.xyz)
@@ -74,28 +100,30 @@
 4. Enable notifications (🔔) for extreme market alerts
 
 ### Controls
-- **✨ Matrix Toggle** - Show/hide Matrix background animation
-- **🔔 Notifications** - Enable extreme sentiment alerts (score ≤20 or ≥80)
-- **💼 Portfolio** - Open portfolio management modal
-- **🎰 Spin** - Refresh all data and spin the slot machine
-- **Share on X** - Post current sentiment to Twitter/X with custom formatting
-- **[REFRESH]** - Manual refresh button for all market data
 
-## 💡 Sentiment Guide
+| Button | Action |
+|--------|--------|
+| ✨ | Toggle Matrix background animation |
+| 🔔 | Enable browser notifications for extreme sentiment (≤20 or ≥80) |
+| 💼 | Open portfolio management modal |
+| 🔮 | Open Hindsight Score modal (historical analysis) |
+| Telegram icon | Subscribe to Telegram bot alerts |
+| 🎰 Spin | Refresh all data and spin the slot machine |
+| Share on X | Post current sentiment to Twitter/X |
 
-| Score | Status | Emoji | Advice |
-|-------|--------|-------|--------|
+## Sentiment Guide
+
+| Score | Status | Emoji | Degen Advice |
+|-------|--------|-------|--------------|
 | 0-24 | Extreme Fear | 💀 | 💎 Accumulate |
 | 25-44 | Fear | 😱 | 🤔 Good Entry |
 | 45-59 | Neutral | 😐 | 😐 Wait & See |
 | 60-79 | Greed | 😏 | 🚨 Take Profits |
 | 80-100 | Extreme Greed | 🤑 | ⚠️ Exit Now |
 
-## 💼 Using Portfolio Management
+## Using Portfolio Management
 
-Track your holdings and get smart allocation advice:
-
-1. Click the **💼 Portfolio** button in top-right controls
+1. Click the **💼 Portfolio** button in the top-right controls
 2. Enter your holdings:
    - **Crypto Holdings ($)** - Your total crypto value (BTC, ETH, alts)
    - **Stablecoins ($)** - USDT, USDC, DAI, etc.
@@ -109,92 +137,133 @@ Track your holdings and get smart allocation advice:
    - **Greed + High Crypto** → "Consider taking some profits"
    - **Balanced** → "Your allocation looks good"
 
-Your portfolio data is saved locally in your browser and persists across sessions.
+Portfolio data is saved locally in your browser and persists across sessions.
 
-## 📈 Understanding Streak Tracking
+## Understanding Streak Tracking
 
 The app tracks consecutive days the market stays in the same sentiment category:
 
-- **Current Streak** - Shows how many days in a row (e.g., "Day 5 of Extreme Fear")
-- **Historical Records** - Displays the longest streak ever recorded for that category
-- **Record Dates** - Shows when records were set (e.g., "Record: 15 days in Mar 2024")
-- **Average Duration** - Typical length of streaks in that category
-- **Record Alerts** - 🔥 highlights when you're breaking a record!
+- **Current Streak** - How many days in a row (e.g., "Day 5 of Extreme Fear")
+- **Historical Records** - The longest streak ever recorded for that category
+- **Record Dates** - When records were set (e.g., "Record: 15 days in Mar 2024")
+- **Record Alerts** - Highlights when you're breaking a record
 
 Example displays:
 - `Day 1 of Extreme Fear (Just started!)`
 - `Day 7 of Greed (Above avg! Typical: 4.2 days | Record: 12 days in Jan 2024)`
-- `Day 15 of Extreme Fear 🔥 RECORD BROKEN! (Previous: 12 days in Nov 2023)`
+- `Day 15 of Extreme Fear RECORD BROKEN! (Previous: 12 days in Nov 2023)`
 
-This helps identify market turning points and unusually long sentiment periods.
+## Running Locally
 
-## 💬 Sentiment Quotes
-
-Each sentiment level has contextual trading wisdom:
-
-- **Extreme Fear (0-24)**: 💎 _"Be greedy when others are fearful. Blood in the streets means diamonds in the wallet."_
-- **Fear (25-44)**: 🤔 _"The best buys happen when everyone's too scared to click. Your future self will thank you."_
-- **Neutral (45-59)**: 😐 _"Boring markets build wealth. Patience pays more than FOMO ever will."_
-- **Greed (60-79)**: 🚨 _"When your barber's giving crypto tips, it's time to secure the bag."_
-- **Extreme Greed (80-100)**: ⚠️ _"Euphoria is expensive. Everyone's a genius in a bull market until the music stops."_
-
-## 📁 Project Structure
-
-```
-meta-fgi/
-├── index.html                 # Production website
-├── api/                       # Vercel serverless functions
-│   ├── fgi.js                 # FGI proxy API
-│   ├── telegram-webhook.js    # Telegram bot webhook
-│   ├── check-fgi-cron.js      # Daily cron for alerts
-│   └── admin-subscribers.js   # Admin endpoint
-├── scripts/                   # Utility & data processing scripts
-├── data/                      # Backtest results & cached data
-├── drafts/                    # Experimental HTML versions
-├── docs/                      # Project documentation
-│   ├── DATA-SOURCES.md        # API & data source docs
-│   ├── BACKTEST-COMPARISON.md # 1yr vs 5.5yr analysis
-│   ├── INTEGRATION-SUMMARY.md # Hindsight Score integration
-│   └── TELEGRAM-SETUP.md     # Telegram bot deployment
-├── .claude/
-│   ├── commands/              # Slash commands (/design-review, /code-review, /security-review)
-│   └── agents/                # Subagent definitions
-├── .mcp.json                  # MCP server configuration
-├── CLAUDE.md                  # Claude Code project instructions
-└── vercel.json                # Vercel cron config
-```
-
-## 🏃 Running Locally
 ```bash
 # Clone the repository
 git clone https://github.com/firedintern/meta-fgi.git
-
-# Navigate to the directory
 cd meta-fgi
 
-# Install dependencies (only needed for scripts)
+# Install dependencies (only needed for backtest scripts)
 npm install
 
-# Open index.html in your browser
+# Open in browser — no build step needed
 open index.html
 ```
 
-No build process needed! It's vanilla JavaScript.
+## Running the Backtest
 
-## 🤖 Claude Code Integration
+```bash
+node scripts/backtest-hindsight-score.js
+```
+
+This fetches 5.5 years of FGI + BTC price data and outputs `data/backtest-results-5.5years.json`.
+
+## Project Structure
+
+```
+meta-fgi/
+├── index.html                    # Production website (DO NOT modify without approval)
+├── api/                          # Vercel serverless functions
+│   ├── fgi.js                    # FGI proxy API
+│   ├── telegram-webhook.js       # Telegram bot webhook handler
+│   ├── check-fgi-cron.js         # Daily cron — checks FGI & sends Telegram alerts
+│   └── admin-subscribers.js      # Admin endpoint for subscriber management
+├── scripts/                      # Utility & data processing
+│   ├── backtest-hindsight-score.js  # 5.5-year FGI + BTC backtest
+│   ├── create-integration.js     # Integration automation
+│   ├── explain-overlap.js        # Data overlap analysis
+│   ├── extract-cmc-fgi.js        # CMC data extraction
+│   ├── playwright.config.js      # Playwright test config
+│   ├── test-api-limits.js        # API rate limit testing
+│   ├── test-btc-alternatives.js  # Alternative BTC source testing
+│   └── test-cmc-api.js           # CMC API testing
+├── data/                         # Backtest results & cached data
+│   ├── backtest-results-5.5years.json  # Full 5.5-year backtest output
+│   ├── backtest-results.json     # 1-year backtest output
+│   ├── hindsight-data.csv        # Raw CSV data
+│   └── cmc-page-shared-data.json # CoinMarketCap cached data
+├── drafts/                       # Experimental HTML versions (not production)
+│   ├── hindsight-score-demo.html # Standalone Hindsight Score demo
+│   ├── index-full-integration.html  # Full integration prototype
+│   └── index-with-hindsight.html # Hindsight integration draft
+├── docs/                         # Project documentation
+│   ├── DATA-SOURCES.md           # API & data source details
+│   ├── BACKTEST-COMPARISON.md    # 1-year vs 5.5-year analysis
+│   ├── INTEGRATION-SUMMARY.md    # Hindsight Score integration notes
+│   └── TELEGRAM-SETUP.md         # Telegram bot deployment guide
+├── .claude/
+│   ├── commands/                 # Slash command definitions
+│   ├── skills/                   # Claude Code skill configs
+│   │   └── frontend-design.md    # Frontend design skill
+│   └── agents/                   # Subagent definitions
+├── .mcp.json                     # MCP server configuration
+├── CLAUDE.md                     # Claude Code project instructions
+├── vercel.json                   # Vercel cron + headers config
+└── package.json                  # Node.js dependencies (axios)
+```
+
+## External APIs
+
+| API | Purpose | Endpoint | Cost |
+|-----|---------|----------|------|
+| Alternative.me | Fear & Greed Index | `https://api.alternative.me/fng/` | Free |
+| CoinGecko | Real-time BTC price | `https://api.coingecko.com/api/v3/` | Free |
+| CryptoCompare | BTC price history (backtesting) | `https://min-api.cryptocompare.com/data/v2/histoday` | Free (100k/mo) |
+| Telegram Bot API | User alerts | `https://api.telegram.org/` | Free |
+
+## Environment Variables
+
+All secrets live in Vercel environment variables only — never committed to the repo.
+
+| Variable | Purpose |
+|----------|---------|
+| `TELEGRAM_BOT_TOKEN` | From @BotFather |
+| `KV_REST_API_URL` | Vercel KV database URL |
+| `KV_REST_API_TOKEN` | Vercel KV auth token |
+| `CRON_SECRET` | Protects manual cron triggers |
+| `ADMIN_SECRET` | Protects admin endpoints |
+
+## Claude Code Integration
 
 This repo includes [Claude Code](https://docs.anthropic.com/en/docs/claude-code) configuration for AI-assisted development:
 
-- **`CLAUDE.md`** — Project context and rules for Claude Code sessions
-- **`.mcp.json`** — MCP servers (Playwright for UI testing, Context7 for docs, Fetch for APIs)
+- **`CLAUDE.md`** - Project context and rules for Claude Code sessions
+- **`.mcp.json`** - MCP servers (Playwright for UI testing, Context7 for docs, Fetch for APIs)
 - **Slash Commands:**
-  - `/design-review` — Comprehensive UI/UX design review with Playwright screenshots
-  - `/code-review` — Pragmatic code quality review of branch changes
-  - `/security-review` — Security-focused vulnerability assessment
+  - `/design-review` - Comprehensive UI/UX design review with Playwright screenshots
+  - `/code-review` - Pragmatic code quality review of branch changes
+  - `/security-review` - Security-focused vulnerability assessment
+  - `/frontend-design` - Create distinctive, production-grade frontend interfaces
 - **Subagents:**
-  - `@design-review` — Specialized design review agent with Playwright tooling
+  - `@design-review` - Specialized design review agent with Playwright tooling
 
-## 🎨 Customization
+## Telegram Bot Setup
+
+See [`docs/TELEGRAM-SETUP.md`](docs/TELEGRAM-SETUP.md) for full deployment instructions.
+
+Quick start:
+1. Message [@fgichadbot](https://t.me/fgichadbot) on Telegram
+2. Send `/start` to subscribe to extreme FGI alerts
+3. Receive daily alerts when FGI hits extreme levels (≤25 or ≥75)
+
+## Customization
 
 ### Change Matrix Effect Opacity
 ```css
@@ -234,30 +303,7 @@ if (fgiScore > 79 && cryptoRatio > 0.7) {
 }
 ```
 
-### Adjust Notification Triggers
-```javascript
-const extreme = currentScore <= 20 || currentScore >= 80;  // Change thresholds
-```
-
-## ✨ Recent Features
-
-**Portfolio Management System**
-- Track crypto, stablecoin, and cash holdings
-- Get smart allocation advice based on Fear & Greed Index
-- Visual doughnut chart with percentage breakdowns
-
-**Streak Tracking & Records**
-- Track consecutive days in sentiment categories
-- Historical longest streak records with dates
-- Average streak duration statistics
-
-**Enhanced UX**
-- Sentiment quotes with contextual trading wisdom
-- Emoji rain effects and win animations
-- Improved accessibility with ARIA labels and keyboard navigation
-- Performance optimizations (GPU acceleration, throttled animations)
-
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Feel free to:
 - Report bugs or issues
@@ -265,25 +311,23 @@ Contributions are welcome! Feel free to:
 - Submit pull requests
 - Share feedback on UX/UI
 
-## 📝 License
+## License
 
 MIT License - feel free to use this project for anything!
 
-## 🙏 Credits
+## Credits
 
 - Fear & Greed Index data by [Alternative.me](https://alternative.me)
-- Bitcoin prices by [CoinGecko](https://www.coingecko.com)
-- Built with ☕ and late nights
+- Bitcoin prices by [CoinGecko](https://www.coingecko.com) and [CryptoCompare](https://www.cryptocompare.com)
+- Built with coffee and late nights
 
-## 🔗 Links
+## Links
 
 - **Live Site**: [fgichad.xyz](https://www.fgichad.xyz)
 - **GitHub**: [github.com/firedintern/meta-fgi](https://github.com/firedintern/meta-fgi)
-- **Twitter/X**: [@firedintern](https://twitter.com/firedintern)
+- **Telegram Bot**: [@fgichadbot](https://t.me/fgichadbot)
+- **Twitter/X**: [@0xfiredintern](https://twitter.com/0xfiredintern)
 
 ---
 
-**⚠️ Disclaimer**: This tool is for entertainment and informational purposes only. Portfolio tracking and advice features are educational tools and do not constitute financial advice. Always do your own research (DYOR) and consult with financial professionals before making investment decisions.
-
-Made with 🎰 by [firedintern](https://twitter.com/0xfiredintern)
-
+**Disclaimer**: This tool is for entertainment and informational purposes only. Portfolio tracking and advice features are educational tools and do not constitute financial advice. Always do your own research (DYOR) and consult with financial professionals before making investment decisions.
