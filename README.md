@@ -16,7 +16,6 @@
 
 ### Casino-Style Interface
 - **Slot Machine Visualization** - Three-reel emoji-based sentiment display
-- **Jackpot Sounds** - Musical audio feedback via Web Audio API
 - **Animated Spinning Reels** - Smooth staggered animations with shake effects
 - **Matrix Rain Effect** - Toggleable Matrix-style background animation (✨ button)
 - **Win Flash Effects** - Visual burst effects for extreme market conditions
