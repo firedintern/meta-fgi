@@ -1031,6 +1031,265 @@
             text-transform: uppercase;
         }
 
+        /* Viral Generator Section */
+        .viral-generator {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(57,255,20,0.2);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        .viral-generator-title {
+            color: #39ff14;
+            font-size: 1.3em;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .viral-generator-subtitle {
+            color: #666;
+            text-align: center;
+            font-size: 0.85em;
+            margin-bottom: 24px;
+        }
+        .vg-range-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .vg-range-btn {
+            font-family: 'Chakra Petch', monospace;
+            font-size: 0.78em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 8px 14px;
+            border-radius: 6px;
+            border: 2px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05);
+            color: #aaa;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .vg-range-btn:hover { border-color: rgba(255,255,255,0.35); color: #fff; }
+        .vg-range-btn.active {
+            border-color: #ffd700;
+            background: rgba(255,215,0,0.12);
+            color: #ffd700;
+            box-shadow: 0 0 10px rgba(255,215,0,0.3);
+        }
+        .vg-range-btn[data-range="Extreme Greed"].active {
+            border-color: #39ff14;
+            background: rgba(57,255,20,0.12);
+            color: #39ff14;
+            box-shadow: 0 0 10px rgba(57,255,20,0.3);
+        }
+        .vg-controls-row {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        .vg-slider-wrap {
+            flex: 1;
+            min-width: 200px;
+            max-width: 340px;
+        }
+        .vg-slider-label {
+            color: #aaa;
+            font-size: 0.82em;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .vg-slider-value {
+            color: #ffd700;
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .vg-period-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+        .vg-period-btn {
+            font-family: 'Chakra Petch', monospace;
+            font-size: 0.82em;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 2px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05);
+            color: #aaa;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .vg-period-btn:hover { border-color: rgba(255,255,255,0.35); color: #fff; }
+        .vg-period-btn.active {
+            border-color: #ffd700;
+            background: rgba(255,215,0,0.12);
+            color: #ffd700;
+        }
+        .vg-result-card {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 16px;
+            transition: border-color 0.3s ease;
+        }
+        .vg-result-card.positive { border-color: rgba(57,255,20,0.4); }
+        .vg-result-card.negative { border-color: rgba(255,60,60,0.4); }
+        .vg-result-label {
+            color: #888;
+            font-size: 0.85em;
+            margin-bottom: 4px;
+        }
+        .vg-result-main {
+            font-size: 2.6em;
+            font-weight: 700;
+            margin: 4px 0 12px;
+            letter-spacing: 1px;
+        }
+        .vg-result-main.positive { color: #39ff14; text-shadow: 0 0 15px rgba(57,255,20,0.4); }
+        .vg-result-main.negative { color: #ff4444; text-shadow: 0 0 15px rgba(255,60,60,0.3); }
+        .vg-result-stats {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .vg-stat {
+            text-align: center;
+        }
+        .vg-stat-val {
+            color: #e0e0e0;
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+        .vg-stat-lbl {
+            color: #666;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .vg-sample-note {
+            color: #555;
+            font-size: 0.78em;
+            margin-top: 8px;
+        }
+        .vg-callout {
+            background: rgba(57,255,20,0.08);
+            border: 1px solid rgba(57,255,20,0.3);
+            border-radius: 8px;
+            padding: 10px 16px;
+            color: #39ff14;
+            font-size: 0.85em;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .vg-callout.hidden { display: none; }
+        .vg-low-sample {
+            background: rgba(255,165,0,0.08);
+            border: 1px solid rgba(255,165,0,0.3);
+            border-radius: 8px;
+            padding: 10px 16px;
+            color: #ffa500;
+            font-size: 0.82em;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .vg-low-sample.hidden { display: none; }
+        .vg-error {
+            color: #ff4444;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+        }
+        .vg-disclaimer {
+            color: #444;
+            font-size: 0.72em;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .vg-share-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+        .vg-share-btn {
+            font-family: 'Chakra Petch', monospace;
+            font-size: 0.85em;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 10px 24px;
+            border-radius: 6px;
+            border: 2px solid #e6e8eb;
+            background: #0a0e14;
+            color: #e6e8eb;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 12px rgba(230,232,235,0.15);
+        }
+        .vg-share-btn:hover {
+            box-shadow: 0 0 22px rgba(230,232,235,0.5);
+            background: #151a23;
+            transform: scale(1.04);
+        }
+        .vg-backtester-link {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 0.82em;
+            color: #555;
+        }
+        .vg-backtester-link a {
+            color: #39ff14;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .vg-backtester-link a:hover { text-shadow: 0 0 8px #39ff14; }
+        .vg-toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1a1a1a;
+            border: 1px solid #39ff14;
+            color: #39ff14;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 0.88em;
+            font-family: 'Chakra Petch', monospace;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        .vg-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        @media (max-width: 768px) {
+            .viral-generator { padding: 20px 14px; }
+            .vg-result-main { font-size: 2em; }
+            .vg-controls-row { flex-direction: column; align-items: stretch; }
+            .vg-slider-wrap { max-width: 100%; }
+        }
+
         /* Footer */
         .footer {
             text-align: center;
@@ -2135,6 +2394,86 @@
             <div class="chart-title">Sentiment Distribution (30 Days)</div>
             <canvas id="distributionChart" style="max-height: 350px;"></canvas>
         </div>
+
+        <!-- Viral Moment Generator -->
+        <div class="viral-generator">
+            <div class="viral-generator-title">What Would $1,000 Become?</div>
+            <div class="viral-generator-subtitle">5.5 years of real BTC data · pick a sentiment, see the history</div>
+
+            <!-- FGI Range selector -->
+            <div class="vg-range-buttons">
+                <button class="vg-range-btn" data-range="Extreme Fear">😱 Extreme Fear</button>
+                <button class="vg-range-btn" data-range="Fear">😨 Fear</button>
+                <button class="vg-range-btn" data-range="Neutral">😐 Neutral</button>
+                <button class="vg-range-btn" data-range="Greed">😏 Greed</button>
+                <button class="vg-range-btn active" data-range="Extreme Greed">🤑 Extreme Greed</button>
+            </div>
+
+            <!-- Amount + Hold period -->
+            <div class="vg-controls-row">
+                <div class="vg-slider-wrap">
+                    <label class="vg-slider-label">Investment Amount</label>
+                    <div class="vg-slider-value">$<span id="vgAmountDisplay">1,000</span></div>
+                    <input type="range" id="vgAmountSlider" min="100" max="10000" step="100" value="1000">
+                </div>
+                <div>
+                    <div class="vg-slider-label" style="text-align:center;margin-bottom:10px;">Hold Period</div>
+                    <div class="vg-period-buttons">
+                        <button class="vg-period-btn" data-period="7">7 days</button>
+                        <button class="vg-period-btn" data-period="14">14 days</button>
+                        <button class="vg-period-btn active" data-period="30">30 days</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Extreme Greed callout -->
+            <div class="vg-callout" id="vgCallout">
+                ⚡ Extreme Greed beats Extreme Fear by 22.7% — not what most people expect
+            </div>
+
+            <!-- Low sample warning -->
+            <div class="vg-low-sample hidden" id="vgLowSample">
+                ⚠️ Low sample size — treat with caution
+            </div>
+
+            <!-- Result card -->
+            <div class="vg-result-card" id="vgResultCard">
+                <div class="vg-result-label" id="vgResultLabel">If you bought every time FGI hit Extreme Greed and held 30 days...</div>
+                <div class="vg-result-main positive" id="vgResultMain">$1,000 → $1,219</div>
+                <div class="vg-result-stats">
+                    <div class="vg-stat">
+                        <div class="vg-stat-val" id="vgReturnVal">+21.9%</div>
+                        <div class="vg-stat-lbl">Avg Return</div>
+                    </div>
+                    <div class="vg-stat">
+                        <div class="vg-stat-val" id="vgWinRateVal">75%</div>
+                        <div class="vg-stat-lbl">Win Rate</div>
+                    </div>
+                    <div class="vg-stat">
+                        <div class="vg-stat-val" id="vgSampleVal">151</div>
+                        <div class="vg-stat-lbl">Occurrences</div>
+                    </div>
+                    <div class="vg-stat">
+                        <div class="vg-stat-val" id="vgPeriodVal">30 days</div>
+                        <div class="vg-stat-lbl">Hold Period</div>
+                    </div>
+                </div>
+                <div class="vg-sample-note" id="vgSampleNote">Based on 151 occurrences · May 2020–Nov 2025</div>
+                <div class="vg-disclaimer">Past performance does not guarantee future results. Not financial advice.</div>
+            </div>
+
+            <!-- Share button -->
+            <div class="vg-share-row">
+                <button class="vg-share-btn" id="vgShareBtn">📤 Share This Result</button>
+            </div>
+
+            <div class="vg-backtester-link">
+                Want to optimize your entry day? <a id="vgBacktesterLink">→ Open Strategy Backtester</a>
+            </div>
+        </div>
+
+        <!-- Toast notification -->
+        <div class="vg-toast" id="vgToast"></div>
 
         <div class="footer">
             Made by <a href="https://x.com/firedintern" target="_blank" rel="noopener noreferrer">firedintern</a>
@@ -3935,6 +4274,312 @@
                 refreshAll();
             }
         });
+
+        // ── Viral Moment Generator ────────────────────────────────────────────────
+        (function() {
+            const BACKTEST_URL = '/backtest-results-5.5years.json';
+            const LOW_SAMPLE_THRESHOLD = 10;
+            let backtestData = null;
+
+            // State
+            let vgRange = 'Extreme Greed';
+            let vgAmount = 1000;
+            let vgPeriod = 30;
+
+            // Elements
+            const amountSlider  = document.getElementById('vgAmountSlider');
+            const amountDisplay = document.getElementById('vgAmountDisplay');
+            const callout       = document.getElementById('vgCallout');
+            const lowSample     = document.getElementById('vgLowSample');
+            const resultCard    = document.getElementById('vgResultCard');
+            const resultLabel   = document.getElementById('vgResultLabel');
+            const resultMain    = document.getElementById('vgResultMain');
+            const returnVal     = document.getElementById('vgReturnVal');
+            const winRateVal    = document.getElementById('vgWinRateVal');
+            const sampleVal     = document.getElementById('vgSampleVal');
+            const periodVal     = document.getElementById('vgPeriodVal');
+            const sampleNote    = document.getElementById('vgSampleNote');
+            const shareBtn      = document.getElementById('vgShareBtn');
+            const toast         = document.getElementById('vgToast');
+            const backtesterLink = document.getElementById('vgBacktesterLink');
+
+            // Fetch data once
+            fetch(BACKTEST_URL)
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    backtestData = data.results;
+                    updateResult();
+                })
+                .catch(function() {
+                    resultCard.innerHTML = '<div class="vg-error">Data unavailable — try refreshing the page.</div>';
+                    shareBtn.disabled = true;
+                    shareBtn.style.opacity = '0.4';
+                });
+
+            function computeStats(range, period) {
+                if (!backtestData) return null;
+                var key = 'day' + period;
+                var bucket = backtestData[range] && backtestData[range][key];
+                if (!bucket || !bucket.returns || bucket.returns.length === 0) return null;
+                var rets = bucket.returns;
+                var n = rets.length;
+                var avg = rets.reduce(function(s, v) { return s + v; }, 0) / n;
+                var wins = rets.filter(function(v) { return v > 0; }).length;
+                var winRate = (wins / n) * 100;
+                return { n: n, avg: avg, winRate: winRate };
+            }
+
+            function formatDollar(val) {
+                return '$' + Math.round(val).toLocaleString();
+            }
+
+            function updateResult() {
+                if (!backtestData) return;
+                var stats = computeStats(vgRange, vgPeriod);
+                if (!stats) {
+                    resultCard.innerHTML = '<div class="vg-error">No data for this combination.</div>';
+                    return;
+                }
+
+                var result = vgAmount * (1 + stats.avg / 100);
+                var positive = stats.avg >= 0;
+                var returnStr = (positive ? '+' : '') + stats.avg.toFixed(1) + '%';
+                var winRateStr = Math.round(stats.winRate) + '%';
+                var resultStr = formatDollar(vgAmount) + ' → ' + formatDollar(result);
+
+                // Label
+                resultLabel.textContent = 'If you bought every time FGI hit ' + vgRange + ' and held ' + vgPeriod + ' days...';
+
+                // Main result
+                resultMain.textContent = resultStr;
+                resultMain.className = 'vg-result-main ' + (positive ? 'positive' : 'negative');
+
+                // Stats
+                returnVal.textContent = returnStr;
+                winRateVal.textContent = winRateStr;
+                sampleVal.textContent = stats.n;
+                periodVal.textContent = vgPeriod + ' days';
+                sampleNote.textContent = 'Based on ' + stats.n + ' occurrences · May 2020–Nov 2025';
+
+                // Card border
+                resultCard.className = 'vg-result-card ' + (positive ? 'positive' : 'negative');
+
+                // Extreme Greed callout
+                callout.className = 'vg-callout' + (vgRange === 'Extreme Greed' ? '' : ' hidden');
+
+                // Low sample warning
+                if (stats.n < LOW_SAMPLE_THRESHOLD) {
+                    lowSample.textContent = '⚠️ Low sample size (n=' + stats.n + ') — treat with caution';
+                    lowSample.className = 'vg-low-sample';
+                } else {
+                    lowSample.className = 'vg-low-sample hidden';
+                }
+            }
+
+            // Range buttons
+            document.querySelectorAll('.vg-range-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.vg-range-btn').forEach(function(b) { b.classList.remove('active'); });
+                    btn.classList.add('active');
+                    vgRange = btn.dataset.range;
+                    updateResult();
+                });
+            });
+
+            // Period buttons
+            document.querySelectorAll('.vg-period-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.vg-period-btn').forEach(function(b) { b.classList.remove('active'); });
+                    btn.classList.add('active');
+                    vgPeriod = parseInt(btn.dataset.period);
+                    updateResult();
+                });
+            });
+
+            // Amount slider
+            amountSlider.addEventListener('input', function() {
+                vgAmount = parseInt(amountSlider.value);
+                amountDisplay.textContent = vgAmount.toLocaleString();
+                updateResult();
+            });
+
+            // Backtester link
+            if (backtesterLink) {
+                backtesterLink.addEventListener('click', function() {
+                    var btn = document.getElementById('backtesterToggle');
+                    if (btn) btn.click();
+                });
+            }
+
+            // Share
+            function showToast(msg) {
+                toast.textContent = msg;
+                toast.classList.add('show');
+                setTimeout(function() { toast.classList.remove('show'); }, 3000);
+            }
+
+            function buildCanvasCard(stats, callback) {
+                var W = 600, H = 340;
+                var canvas = document.createElement('canvas');
+                canvas.width = W;
+                canvas.height = H;
+                var ctx = canvas.getContext('2d');
+                var positive = stats.avg >= 0;
+                var accentColor = positive ? '#39ff14' : '#ff4444';
+                var result = vgAmount * (1 + stats.avg / 100);
+
+                function draw() {
+                    // Background
+                    ctx.fillStyle = '#0a0e14';
+                    ctx.fillRect(0, 0, W, H);
+
+                    // Border
+                    ctx.strokeStyle = accentColor;
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(2, 2, W - 4, H - 4);
+
+                    // Header: FGI CHAD
+                    ctx.fillStyle = '#39ff14';
+                    ctx.font = "bold 18px 'Chakra Petch', monospace";
+                    ctx.textAlign = 'center';
+                    ctx.fillText('FGI CHAD', W / 2, 38);
+
+                    // Separator
+                    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(60, 52);
+                    ctx.lineTo(W - 60, 52);
+                    ctx.stroke();
+
+                    // Label
+                    ctx.fillStyle = '#888888';
+                    ctx.font = "14px 'Chakra Petch', monospace";
+                    ctx.fillText('If you bought every time FGI hit ' + vgRange + ' and held ' + vgPeriod + ' days...', W / 2, 78);
+
+                    // Main result
+                    ctx.fillStyle = accentColor;
+                    ctx.font = "bold 42px 'Chakra Petch', monospace";
+                    ctx.fillText(formatDollar(vgAmount) + ' \u2192 ' + formatDollar(result), W / 2, 140);
+
+                    // Stats row
+                    var cols = [W * 0.2, W * 0.5, W * 0.8];
+                    var labels = ['Avg Return', 'Win Rate', 'Occurrences'];
+                    var values = [
+                        (stats.avg >= 0 ? '+' : '') + stats.avg.toFixed(1) + '%',
+                        Math.round(stats.winRate) + '%',
+                        stats.n.toString()
+                    ];
+                    cols.forEach(function(x, i) {
+                        ctx.fillStyle = '#e0e0e0';
+                        ctx.font = "bold 20px 'Chakra Petch', monospace";
+                        ctx.textAlign = 'center';
+                        ctx.fillText(values[i], x, 190);
+                        ctx.fillStyle = '#666666';
+                        ctx.font = "12px 'Chakra Petch', monospace";
+                        ctx.fillText(labels[i], x, 210);
+                    });
+                    ctx.textAlign = 'center';
+
+                    // Separator
+                    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+                    ctx.beginPath();
+                    ctx.moveTo(60, 228);
+                    ctx.lineTo(W - 60, 228);
+                    ctx.stroke();
+
+                    // Sample note
+                    ctx.fillStyle = '#555555';
+                    ctx.font = "12px 'Chakra Petch', monospace";
+                    ctx.fillText('Based on ' + stats.n + ' occurrences \u00b7 5.5 years of data \u00b7 fgichad.xyz', W / 2, 252);
+
+                    // Disclaimer
+                    ctx.fillStyle = '#444444';
+                    ctx.font = "11px 'Chakra Petch', monospace";
+                    ctx.fillText('Past performance does not guarantee future results. Not financial advice.', W / 2, 275);
+
+                    // Extreme Greed callout
+                    if (vgRange === 'Extreme Greed') {
+                        ctx.fillStyle = 'rgba(57,255,20,0.1)';
+                        ctx.fillRect(60, 290, W - 120, 30);
+                        ctx.strokeStyle = 'rgba(57,255,20,0.3)';
+                        ctx.strokeRect(60, 290, W - 120, 30);
+                        ctx.fillStyle = '#39ff14';
+                        ctx.font = "12px 'Chakra Petch', monospace";
+                        ctx.fillText('\u26a1 Extreme Greed beats Extreme Fear by 22.7% \u2014 not what most people expect', W / 2, 310);
+                    }
+
+                    canvas.toBlob(function(blob) { callback(blob, canvas); }, 'image/png');
+                }
+
+                // Pre-load font
+                document.fonts.load("bold 42px 'Chakra Petch'").then(draw).catch(draw);
+            }
+
+            shareBtn.addEventListener('click', function() {
+                if (!backtestData) return;
+                var stats = computeStats(vgRange, vgPeriod);
+                if (!stats) return;
+
+                shareBtn.disabled = true;
+                shareBtn.textContent = '⏳ Generating...';
+
+                buildCanvasCard(stats, function(blob, canvas) {
+                    shareBtn.disabled = false;
+                    shareBtn.innerHTML = '📤 Share This Result';
+
+                    var result = vgAmount * (1 + stats.avg / 100);
+                    var shareText = 'If you bought every time the Crypto Fear & Greed Index hit ' + vgRange +
+                        ' and held ' + vgPeriod + ' days...\n' +
+                        formatDollar(vgAmount) + ' → ' + formatDollar(result) +
+                        ' (' + (stats.avg >= 0 ? '+' : '') + stats.avg.toFixed(1) + '% avg, ' +
+                        Math.round(stats.winRate) + '% win rate)\n\n' +
+                        '5.5 years of data · fgichad.xyz';
+
+                    var file = new File([blob], 'fgichad-result.png', { type: 'image/png' });
+
+                    // Tier 1: native file share (iOS Safari, Chrome Android)
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        navigator.share({ files: [file], title: 'FGI CHAD Result', text: shareText })
+                            .catch(function() { /* user cancelled */ });
+                        return;
+                    }
+
+                    // Tier 2: native share without file (broader mobile)
+                    if (navigator.share) {
+                        navigator.share({ title: 'FGI CHAD Result', text: shareText, url: 'https://fgichad.xyz' })
+                            .catch(function() { /* user cancelled */ });
+                        return;
+                    }
+
+                    // Tier 3: clipboard image (desktop Chrome/Edge)
+                    if (navigator.clipboard && window.ClipboardItem) {
+                        navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+                            .then(function() { showToast('📋 Image copied to clipboard!'); })
+                            .catch(function() { downloadPng(blob); });
+                        return;
+                    }
+
+                    // Tier 4: download
+                    downloadPng(blob);
+                });
+            });
+
+            function downloadPng(blob) {
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'fgichad-result.png';
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(function() {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+                showToast('📥 Image downloaded!');
+            }
+        })();
+        // ── End Viral Moment Generator ─────────────────────────────────────────────
 
     </script>
 
