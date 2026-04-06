@@ -24,13 +24,27 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;600;700&family=Azeret+Mono:wght@400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Chakra+Petch:wght@300;400;600;700&family=Azeret+Mono:wght@400;600&display=swap');
+
+        :root {
+            --color-bg:        #080c10;
+            --color-surface-1: #0f141a;
+            --color-surface-2: #141c24;
+            --color-surface-3: #1a2332;
+            --color-orange:    #f7931a;
+            --color-gold:      #ffd700;
+            --color-green:     #27ae60;
+            --color-red:       #c0392b;
+            --color-text-1:    #e8eaed;
+            --color-text-2:    #8a9ab0;
+            --color-text-3:    #4a5568;
+        }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Chakra Petch', monospace;
-            background: #0a0e14;
-            color: #e6e8eb;
+            background: var(--color-bg);
+            color: var(--color-text-1);
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
@@ -45,8 +59,8 @@
             width: 100%;
             height: 100%;
             background:
-                linear-gradient(0deg, rgba(57, 255, 20, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(57, 255, 20, 0.03) 1px, transparent 1px);
+                linear-gradient(0deg, rgba(39, 174, 96, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(39, 174, 96, 0.03) 1px, transparent 1px);
             background-size: 50px 50px;
             animation: grid-move 20s linear infinite;
             z-index: 0;
@@ -66,7 +80,7 @@
             width: 100%;
             height: 100%;
             background:
-                radial-gradient(circle at 15% 20%, rgba(57, 255, 20, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 15% 20%, rgba(39, 174, 96, 0.08) 0%, transparent 50%),
                 radial-gradient(circle at 85% 80%, rgba(255, 51, 102, 0.06) 0%, transparent 50%);
             z-index: 0;
             animation: glow-pulse 8s ease-in-out infinite;
@@ -77,20 +91,20 @@
             50% { opacity: 0.6; }
         }
 
-        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.15; transition: opacity 0.5s ease; }
-        #matrix-canvas.hidden { opacity: 0; pointer-events: none; }
+        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+        #matrix-canvas.visible { opacity: 0.15; pointer-events: none; }
         .container { text-align: center; max-width: 1100px; width: 100%; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
         
         .controls { position: fixed; top: 20px; right: 80px; display: flex; gap: 10px; z-index: 100; transition: opacity 0.3s, transform 0.3s; }
         .controls-mobile { display: none; }
         .controls.hidden { opacity: 0; transform: translateY(-100px); pointer-events: none; }
-        .control-btn { background: rgba(26, 122, 10, 0.3); border: 1px solid #1a7a0a; color: #39ff14; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-family: 'Chakra Petch', monospace; font-size: 1.2em; transition: all 0.3s ease; position: relative; text-decoration: none; display: inline-block; }
-        .control-btn:hover { background: rgba(57, 255, 20, 0.2); transform: scale(1.05); }
-        .control-btn:hover::after { content: attr(data-tooltip); position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%); background: rgba(57, 255, 20, 0.95); color: #0a0e14; padding: 6px 12px; border-radius: 5px; font-size: 0.7em; white-space: nowrap; z-index: 1000; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
-        .control-btn.active { background: rgba(57, 255, 20, 0.3); border-color: #39ff14; }
-        .control-btn:focus-visible { outline: 3px solid #39ff14; outline-offset: 3px; box-shadow: 0 0 15px rgba(57, 255, 20, 0.6); }
-        .telegram-btn { background: rgba(26, 122, 10, 0.3); border-color: #1a7a0a; color: #39ff14; }
-        .telegram-btn:hover { background: rgba(57, 255, 20, 0.2); color: #39ff14; }
+        .control-btn { background: rgba(39, 174, 96, 0.12); border: 1px solid rgba(39, 174, 96, 0.4); color: var(--color-green); padding: 10px 15px; border-radius: 5px; cursor: pointer; font-family: 'Chakra Petch', monospace; font-size: 1.2em; transition: all 0.3s ease; position: relative; text-decoration: none; display: inline-block; }
+        .control-btn:hover { background: rgba(39, 174, 96, 0.22); transform: scale(1.05); }
+        .control-btn:hover::after { content: attr(data-tooltip); position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%); background: var(--color-green); color: var(--color-bg); padding: 6px 12px; border-radius: 5px; font-size: 0.7em; white-space: nowrap; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+        .control-btn.active { background: rgba(39, 174, 96, 0.25); border-color: var(--color-green); }
+        .control-btn:focus-visible { outline: 3px solid var(--color-green); outline-offset: 3px; box-shadow: 0 0 15px rgba(39, 174, 96, 0.5); }
+        .telegram-btn { background: rgba(26, 122, 10, 0.3); border-color: #1a7a0a; color: var(--color-green); }
+        .telegram-btn:hover { background: rgba(39, 174, 96, 0.2); color: var(--color-green); }
         .telegram-btn svg { fill: currentColor; }
 
         /* Hindsight Button - NEW FEATURE */
@@ -138,7 +152,7 @@
             50% { box-shadow: 0 0 35px rgba(255, 170, 0, 0.8); }
         }
         
-        .title { font-size: 3.15em; color: #39ff14; margin-bottom: 40px; font-weight: bold; letter-spacing: 4px; text-shadow: 0 0 15px #39ff14, 0 0 30px #39ff14, 0 0 45px #39ff14; animation: terminal-flicker 3s ease-in-out infinite; position: relative; }
+        .title { font-family: 'Bebas Neue', sans-serif; font-size: 3.15em; color: var(--color-green); margin-bottom: 40px; font-weight: 400; letter-spacing: 6px; text-shadow: 0 0 20px rgba(39, 174, 96, 0.5), 0 0 40px rgba(39, 174, 96, 0.25); animation: terminal-flicker 3s ease-in-out infinite; position: relative; }
         @keyframes terminal-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.95; } }
         
         .btc-ticker {
@@ -175,7 +189,7 @@
         .btc-price { font-size: 1.4em; font-weight: bold; color: #0a0e14; margin: 2px 0; }
         .btc-change { font-size: 0.8em; font-weight: bold; margin-top: 2px; color: #a0a0a0; }
         .positive { color: #00ff88; }
-        .negative { color: #ff3366; }
+        .negative { color: var(--color-red); }
 
         /* Left side of slot machine - 50% */
         .slot-left {
@@ -301,14 +315,13 @@
         .slot-machine {
             width: 100%;
             margin: 35px 0;
-            background: linear-gradient(145deg, #151a23 0%, #0a0e14 50%, #151a23 100%);
-            border: 6px solid #ffaa00;
-            border-radius: 20px;
+            background: var(--color-surface-1);
+            border: 2px solid var(--color-orange);
+            border-radius: 12px;
             padding: 25px 30px 30px;
-            /* OPTIMIZED: Reduced from 5 to 2 box-shadows */
             box-shadow:
-                0 20px 60px rgba(0,0,0,0.95),
-                0 0 60px rgba(255,170,0,0.3);
+                0 20px 60px rgba(0,0,0,0.8),
+                0 0 40px rgba(247,147,26,0.12);
             position: relative;
             /* GPU acceleration */
             transform: translateZ(0);
@@ -756,7 +769,7 @@
             transform: translateX(-50%);
             width: 35px;
             height: 35px;
-            background: radial-gradient(circle at 30% 30%, #ff4444, #cc0000 60%, #880000);
+            background: radial-gradient(circle at 30% 30%, var(--color-red), #cc0000 60%, #880000);
             border-radius: 50%;
             box-shadow:
                 0 4px 10px rgba(0,0,0,0.5),
@@ -950,13 +963,13 @@
             margin: 30px 0;
         }
 
-        .share-btn { background: #0a0e14; border: 2px solid #e6e8eb; color: #e6e8eb; display: inline-flex; align-items: center; gap: 8px; padding: 12px 30px; font-size: 1em; border-radius: 5px; cursor: pointer; font-family: 'Chakra Petch', monospace; font-weight: bold; margin: 0; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(230, 232, 235, 0.2); }
+        .share-btn { background: var(--color-bg); border: 2px solid #e6e8eb; color: #e6e8eb; display: inline-flex; align-items: center; gap: 8px; padding: 12px 30px; font-size: 1em; border-radius: 5px; cursor: pointer; font-family: 'Chakra Petch', monospace; font-weight: bold; margin: 0; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(230, 232, 235, 0.2); }
         .share-btn:hover { box-shadow: 0 0 25px rgba(230, 232, 235, 0.6); background: #151a23; transform: scale(1.05); }
         .share-btn:focus-visible { outline: 3px solid #e6e8eb; outline-offset: 3px; box-shadow: 0 0 30px rgba(230, 232, 235, 0.8); }
 
-        .btn { background: linear-gradient(135deg, #39ff14, #00ff88); border: 2px solid #39ff14; color: #0a0e14; padding: 12px 30px; font-size: 1em; border-radius: 5px; cursor: pointer; font-family: 'Chakra Petch', monospace; font-weight: bold; margin: 0; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 15px rgba(57, 255, 20, 0.3); transition: all 0.3s ease; }
-        .btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(57, 255, 20, 0.6); }
-        .btn:focus-visible { outline: 3px solid #39ff14; outline-offset: 3px; box-shadow: 0 0 30px rgba(57, 255, 20, 0.8); }
+        .btn { background: linear-gradient(135deg, var(--color-green), #219a52); border: 2px solid var(--color-green); color: var(--color-bg); padding: 12px 30px; font-size: 1em; border-radius: 5px; cursor: pointer; font-family: 'Chakra Petch', monospace; font-weight: bold; margin: 0; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 15px rgba(39, 174, 96, 0.3); transition: all 0.3s ease; }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(39, 174, 96, 0.5); }
+        .btn:focus-visible { outline: 3px solid var(--color-green); outline-offset: 3px; box-shadow: 0 0 30px rgba(39, 174, 96, 0.7); }
 
         /* Range Slider Styling */
         input[type="range"] {
@@ -1028,14 +1041,13 @@
         
         /* Chart Section - Matching Card Style */
         .chart-container {
-            background: linear-gradient(145deg, #0a0e14 0%, #151a23 100%);
-            border: 3px solid rgba(255, 170, 0, 0.4);
-            border-radius: 15px;
+            background: var(--color-surface-1);
+            border: 1px solid var(--color-surface-3);
+            border-top: 2px solid var(--color-gold);
+            border-radius: 8px;
             padding: 40px;
             margin: 35px 0;
-            box-shadow:
-                inset 0 3px 20px rgba(0,0,0,0.9),
-                0 4px 15px rgba(0,0,0,0.6);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
             min-height: 350px;
         }
 
@@ -1045,27 +1057,38 @@
         }
 
         .chart-title {
-            color: #ffaa00;
-            font-size: 1.3em;
+            font-family: 'Bebas Neue', sans-serif;
+            color: var(--color-text-2);
+            font-size: 1.2em;
+            font-weight: 400;
             margin-bottom: 20px;
-            letter-spacing: 2px;
+            letter-spacing: 4px;
             text-transform: uppercase;
+        }
+
+        /* Section divider — gold accent line between major sections */
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--color-gold) 25%, var(--color-gold) 75%, transparent);
+            opacity: 0.25;
+            margin: 8px 0;
         }
 
         /* Viral Generator Section */
         .viral-generator {
-            background: rgba(255,255,255,0.03);
-            border: 2px solid rgba(57,255,20,0.4);
-            border-radius: 12px;
+            background: var(--color-surface-1);
+            border: 2px solid rgba(39, 174, 96, 0.35);
+            border-radius: 8px;
             padding: 30px;
             margin: 30px 0;
         }
         .viral-generator-title {
-            color: #39ff14;
-            font-size: 1.3em;
-            font-weight: 700;
+            font-family: 'Bebas Neue', sans-serif;
+            color: var(--color-green);
+            font-size: 1.6em;
+            font-weight: 400;
             text-align: center;
-            letter-spacing: 2px;
+            letter-spacing: 4px;
             text-transform: uppercase;
             margin-bottom: 6px;
         }
@@ -1105,10 +1128,10 @@
             box-shadow: 0 0 10px rgba(255,215,0,0.3);
         }
         .vg-range-btn[data-range="Extreme Greed"].active {
-            border-color: #39ff14;
-            background: rgba(57,255,20,0.12);
-            color: #39ff14;
-            box-shadow: 0 0 10px rgba(57,255,20,0.3);
+            border-color: var(--color-green);
+            background: rgba(39,174,96,0.12);
+            color: var(--color-green);
+            box-shadow: 0 0 10px rgba(39,174,96,0.3);
         }
         .vg-controls-row {
             display: flex;
@@ -1174,7 +1197,7 @@
             margin-bottom: 16px;
             transition: border-color 0.3s ease;
         }
-        .vg-result-card.positive { border-color: rgba(57,255,20,0.4); }
+        .vg-result-card.positive { border-color: rgba(39,174,96,0.4); }
         .vg-result-card.negative { border-color: rgba(255,60,60,0.4); }
         .vg-result-label {
             color: #888;
@@ -1187,8 +1210,8 @@
             margin: 4px 0 12px;
             letter-spacing: 1px;
         }
-        .vg-result-main.positive { color: #39ff14; text-shadow: 0 0 15px rgba(57,255,20,0.4); }
-        .vg-result-main.negative { color: #ff4444; text-shadow: 0 0 15px rgba(255,60,60,0.3); }
+        .vg-result-main.positive { color: var(--color-green); text-shadow: 0 0 15px rgba(39,174,96,0.4); }
+        .vg-result-main.negative { color: var(--color-red); text-shadow: 0 0 15px rgba(255,60,60,0.3); }
         .vg-result-stats {
             display: flex;
             gap: 20px;
@@ -1216,11 +1239,11 @@
             margin-top: 8px;
         }
         .vg-callout {
-            background: rgba(57,255,20,0.08);
-            border: 1px solid rgba(57,255,20,0.3);
+            background: rgba(39,174,96,0.08);
+            border: 1px solid rgba(39,174,96,0.3);
             border-radius: 8px;
             padding: 10px 16px;
-            color: #39ff14;
+            color: var(--color-green);
             font-size: 0.85em;
             text-align: center;
             margin-bottom: 16px;
@@ -1238,7 +1261,7 @@
         }
         .vg-low-sample.hidden { display: none; }
         .vg-error {
-            color: #ff4444;
+            color: var(--color-red);
             text-align: center;
             padding: 20px;
             font-size: 0.9em;
@@ -1265,7 +1288,7 @@
             padding: 10px 24px;
             border-radius: 6px;
             border: 2px solid #e6e8eb;
-            background: #0a0e14;
+            background: var(--color-bg);
             color: #e6e8eb;
             cursor: pointer;
             display: inline-flex;
@@ -1286,19 +1309,19 @@
             color: #555;
         }
         .vg-backtester-link a {
-            color: #39ff14;
+            color: var(--color-green);
             text-decoration: none;
             cursor: pointer;
         }
-        .vg-backtester-link a:hover { text-shadow: 0 0 8px #39ff14; }
+        .vg-backtester-link a:hover { text-shadow: 0 0 8px var(--color-green); }
         .vg-toast {
             position: fixed;
             bottom: 80px;
             left: 50%;
             transform: translateX(-50%) translateY(20px);
             background: #1a1a1a;
-            border: 1px solid #39ff14;
-            color: #39ff14;
+            border: 1px solid var(--color-green);
+            color: var(--color-green);
             padding: 10px 24px;
             border-radius: 8px;
             font-size: 0.88em;
@@ -1327,17 +1350,17 @@
             margin-top: 35px;
             color: #666;
             font-size: 0.9em;
-            border-top: 1px solid rgba(57, 255, 20, 0.2);
+            border-top: 1px solid rgba(39, 174, 96, 0.2);
         }
         .footer a {
-            color: #39ff14;
+            color: var(--color-green);
             text-decoration: none;
             font-weight: bold;
             transition: all 0.3s ease;
         }
         .footer a:hover {
-            color: #39ff14;
-            text-shadow: 0 0 10px #39ff14;
+            color: var(--color-green);
+            text-shadow: 0 0 10px var(--color-green);
         }
 
         /* DESKTOP OPTIMIZATIONS */
@@ -1370,8 +1393,8 @@
             .container { padding: 20px 10px 10px; }
             .title { font-size: 2em; letter-spacing: 2px; margin-bottom: 20px; margin-top: 10px; }
             
-            /* More visible matrix on mobile */
-            #matrix-canvas { opacity: 0.3; }
+            /* More visible matrix on mobile when toggled */
+            #matrix-canvas.visible { opacity: 0.3; }
             
             .btc-ticker { max-width: 90%; padding: 8px 15px; margin-bottom: 20px; }
             .btc-label { font-size: 0.65em; }
@@ -1550,7 +1573,7 @@
                 background: rgba(10, 14, 20, 0.95);
                 backdrop-filter: blur(10px);
                 padding: 12px 15px;
-                border-top: 1px solid rgba(57, 255, 20, 0.2);
+                border-top: 1px solid rgba(39, 174, 96, 0.2);
                 z-index: 999;
                 transition: transform 0.3s ease;
             }
@@ -1593,22 +1616,22 @@
             .controls-mobile .control-btn {
                 background: rgba(26, 122, 10, 0.3) !important;
                 border: 1px solid #1a7a0a !important;
-                color: #39ff14 !important;
+                color: var(--color-green) !important;
             }
 
             .controls-mobile .telegram-btn {
                 background: rgba(26, 122, 10, 0.3) !important;
                 border: 1px solid #1a7a0a !important;
-                color: #39ff14 !important;
+                color: var(--color-green) !important;
                 text-decoration: none;
             }
 
             .controls-mobile .telegram-btn:hover {
-                background: rgba(57, 255, 20, 0.2) !important;
+                background: rgba(39, 174, 96, 0.2) !important;
             }
 
             .controls-mobile .telegram-btn svg {
-                fill: #39ff14;
+                fill: var(--color-green);
                 width: 20px;
                 height: 20px;
             }
@@ -1715,20 +1738,20 @@
         }
 
         .hindsight-close {
-            color: #ff3366;
+            color: var(--color-red);
             font-size: 2.5em;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
             line-height: 1;
-            text-shadow: 0 0 10px #ff3366;
+            text-shadow: 0 0 10px var(--color-red);
             padding: 0 5px;
             flex-shrink: 0;
         }
 
         .hindsight-close:hover {
-            color: #ff3366;
-            text-shadow: 0 0 20px #ff3366;
+            color: var(--color-red);
+            text-shadow: 0 0 20px var(--color-red);
             transform: scale(1.3) rotate(90deg);
         }
 
@@ -1898,8 +1921,8 @@
         }
 
         .comparison-table tr.current-row {
-            background: rgba(57, 255, 20, 0.1);
-            border-left: 4px solid #39ff14;
+            background: rgba(39, 174, 96, 0.1);
+            border-left: 4px solid var(--color-green);
         }
 
         /* Portfolio Modal Styles */
@@ -1925,12 +1948,12 @@
             background: linear-gradient(145deg, #151a23, #0a0e14);
             margin: 5% auto; /* Increased top margin to prevent cutoff */
             padding: 0;
-            border: 4px solid #39ff14;
+            border: 4px solid var(--color-green);
             border-radius: 15px;
             width: 90%;
             max-width: 500px;
             max-height: 85vh; /* Slightly reduced to ensure space from top */
-            box-shadow: 0 0 40px rgba(57, 255, 20, 0.4);
+            box-shadow: 0 0 40px rgba(39, 174, 96, 0.4);
             animation: slideDown 0.3s;
             display: flex;
             flex-direction: column;
@@ -1944,8 +1967,8 @@
 
         .modal-header {
             padding: 20px 30px;
-            background: rgba(57, 255, 20, 0.1);
-            border-bottom: 2px solid #39ff14;
+            background: rgba(39, 174, 96, 0.1);
+            border-bottom: 2px solid var(--color-green);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -1955,30 +1978,30 @@
         }
 
         .modal-header h2 {
-            color: #39ff14;
+            color: var(--color-green);
             margin: 0;
             font-size: 1.5em;
             letter-spacing: 1px; /* Reduced from 2px for better fit */
-            text-shadow: 0 0 10px #39ff14;
+            text-shadow: 0 0 10px var(--color-green);
             flex: 1; /* Allow it to take available space */
             margin-right: 10px; /* Space between title and close button */
         }
 
         .close {
-            color: #ff3366;
+            color: var(--color-red);
             font-size: 2.5em;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
             line-height: 1;
-            text-shadow: 0 0 10px #ff3366;
+            text-shadow: 0 0 10px var(--color-red);
             padding: 0 5px;
             flex-shrink: 0; /* Prevent close button from shrinking */
         }
 
         .close:hover {
-            color: #ff3366;
-            text-shadow: 0 0 20px #ff3366;
+            color: var(--color-red);
+            text-shadow: 0 0 20px var(--color-red);
             transform: scale(1.3) rotate(90deg);
         }
 
@@ -1994,7 +2017,7 @@
 
         .input-group label {
             display: block;
-            color: #39ff14;
+            color: var(--color-green);
             font-size: 1em;
             margin-bottom: 8px;
             font-weight: bold;
@@ -2004,10 +2027,10 @@
         .input-group input {
             width: 100%;
             padding: 12px 15px;
-            background: #0a0e14;
-            border: 2px solid #39ff14;
+            background: var(--color-bg);
+            border: 2px solid var(--color-green);
             border-radius: 5px;
-            color: #39ff14;
+            color: var(--color-green);
             font-size: 1.1em;
             font-family: 'Chakra Petch', monospace;
             transition: all 0.3s;
@@ -2015,19 +2038,19 @@
 
         .input-group input:focus {
             outline: none;
-            border-color: #39ff14;
-            box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
+            border-color: var(--color-green);
+            box-shadow: 0 0 15px rgba(39, 174, 96, 0.3);
         }
 
         .input-group input::placeholder {
-            color: rgba(57, 255, 20, 0.4);
+            color: rgba(39, 174, 96, 0.4);
         }
 
         .allocation-stats {
             margin-top: 15px;
             padding: 15px;
             background: rgba(0, 0, 0, 0.5);
-            border: 2px solid rgba(57, 255, 20, 0.3);
+            border: 2px solid rgba(39, 174, 96, 0.3);
             border-radius: 10px;
         }
 
@@ -2035,7 +2058,7 @@
             display: flex;
             justify-content: space-between;
             padding: 8px 0;
-            border-bottom: 1px solid rgba(57, 255, 20, 0.2);
+            border-bottom: 1px solid rgba(39, 174, 96, 0.2);
             font-size: 1em;
         }
 
@@ -2044,7 +2067,7 @@
         }
 
         .stat-label {
-            color: #39ff14;
+            color: var(--color-green);
             font-weight: bold;
         }
 
@@ -2249,6 +2272,7 @@
         </a>
         <button class="control-btn" id="backtesterToggle" data-tooltip="Strategy Backtester" aria-label="Backtest investment strategies" aria-pressed="false">♟️</button>
         <button class="control-btn" id="portfolioToggle" data-tooltip="My Portfolio" aria-label="View and manage your portfolio" aria-pressed="false">💼</button>
+        <button class="control-btn" id="matrixToggleBtn" data-tooltip="Toggle Matrix" aria-label="Toggle matrix background" aria-pressed="false">✨</button>
     </div>
 
     <div class="container">
@@ -2410,10 +2434,12 @@
 
             <!-- Timestamp -->
             <div class="timestamp-container">
-                <div style="color:#00ff00;font-size:0.8em;opacity:0.6;" id="timestamp">> Last Updated: --:--:--</div>
+                <div style="color:var(--color-green);font-size:0.8em;opacity:0.6;" id="timestamp">> Last Updated: --:--:--</div>
             </div>
         </div>
         
+        <div class="section-divider"></div>
+
         <div class="chart-container">
             <div class="chart-title" id="chartTitle">30-Day Sentiment History</div>
             <canvas id="historyChart"></canvas>
@@ -2837,18 +2863,31 @@
             matrixAnimationId = requestAnimationFrame(drawMatrix);
         }
 
+        // Matrix is OFF by default — toggled by the ✨ button
+        let matrixEnabled = false;
         matrixAnimationId = requestAnimationFrame(drawMatrix);
+
+        // Wire up matrix toggle button
+        const matrixToggleBtn = document.getElementById('matrixToggleBtn');
+        if (matrixToggleBtn) {
+            matrixToggleBtn.addEventListener('click', function() {
+                matrixEnabled = !matrixEnabled;
+                canvas.classList.toggle('visible', matrixEnabled);
+                matrixToggleBtn.classList.toggle('active', matrixEnabled);
+            });
+        }
+
         window.addEventListener('resize',()=>{
             canvas.width=document.documentElement.clientWidth||window.innerWidth;
             canvas.height=document.documentElement.clientHeight||window.innerHeight;
         });
         
         function getColorForScore(s){
-            if(s<20)return '#ff4444';
-            if(s<40)return '#ff8844';
+            if(s<20)return '#c0392b';
+            if(s<40)return '#e67e22';
             if(s<60)return '#ffd700';
-            if(s<80)return '#88ff44';
-            return '#44ff88';
+            if(s<80)return '#27ae60';
+            return '#27ae60';
         }
         
         function getSymbolForScore(s){
