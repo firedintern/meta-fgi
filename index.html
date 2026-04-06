@@ -968,8 +968,11 @@
             border-radius: 3px;
             background: rgba(255,255,255,0.12);
             outline: none;
-            padding: 19px 0;
-            box-sizing: content-box;
+            display: block;
+            /* Touch target expanded via wrapper, not padding (padding shifts thumb) */
+        }
+        .vg-slider-wrap input[type="range"] {
+            /* Wrapper has padding: 12px 0 to expand tap area without shifting thumb */
         }
         input[type="range"]::-webkit-slider-runnable-track {
             height: 6px;
@@ -1118,6 +1121,10 @@
             flex: 1;
             min-width: 200px;
             max-width: 340px;
+        }
+        .vg-slider-wrap input[type="range"] {
+            height: 44px;
+            background: transparent;
         }
         .vg-slider-label {
             color: #aaa;
