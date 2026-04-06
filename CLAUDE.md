@@ -50,10 +50,23 @@ A production crypto Fear & Greed Index dashboard with casino-style visualization
 - `CRON_SECRET` — protects manual cron triggers
 - `ADMIN_SECRET` — protects admin endpoints
 
-## Design Review
+## Design System
+
+Always read `DESIGN.md` before making any visual or UI decisions.
+All font choices, colors, spacing, and aesthetic direction are defined there.
+Do not deviate without explicit user approval.
+
+Key rules from DESIGN.md:
+- **Fonts:** Bebas Neue (display/headings) + Chakra Petch (body/data)
+- **Primary accent:** `#f7931a` (orange) — the ONE loud color
+- **Green:** `#27ae60` — NOT neon. Calm, blends in.
+- **Red:** `#c0392b` — deep crimson, not alarming.
+- **Backgrounds:** `#080c10` base, `#0f141a` surface-1, `#141c24` surface-2
+- **Matrix rain:** Default OFF — it's a toggle Easter egg, not wallpaper
+- In QA mode, flag any code that doesn't match DESIGN.md.
 
 When making front-end changes:
-1. Follow the design principles in `claude-code-workflows-main/design-review/design-principles-example.md`
+1. Read DESIGN.md first
 2. Use the `/design-review` slash command for comprehensive UI review
 3. Test responsiveness at desktop (1440px), tablet (768px), and mobile (375px)
 
