@@ -44,3 +44,6 @@ Thumbs.db
 
 # Playwright screenshots (test artifacts)
 .playwright-mcp/
+
+# gstack local data
+.gstack/
