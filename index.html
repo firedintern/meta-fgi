@@ -27,17 +27,17 @@
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Chakra+Petch:wght@300;400;600;700&family=Azeret+Mono:wght@400;600&display=swap');
 
         :root {
-            --color-bg:        #080c10;
-            --color-surface-1: #0f141a;
-            --color-surface-2: #141c24;
-            --color-surface-3: #1a2332;
-            --color-orange:    #f7931a;
-            --color-gold:      #ffd700;
-            --color-green:     #27ae60;
-            --color-red:       #c0392b;
-            --color-text-1:    #e8eaed;
-            --color-text-2:    #8a9ab0;
-            --color-text-3:    #4a5568;
+            --color-bg:        #181D27;
+            --color-surface-1: #254D32;
+            --color-surface-2: #3A7D44;
+            --color-surface-3: #254D32;
+            --color-orange:    #69B578;
+            --color-gold:      #D0DB97;
+            --color-green:     #3A7D44;
+            --color-red:       #69B578;
+            --color-text-1:    #D0DB97;
+            --color-text-2:    #69B578;
+            --color-text-3:    #254D32;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -59,8 +59,8 @@
             width: 100%;
             height: 100%;
             background:
-                linear-gradient(0deg, rgba(39, 174, 96, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(39, 174, 96, 0.03) 1px, transparent 1px);
+                linear-gradient(0deg, rgba(106, 181, 120, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(106, 181, 120, 0.03) 1px, transparent 1px);
             background-size: 50px 50px;
             animation: grid-move 20s linear infinite;
             z-index: 0;
@@ -80,8 +80,8 @@
             width: 100%;
             height: 100%;
             background:
-                radial-gradient(circle at 15% 20%, rgba(39, 174, 96, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 85% 80%, rgba(255, 51, 102, 0.06) 0%, transparent 50%);
+                radial-gradient(circle at 15% 20%, rgba(106, 181, 120, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 85% 80%, rgba(106, 181, 120, 0.06) 0%, transparent 50%);
             z-index: 0;
             animation: glow-pulse 8s ease-in-out infinite;
         }
@@ -98,20 +98,20 @@
         .controls { position: fixed; top: 20px; right: 80px; display: flex; gap: 10px; z-index: 100; transition: opacity 0.3s, transform 0.3s; }
         .controls-mobile { display: none; }
         .controls.hidden { opacity: 0; transform: translateY(-100px); pointer-events: none; }
-        .control-btn { background: rgba(39, 174, 96, 0.12); border: 1px solid rgba(39, 174, 96, 0.4); color: var(--color-green); padding: 10px 15px; border-radius: 5px; cursor: pointer; font-family: 'Chakra Petch', monospace; font-size: 1.2em; transition: all 0.3s ease; position: relative; text-decoration: none; display: inline-block; }
+        .control-btn { background: rgba(106, 181, 120, 0.12); border: 1px solid rgba(106, 181, 120, 0.4); color: var(--color-green); padding: 10px 15px; border-radius: 5px; cursor: pointer; font-family: 'Chakra Petch', monospace; font-size: 1.2em; transition: all 0.3s ease; position: relative; text-decoration: none; display: inline-block; }
         .control-btn:hover { background: rgba(39, 174, 96, 0.22); transform: scale(1.05); }
         .control-btn:hover::after { content: attr(data-tooltip); position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%); background: var(--color-green); color: var(--color-bg); padding: 6px 12px; border-radius: 5px; font-size: 0.7em; white-space: nowrap; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
         .control-btn.active { background: rgba(39, 174, 96, 0.25); border-color: var(--color-green); }
-        .control-btn:focus-visible { outline: 3px solid var(--color-green); outline-offset: 3px; box-shadow: 0 0 15px rgba(39, 174, 96, 0.5); }
-        .telegram-btn { background: rgba(26, 122, 10, 0.3); border-color: #1a7a0a; color: var(--color-green); }
-        .telegram-btn:hover { background: rgba(39, 174, 96, 0.2); color: var(--color-green); }
+        .control-btn:focus-visible { outline: 3px solid var(--color-green); outline-offset: 3px; box-shadow: 0 0 15px rgba(106, 181, 120, 0.5); }
+        .telegram-btn { background: rgba(106, 181, 120, 0.3); border-color: #69B578; color: var(--color-green); }
+        .telegram-btn:hover { background: rgba(106, 181, 120, 0.2); color: var(--color-green); }
         .telegram-btn svg { fill: currentColor; }
 
         /* Hindsight Button - NEW FEATURE */
         .hindsight-btn {
-            background: linear-gradient(145deg, #ffaa00 0%, #ffd700 50%, #ffaa00 100%);
+            background: linear-gradient(145deg, #69B578 0%, #D0DB97 50%, #69B578 100%);
             border: 2px solid #d4af37;
-            color: #0a0e14;
+            color: #181D27;
             padding: 10px 15px;
             border-radius: 5px;
             cursor: pointer;
@@ -123,7 +123,7 @@
             box-shadow: 0 0 20px rgba(255, 170, 0, 0.5);
         }
         .hindsight-btn:hover {
-            background: linear-gradient(145deg, #ffd700 0%, #ffaa00 50%, #ffd700 100%);
+            background: linear-gradient(145deg, #D0DB97 0%, #69B578 50%, #D0DB97 100%);
             transform: scale(1.1);
             box-shadow: 0 0 30px rgba(255, 170, 0, 0.8);
         }
@@ -134,7 +134,7 @@
             left: 50%;
             transform: translateX(-50%);
             background: rgba(255, 170, 0, 0.95);
-            color: #0a0e14;
+            color: #181D27;
             padding: 6px 12px;
             border-radius: 5px;
             font-size: 0.7em;
@@ -152,11 +152,11 @@
             50% { box-shadow: 0 0 35px rgba(255, 170, 0, 0.8); }
         }
         
-        .title { font-family: 'Bebas Neue', sans-serif; font-size: 3.15em; color: var(--color-green); margin-bottom: 40px; font-weight: 400; letter-spacing: 6px; text-shadow: 0 0 20px rgba(39, 174, 96, 0.5), 0 0 40px rgba(39, 174, 96, 0.25); animation: terminal-flicker 3s ease-in-out infinite; position: relative; }
+        .title { font-family: 'Bebas Neue', sans-serif; font-size: 3.15em; color: var(--color-green); margin-bottom: 40px; font-weight: 400; letter-spacing: 6px; text-shadow: 0 0 20px rgba(106, 181, 120, 0.5), 0 0 40px rgba(106, 181, 120, 0.25); animation: terminal-flicker 3s ease-in-out infinite; position: relative; }
         @keyframes terminal-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.95; } }
         
         .btc-ticker {
-            background: linear-gradient(145deg, #f7931a 0%, #ffb74d 50%, #f7931a 100%);
+            background: linear-gradient(145deg, #69B578 0%, #D0DB97 50%, #69B578 100%);
             padding: 10px 25px;
             border-radius: 10px;
             margin: 0 auto 25px;
@@ -188,8 +188,8 @@
         .btc-label { font-size: 0.65em; color: #0a0e14; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
         .btc-price { font-size: 1.4em; font-weight: bold; color: #0a0e14; margin: 2px 0; }
         .btc-change { font-size: 0.8em; font-weight: bold; margin-top: 2px; color: #a0a0a0; }
-        .positive { color: #00ff88; }
-        .negative { color: var(--color-red); }
+        .positive { color: #3A7D44; }
+        .negative { color: var(--color-gold); }
 
         /* Left side of slot machine - 50% */
         .slot-left {
@@ -225,20 +225,20 @@
         }
 
         .info-card-inline.btc-card .card-label {
-            color: #ffaa00;
+            color: #69B578;
         }
 
         .info-card-inline.btc-card .card-value {
-            color: #ff8844;  /* Orange like streak number */
+            color: #69B578;  /* Orange like streak number */
             text-shadow: 0 0 15px currentColor;
         }
 
         .info-card-inline.btc-card .card-change {
-            color: #a0a0a0;  /* Gray like "Total value" */
+            color: #69B578;  /* Gray like "Total value" */
         }
 
         .info-card-inline .card-label {
-            color: #0a0e14;
+            color: #181D27;
             font-size: 0.65em;
             font-weight: bold;
             letter-spacing: 1.5px;
@@ -248,36 +248,36 @@
         }
 
         .info-card-inline.streak-card .card-label {
-            color: #ffaa00;
+            color: #69B578;
         }
 
         .info-card-inline .card-value {
             font-size: 2em;
             font-weight: bold;
-            color: #0a0e14;
+            color: #181D27;
             margin: 2px 0;
         }
 
         .info-card-inline.streak-card .card-value {
-            color: #ff8844;  /* Orange */
+            color: #69B578;  /* Orange */
             text-shadow: 0 0 15px currentColor;
         }
 
         .info-card-inline .card-change {
-            color: #0a0e14;
+            color: #181D27;
             font-size: 0.8em;
             font-weight: bold;
             margin-top: 2px;
         }
 
         .info-card-inline .card-desc {
-            color: #a0a0a0;
+            color: #69B578;
             font-size: 0.7em;
             margin-top: 4px;
         }
 
         .info-card-inline.streak-card .card-desc {
-            color: #a0a0a0;
+            color: #69B578;
         }
 
         .info-card-inline.dominance-card {
@@ -287,12 +287,12 @@
         }
 
         .info-card-inline.dominance-card .card-label {
-            color: #ffaa00;
+            color: #69B578;
             font-weight: 600;
         }
 
         .info-card-inline.dominance-card .card-value {
-            color: #ff8844;  /* Orange like streak number */
+            color: #69B578;  /* Orange like streak number */
             text-shadow: 0 0 15px currentColor;
         }
 
@@ -303,12 +303,12 @@
         }
 
         .info-card-inline.marketcap-card .card-label {
-            color: #ffaa00;
+            color: #69B578;
             font-weight: 600;
         }
 
         .info-card-inline.marketcap-card .card-value {
-            color: #ff8844;  /* Orange like streak number */
+            color: #69B578;  /* Orange like streak number */
             text-shadow: 0 0 15px currentColor;
         }
 
@@ -367,7 +367,7 @@
             bottom: -50px;
             left: 50%;
             transform: translateX(-50%);
-            color: #ffaa00;
+            color: #69B578;
             font-size: 0.85em;
             animation: bounce 2s infinite;
             text-shadow: 0 0 10px rgba(255, 170, 0, 0.5);
@@ -383,7 +383,7 @@
             position: absolute;
             width: 10px;
             height: 10px;
-            background: #ffaa00;
+            background: #69B578;
             animation: confetti-fall 2s ease-out forwards;
             pointer-events: none;
             z-index: 100;
@@ -564,10 +564,10 @@
             height: 50px;
             margin: 0 auto 20px;
             display: block;
-            background: linear-gradient(145deg, #ffaa00 0%, #ffd700 50%, #ffaa00 100%);
+            background: linear-gradient(145deg, #69B578 0%, #D0DB97 50%, #69B578 100%);
             border: 4px solid #d4af37;
             border-radius: 25px;
-            color: #0a0e14;
+            color: #181D27;
             font-family: 'Chakra Petch', monospace;
             font-size: 1.3em;
             font-weight: bold;
@@ -584,7 +584,7 @@
 
         .spin-btn:hover {
             transform: translateY(-2px) scale(1.05);
-            background: linear-gradient(145deg, #ffd700 0%, #ffaa00 50%, #ffd700 100%);
+            background: linear-gradient(145deg, #D0DB97 0%, #69B578 50%, #D0DB97 100%);
             box-shadow:
                 0 12px 35px rgba(0,0,0,0.7),
                 inset 0 2px 15px rgba(255,255,255,0.6),
@@ -640,7 +640,7 @@
         }
 
         .payout-label {
-            color: #ffaa00;
+            color: #69B578;
             font-size: 0.9em;
             margin-bottom: 5px;
             letter-spacing: 2px;
@@ -672,20 +672,20 @@
         .streak-value {
             font-size: 3em;
             font-weight: bold;
-            color: #e6e8eb;
+            color: #D0DB97;
             margin: 10px 0;
             text-shadow: 0 0 15px currentColor;
         }
 
         .streak-description {
-            color: #a0a0a0;
+            color: #69B578;
             font-size: 0.95em;
             margin-top: 10px;
         }
 
         .streak-info {
             font-size: 0.85em;
-            color: #a0a0a0;
+            color: #69B578;
             margin-top: 12px;
             padding-top: 10px;
             border-top: 1px solid rgba(255, 170, 0, 0.2);
@@ -694,7 +694,7 @@
         }
 
         .streak-info.record {
-            color: #ffaa00;
+            color: #69B578;
             font-weight: bold;
             animation: pulse 1.5s ease-in-out infinite;
         }
@@ -769,7 +769,7 @@
             transform: translateX(-50%);
             width: 35px;
             height: 35px;
-            background: radial-gradient(circle at 30% 30%, var(--color-red), #cc0000 60%, #880000);
+            background: radial-gradient(circle at 30% 30%, #D0DB97, #c5cf8a 60%, #b0c271);
             border-radius: 50%;
             box-shadow:
                 0 4px 10px rgba(0,0,0,0.5),
@@ -856,7 +856,7 @@
         }
 
         .info-card-title {
-            color: #ffaa00;
+            color: #69B578;
             font-size: 0.9em;
             margin-bottom: 15px;
             letter-spacing: 2px;
@@ -877,7 +877,7 @@
         .degen {
             font-size: 2.5em;
             font-family: 'Azeret Mono', 'Chalkboard', 'ChalkboardSE-Regular', cursive, sans-serif;
-            color: #e6e8eb;
+            color: #D0DB97;
             margin: 0;
             font-weight: bold;
             text-shadow: 0 0 20px currentColor;
@@ -934,7 +934,7 @@
             font-weight: bold;
             line-height: 1.6;
             font-family: 'Chakra Petch', monospace;
-            color: #e6e8eb;
+            color: #D0DB97;
             text-shadow: 0 0 10px rgba(230, 232, 235, 0.3);
             font-style: italic;
         }
@@ -963,13 +963,13 @@
             margin: 30px 0;
         }
 
-        .share-btn { background: var(--color-bg); border: 2px solid #e6e8eb; color: #e6e8eb; display: inline-flex; align-items: center; gap: 8px; padding: 12px 30px; font-size: 1em; border-radius: 5px; cursor: pointer; font-family: 'Chakra Petch', monospace; font-weight: bold; margin: 0; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(230, 232, 235, 0.2); }
-        .share-btn:hover { box-shadow: 0 0 25px rgba(230, 232, 235, 0.6); background: #151a23; transform: scale(1.05); }
+        .share-btn { background: var(--color-bg); border: 2px solid #D0DB97; color: #D0DB97; display: inline-flex; align-items: center; gap: 8px; padding: 12px 30px; font-size: 1em; border-radius: 5px; cursor: pointer; font-family: 'Chakra Petch', monospace; font-weight: bold; margin: 0; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(208, 219, 151, 0.2); }
+        .share-btn:hover { box-shadow: 0 0 25px rgba(208, 219, 151, 0.6); background: #254D32; transform: scale(1.05); }
         .share-btn:focus-visible { outline: 3px solid #e6e8eb; outline-offset: 3px; box-shadow: 0 0 30px rgba(230, 232, 235, 0.8); }
 
-        .btn { background: linear-gradient(135deg, var(--color-green), #219a52); border: 2px solid var(--color-green); color: var(--color-bg); padding: 12px 30px; font-size: 1em; border-radius: 5px; cursor: pointer; font-family: 'Chakra Petch', monospace; font-weight: bold; margin: 0; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 15px rgba(39, 174, 96, 0.3); transition: all 0.3s ease; }
+        .btn { background: linear-gradient(135deg, var(--color-green), #2d6b3a); border: 2px solid var(--color-green); color: var(--color-bg); padding: 12px 30px; font-size: 1em; border-radius: 5px; cursor: pointer; font-family: 'Chakra Petch', monospace; font-weight: bold; margin: 0; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 15px rgba(106, 181, 120, 0.3); transition: all 0.3s ease; }
         .btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(39, 174, 96, 0.5); }
-        .btn:focus-visible { outline: 3px solid var(--color-green); outline-offset: 3px; box-shadow: 0 0 30px rgba(39, 174, 96, 0.7); }
+        .btn:focus-visible { outline: 3px solid var(--color-green); outline-offset: 3px; box-shadow: 0 0 30px rgba(106, 181, 120, 0.7); }
 
         /* Range Slider Styling */
         input[type="range"] {
@@ -1003,8 +1003,8 @@
             appearance: none;
             width: 20px;
             height: 20px;
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
-            border: 2px solid #ffd700;
+            background: linear-gradient(135deg, #D0DB97, #e5f0b8);
+            border: 2px solid #D0DB97;
             border-radius: 50%;
             cursor: pointer;
             box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
@@ -1020,8 +1020,8 @@
         input[type="range"]::-moz-range-thumb {
             width: 20px;
             height: 20px;
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
-            border: 2px solid #ffd700;
+            background: linear-gradient(135deg, #D0DB97, #e5f0b8);
+            border: 2px solid #D0DB97;
             border-radius: 50%;
             cursor: pointer;
             box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
@@ -1069,7 +1069,7 @@
         /* Section divider — gold accent line between major sections */
         .section-divider {
             height: 1px;
-            background: linear-gradient(90deg, transparent, var(--color-gold) 25%, var(--color-gold) 75%, transparent);
+            background: linear-gradient(90deg, transparent, #D0DB97 25%, #D0DB97 75%, transparent);
             opacity: 0.25;
             margin: 8px 0;
         }
@@ -1124,7 +1124,7 @@
         .vg-range-btn.active {
             border-color: #ffd700;
             background: rgba(255,215,0,0.12);
-            color: #ffd700;
+            color: #D0DB97;
             box-shadow: 0 0 10px rgba(255,215,0,0.3);
         }
         .vg-range-btn[data-range="Extreme Greed"].active {
@@ -1158,7 +1158,7 @@
             text-align: center;
         }
         .vg-slider-value {
-            color: #ffd700;
+            color: #D0DB97;
             font-size: 1.4em;
             font-weight: 700;
             margin-bottom: 6px;
@@ -1186,7 +1186,7 @@
         .vg-period-btn.active {
             border-color: #ffd700;
             background: rgba(255,215,0,0.12);
-            color: #ffd700;
+            color: #D0DB97;
         }
         .vg-result-card {
             background: rgba(0,0,0,0.3);
@@ -1210,8 +1210,8 @@
             margin: 4px 0 12px;
             letter-spacing: 1px;
         }
-        .vg-result-main.positive { color: var(--color-green); text-shadow: 0 0 15px rgba(39,174,96,0.4); }
-        .vg-result-main.negative { color: var(--color-red); text-shadow: 0 0 15px rgba(255,60,60,0.3); }
+        .vg-result-main.positive { color: var(--color-green); text-shadow: 0 0 15px rgba(106,181,120,0.4); }
+        .vg-result-main.negative { color: var(--color-gold); text-shadow: 0 0 15px rgba(208,219,151,0.3); }
         .vg-result-stats {
             display: flex;
             gap: 20px;
@@ -1223,7 +1223,7 @@
             text-align: center;
         }
         .vg-stat-val {
-            color: #e0e0e0;
+            color: #D0DB97;
             font-size: 1.1em;
             font-weight: 700;
         }
@@ -1254,7 +1254,7 @@
             border: 1px solid rgba(255,165,0,0.3);
             border-radius: 8px;
             padding: 10px 16px;
-            color: #ffa500;
+            color: #69B578;
             font-size: 0.82em;
             text-align: center;
             margin-bottom: 16px;
@@ -1289,7 +1289,7 @@
             border-radius: 6px;
             border: 2px solid #e6e8eb;
             background: var(--color-bg);
-            color: #e6e8eb;
+            color: #D0DB97;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
@@ -1299,7 +1299,7 @@
         }
         .vg-share-btn:hover {
             box-shadow: 0 0 22px rgba(230,232,235,0.5);
-            background: #151a23;
+            background: #254D32;
             transform: scale(1.04);
         }
         .vg-backtester-link {
@@ -1319,7 +1319,7 @@
             bottom: 80px;
             left: 50%;
             transform: translateX(-50%) translateY(20px);
-            background: #1a1a1a;
+            background: #254D32;
             border: 1px solid var(--color-green);
             color: var(--color-green);
             padding: 10px 24px;
@@ -1431,7 +1431,7 @@
                 width: 100%;
                 padding: 20px 15px;
                 background: linear-gradient(145deg, #151a23 0%, #0a0e14 50%, #151a23 100%);
-                border: 4px solid #ffd700;
+                border: 4px solid #D0DB97;
                 border-radius: 20px;
                 margin: 20px 0 70px;
             }
@@ -1704,7 +1704,7 @@
             margin: 3% auto;
             padding: 0;
             border: 6px solid;
-            border-image: linear-gradient(135deg, #ffaa00 0%, #ffd700 50%, #ffaa00 100%) 1;
+            border-image: linear-gradient(135deg, #69B578 0%, #D0DB97 50%, #69B578 100%) 1;
             border-radius: 20px;
             width: 90%;
             max-width: 1000px;
@@ -1727,7 +1727,7 @@
         }
 
         .hindsight-modal-header h2 {
-            color: #ffaa00;
+            color: #69B578;
             margin: 0;
             font-size: 1.8em;
             letter-spacing: 2px;
@@ -1775,7 +1775,7 @@
             padding: 10px 20px;
             border-radius: 10px;
             font-size: 1em;
-            color: #ffaa00;
+            color: #69B578;
             display: inline-block;
             margin: 0 auto 25px;
             text-align: center;
@@ -1803,7 +1803,7 @@
         }
 
         .period-label {
-            color: #ffaa00;
+            color: #69B578;
             font-size: 1.1em;
             margin-bottom: 12px;
             font-weight: bold;
@@ -1847,7 +1847,7 @@
         }
 
         .hindsight-stat-value {
-            color: #e6e8eb;
+            color: #D0DB97;
             font-weight: bold;
         }
 
@@ -1865,14 +1865,14 @@
         }
 
         .insight-text {
-            color: #e6e8eb;
+            color: #D0DB97;
             line-height: 1.6;
         }
 
         .comparison-toggle {
             background: rgba(255, 170, 0, 0.2);
             border: 2px solid #ffaa00;
-            color: #ffaa00;
+            color: #69B578;
             padding: 12px 24px;
             border-radius: 8px;
             cursor: pointer;
@@ -1911,13 +1911,13 @@
         }
 
         .comparison-table th {
-            color: #ffaa00;
+            color: #69B578;
             font-weight: bold;
             background: rgba(255, 170, 0, 0.1);
         }
 
         .comparison-table td {
-            color: #e6e8eb;
+            color: #D0DB97;
         }
 
         .comparison-table tr.current-row {
@@ -2072,7 +2072,7 @@
         }
 
         .stat-value {
-            color: #e6e8eb;
+            color: #D0DB97;
             font-weight: bold;
         }
 
@@ -2093,7 +2093,7 @@
         }
 
         .advice-title {
-            color: #ffaa00;
+            color: #69B578;
             font-size: 0.9em;
             font-weight: bold;
             margin-bottom: 15px;
@@ -2883,11 +2883,11 @@
         });
         
         function getColorForScore(s){
-            if(s<20)return '#c0392b';
-            if(s<40)return '#e67e22';
-            if(s<60)return '#ffd700';
-            if(s<80)return '#27ae60';
-            return '#27ae60';
+            if(s<20)return '#D0DB97';
+            if(s<40)return '#69B578';
+            if(s<60)return '#69B578';
+            if(s<80)return '#3A7D44';
+            return '#3A7D44';
         }
         
         function getSymbolForScore(s){
@@ -3310,7 +3310,7 @@
                         backgroundColor:[
                             '#ff3366',  // Extreme Fear - Red
                             '#ff8844',  // Fear - Orange
-                            '#ffd700',  // Neutral - Yellow
+                            '#D0DB97',  // Neutral - Vanilla
                             '#7cfc00',  // Greed - Light Green
                             '#39ff14'   // Extreme Greed - Neon Green
                         ],
@@ -3386,12 +3386,12 @@
                             {
                                 label:'BTC Price',
                                 data:h.map(d=>d.btcPrice),
-                                borderColor:'#ffd700',
+                                borderColor:'#D0DB97',
                                 backgroundColor:'rgba(255,215,0,0.1)',
                                 borderWidth:2,
                                 tension:0.4,
                                 fill:false,
-                                pointBackgroundColor:'#ffd700',
+                                pointBackgroundColor:'#D0DB97',
                                 pointBorderColor:'#fff',
                                 pointBorderWidth:2,
                                 pointRadius:isMobile?2:4,
@@ -3450,8 +3450,8 @@
                                 type:'linear',
                                 position:'right',
                                 grid:{display:false},
-                                ticks:{color:'#ffd700',font:{family:'Courier New',size:isMobile?9:11},callback:function(value){return '$'+value.toLocaleString('en-US',{maximumFractionDigits:0});}},
-                                title:{display:true,text:'BTC Price',color:'#ffd700',font:{family:'Courier New',size:isMobile?10:12}}
+                                ticks:{color:'#D0DB97',font:{family:'Courier New',size:isMobile?9:11},callback:function(value){return '$'+value.toLocaleString('en-US',{maximumFractionDigits:0});}},
+                                title:{display:true,text:'BTC Price',color:'#D0DB97',font:{family:'Courier New',size:isMobile?10:12}}
                             },
                             x:{grid:{color:'rgba(0,255,0,0.1)'},ticks:{color:'#00ff00',font:{family:'Courier New',size:isMobile?8:11},maxRotation:45,minRotation:45,autoSkip:true,maxTicksLimit:isMobile?8:15}}
                         }
@@ -3812,8 +3812,8 @@
             // Balanced
             return {
                 text: "Your allocation looks good",
-                color: "#ffd700",
-                borderColor: "#ffd700"
+                color: "#D0DB97",
+                borderColor: "#D0DB97"
             };
         }
 
@@ -3854,7 +3854,7 @@
                     labels: ['Crypto', 'Stablecoins'],
                     datasets: [{
                         data: [portfolioData.crypto, portfolioData.stablecoins],
-                        backgroundColor: ['#f7931a', '#26a17b'],
+                        backgroundColor: ['#69B578', '#3A7D44'],
                         borderColor: ['#fff', '#fff'],
                         borderWidth: 2
                     }]
@@ -4154,7 +4154,7 @@
         function getReturnColor(value) {
             if (value > 10) return '#44ff88';
             if (value > 5) return '#88ff44';
-            if (value > 0) return '#ffd700';
+            if (value > 0) return '#D0DB97';
             if (value > -5) return '#ff8844';
             return '#ff4444';
         }

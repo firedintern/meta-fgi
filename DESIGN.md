@@ -26,34 +26,34 @@
   - Caption: 0.75rem (Chakra Petch) — secondary labels, disclaimers
 
 ## Color
-- **Approach:** Restrained — orange is the ONE loud color. Everything else is calm.
-- **Background:** `#080c10` — near-black, slightly cool/blue. Deeper than current `#0a0e14`.
-- **Surface 1:** `#0f141a` — cards, sections (darker elevation)
-- **Surface 2:** `#141c24` — elevated cards, modals (lighter elevation)
-- **Surface 3:** `#1a2332` — borders, subtle separators
-- **Primary (Orange):** `#f7931a` — Bitcoin's color. The only electric color. Used for: slot machine border, primary CTAs, key accent lines.
-- **Secondary (Gold):** `#ffd700` — Section divider lines, investment slider thumb, secondary highlights. Precious, not loud.
-- **Green (positive):** `#27ae60` — Deep forest green. Calm, readable, clearly "up". NOT neon. Used for: positive returns, win states, SPIN button, FGI CHAD title.
-- **Red (negative):** `#c0392b` — Deep crimson. Clearly "down" without alarming. Used for: negative returns, Extreme Fear state, loss indicators.
-- **Text 1:** `#e8eaed` — Primary body text. High contrast on all surface levels.
-- **Text 2:** `#8a9ab0` — Secondary text, labels, subtitles.
-- **Text 3:** `#4a5568` — Muted text, disclaimers, placeholders.
+- **Approach:** Smooth gradient palette — five-color harmony from light to dark.
+- **Background (Shadow Grey):** `#181D27` — Darkest, near-black base. Used for page background.
+- **Surface 1 (Dark Spruce):** `#254D32` — Cards, sections (darker elevation)
+- **Surface 2 (Fern):** `#3A7D44` — Elevated cards, modals (lighter elevation)
+- **Surface 3 (Dark Spruce):** `#254D32` — Borders, subtle separators
+- **Primary Accent (Emerald):** `#69B578` — Medium green. Used for: buttons, CTAs, key accent lines.
+- **Secondary (Vanilla Custard):** `#D0DB97` — Light accent. Section divider lines, highlights. Precious, not loud.
+- **Tertiary (Fern):** `#3A7D44` — Dark green. Used for: positive states, active states.
+- **Text 1:** `#D0DB97` — Primary body text. High contrast on all surface levels.
+- **Text 2:** `#69B578` — Secondary text, labels, subtitles.
+- **Text 3:** `#254D32` — Muted text, disclaimers, placeholders.
 - **Dark mode:** This IS dark mode. No light mode required for this product.
+- **Palette:** All colors are from a single smooth green gradient: Vanilla Custard → Emerald → Fern → Dark Spruce → Shadow Grey.
 
 ### CSS Custom Properties (add to :root in index.html)
 ```css
 :root {
-  --color-bg:        #080c10;
-  --color-surface-1: #0f141a;
-  --color-surface-2: #141c24;
-  --color-surface-3: #1a2332;
-  --color-orange:    #f7931a;
-  --color-gold:      #ffd700;
-  --color-green:     #27ae60;
-  --color-red:       #c0392b;
-  --color-text-1:    #e8eaed;
-  --color-text-2:    #8a9ab0;
-  --color-text-3:    #4a5568;
+  --color-bg:        #181D27;
+  --color-surface-1: #254D32;
+  --color-surface-2: #3A7D44;
+  --color-surface-3: #254D32;
+  --color-orange:    #69B578;
+  --color-gold:      #D0DB97;
+  --color-green:     #3A7D44;
+  --color-red:       #69B578;
+  --color-text-1:    #D0DB97;
+  --color-text-2:    #69B578;
+  --color-text-3:    #254D32;
 }
 ```
 
@@ -92,8 +92,8 @@ Apply this treatment to sections in order:
 ## Decisions Log
 | Date | Decision | Rationale |
 |------|----------|-----------|
+| 2026-04-07 | Smooth green gradient palette | Replace Vegas casino colors with cohesive 5-color gradient. All colors from one harmonic palette. |
+| 2026-04-07 | Palette: Vanilla → Emerald → Fern → Spruce → Grey | Creates visual flow and consistency. No jarring color clashes. |
 | 2026-04-06 | Bebas Neue as display font | Zero other crypto dashboards use it. Casino signage energy. Gives FGI CHAD a face. |
-| 2026-04-06 | Green #27ae60 instead of neon #39ff14 | Neon green was "too loud" (user-stated). Orange is the one electric color. Everything else blends. |
 | 2026-04-06 | Matrix rain default OFF, toggled | Data is the product now; slot machine is the entertainment. Rain dilutes both. Keep as Easter egg. |
-| 2026-04-06 | Two surface levels (#0f141a, #141c24) | Single flat dark background made all sections look identical. Two levels create rhythm. |
-| 2026-04-06 | Gold (#ffd700) for structural accents | Section dividers and slider thumb. Precious feel, used sparingly. Orange stays as the primary signal. |
+| 2026-04-06 | Two surface levels | Single flat dark background made all sections look identical. Two levels create rhythm. |
