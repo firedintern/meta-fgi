@@ -98,19 +98,15 @@
             top: 0;
             left: 0;
             background-color: rgba(5, 5, 10, 0);
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             overflow: hidden;
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
             grid-auto-rows: 40px;
-            min-width: 1920px;
-            min-height: 1080px;
             font-size: 32px;
             color: rgba(0, 150, 255, 0.4);
             font-family: "Courier New", Courier, monospace;
-            justify-content: center;
-            align-content: center;
             z-index: 1;
             opacity: 0;
             pointer-events: none;
@@ -2903,8 +2899,9 @@
         // Generate matrix grid on load
         function generateMatrixGrid(){
             matrixCanvas.innerHTML='';
-            const cols=Math.ceil(window.innerWidth/40);
-            const rows=Math.ceil(window.innerHeight/40);
+            const cellSize=40;
+            const cols=Math.ceil(window.innerWidth/cellSize)+1;
+            const rows=Math.ceil(window.innerHeight/cellSize)+1;
             const totalCells=cols*rows;
             for(let i=0;i<totalCells;i++){
                 const span=document.createElement('span');
