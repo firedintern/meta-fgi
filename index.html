@@ -2894,16 +2894,18 @@
         }
         
         const matrixCanvas=document.getElementById('matrix-canvas');
-        const matrixChars="ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%₿🧮📊🎰💀😱😰😐😏🤑";
+        // Japanese katakana characters for authentic matrix feel
+        const matrixChars="アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ";
 
         // Generate matrix grid on load
         function generateMatrixGrid(){
             matrixCanvas.innerHTML='';
             const cols=Math.ceil(window.innerWidth/40);
             const rows=Math.ceil(window.innerHeight/40);
-            for(let i=0;i<cols*rows;i++){
+            const totalCells=cols*rows;
+            for(let i=0;i<totalCells;i++){
                 const span=document.createElement('span');
-                span.textContent=matrixChars[Math.floor(Math.random()*matrixChars.length)];
+                span.textContent=matrixChars[i%matrixChars.length];
                 matrixCanvas.appendChild(span);
             }
         }
