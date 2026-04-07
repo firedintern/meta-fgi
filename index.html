@@ -92,25 +92,20 @@
         }
 
 
-        /* Grid matrix pattern */
+        /* Matrix rain effect */
         .jp-matrix {
             position: fixed;
             top: 0;
             left: 0;
-            background-color: rgba(5, 5, 10, 0);
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-            grid-auto-rows: 40px;
-            font-size: 32px;
-            color: rgba(0, 150, 255, 0.4);
-            font-family: "Courier New", Courier, monospace;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
             z-index: 1;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.5s ease;
+            overflow: hidden;
         }
 
         .jp-matrix.visible {
@@ -118,46 +113,104 @@
             pointer-events: none;
         }
 
-        .jp-matrix > span {
-            text-align: center;
-            text-shadow: 0 0 5px rgba(0, 150, 255, 0.5);
-            user-select: none;
-            transition: color 0.5s, text-shadow 0.5s;
-            line-height: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .matrix-pattern {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            flex-shrink: 0;
         }
 
-        .jp-matrix > span:nth-child(19n + 2) { animation: smooth-pulse 3.5s ease-in-out infinite 0.2s; }
-        .jp-matrix > span:nth-child(29n + 1) { animation: smooth-pulse 4.1s ease-in-out infinite 0.7s; }
-        .jp-matrix > span:nth-child(11n) { color: rgba(208, 219, 151, 0.7); animation: smooth-pulse 2.9s ease-in-out infinite 1.1s; }
-        .jp-matrix > span:nth-child(37n + 10) { animation: smooth-pulse 5.3s ease-in-out infinite 1.5s; }
-        .jp-matrix > span:nth-child(41n + 1) { animation: smooth-pulse 3.9s ease-in-out infinite 0.4s; }
-        .jp-matrix > span:nth-child(17n + 9) { animation: smooth-pulse 2.8s ease-in-out infinite 0.9s; }
-        .jp-matrix > span:nth-child(23n + 18) { animation: smooth-pulse 4.3s ease-in-out infinite 1.3s; }
-        .jp-matrix > span:nth-child(31n + 4) { animation: smooth-pulse 5.6s ease-in-out infinite 0.1s; }
-        .jp-matrix > span:nth-child(43n + 20) { animation: smooth-pulse 3.6s ease-in-out infinite 1.8s; }
-        .jp-matrix > span:nth-child(13n + 6) { animation: smooth-pulse 3.2s ease-in-out infinite 1.2s; }
-        .jp-matrix > span:nth-child(53n + 5) { animation: smooth-pulse 4.9s ease-in-out infinite 0.5s; }
-        .jp-matrix > span:nth-child(47n + 15) { animation: smooth-pulse 5.9s ease-in-out infinite 1s; }
+        .matrix-column {
+            position: absolute;
+            top: -100%;
+            width: 20px;
+            height: 100%;
+            font-size: 16px;
+            line-height: 18px;
+            font-weight: bold;
+            animation: fall linear infinite;
+            white-space: nowrap;
+        }
 
-        @keyframes smooth-pulse {
-            0%, 100% {
-                color: rgba(106, 181, 120, 0.4);
-                text-shadow: 0 0 5px rgba(106, 181, 120, 0.5);
+        .matrix-column::before {
+            content: "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(
+                to bottom,
+                #ffffff 0%,
+                #ffffff 5%,
+                #00ff41 10%,
+                #00ff41 20%,
+                #00dd33 30%,
+                #00bb22 40%,
+                #009911 50%,
+                #007700 60%,
+                #005500 70%,
+                #003300 80%,
+                rgba(0, 255, 65, 0.5) 90%,
+                transparent 100%
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            writing-mode: vertical-lr;
+            letter-spacing: 1px;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .matrix-column:nth-child(1) { left: 0px; animation-delay: -2.5s; animation-duration: 3s; }
+        .matrix-column:nth-child(2) { left: 25px; animation-delay: -3.2s; animation-duration: 4s; }
+        .matrix-column:nth-child(3) { left: 50px; animation-delay: -1.8s; animation-duration: 2.5s; }
+        .matrix-column:nth-child(4) { left: 75px; animation-delay: -2.9s; animation-duration: 3.5s; }
+        .matrix-column:nth-child(5) { left: 100px; animation-delay: -1.5s; animation-duration: 3s; }
+        .matrix-column:nth-child(6) { left: 125px; animation-delay: -3.8s; animation-duration: 4.5s; }
+        .matrix-column:nth-child(7) { left: 150px; animation-delay: -2.1s; animation-duration: 2.8s; }
+        .matrix-column:nth-child(8) { left: 175px; animation-delay: -2.7s; animation-duration: 3.2s; }
+        .matrix-column:nth-child(9) { left: 200px; animation-delay: -3.4s; animation-duration: 3.8s; }
+        .matrix-column:nth-child(10) { left: 225px; animation-delay: -1.9s; animation-duration: 2.7s; }
+        .matrix-column:nth-child(11) { left: 250px; animation-delay: -3.6s; animation-duration: 4.2s; }
+        .matrix-column:nth-child(12) { left: 275px; animation-delay: -2.3s; animation-duration: 3.1s; }
+        .matrix-column:nth-child(13) { left: 300px; animation-delay: -3.1s; animation-duration: 3.6s; }
+        .matrix-column:nth-child(14) { left: 325px; animation-delay: -2.6s; animation-duration: 2.9s; }
+        .matrix-column:nth-child(15) { left: 350px; animation-delay: -3.7s; animation-duration: 4.1s; }
+        .matrix-column:nth-child(16) { left: 375px; animation-delay: -2.8s; animation-duration: 3.3s; }
+        .matrix-column:nth-child(17) { left: 400px; animation-delay: -3.3s; animation-duration: 3.7s; }
+        .matrix-column:nth-child(18) { left: 425px; animation-delay: -2.2s; animation-duration: 2.6s; }
+        .matrix-column:nth-child(19) { left: 450px; animation-delay: -3.9s; animation-duration: 4.3s; }
+        .matrix-column:nth-child(20) { left: 475px; animation-delay: -2.4s; animation-duration: 3.4s; }
+
+        .matrix-column:nth-child(odd)::before {
+            content: "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン123456789";
+        }
+
+        .matrix-column:nth-child(even)::before {
+            content: "ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポヴァィゥェォャュョッABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        }
+
+        .matrix-column:nth-child(3n)::before {
+            content: "アカサタナハマヤラワイキシチニヒミリウクスツヌフムユルエケセテネヘメレオコソトノホモヨロヲン0987654321";
+        }
+
+        .matrix-column:nth-child(4n)::before {
+            content: "ンヲロヨモホノトソコオレメヘネテセケエルユムフヌツスクウリミヒニチシキイワラヤマハナタサカア";
+        }
+
+        .matrix-column:nth-child(5n)::before {
+            content: "ガザダバパギジヂビピグズヅブプゲゼデベペゴゾドボポヴァィゥェォャュョッ!@#$%^&*()_+-=[]{}|;:,.<>?";
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10%);
+                opacity: 1;
             }
-            30% {
-                color: rgba(208, 219, 151, 1);
-                text-shadow: 0 0 10px rgba(208, 219, 151, 1), 0 0 15px rgba(208, 219, 151, 1);
-            }
-            50% {
-                color: rgba(106, 181, 120, 1);
-                text-shadow: 0 0 10px rgba(106, 181, 120, 1), 0 0 15px rgba(106, 181, 120, 1);
-            }
-            70% {
-                color: #D0DB97;
-                text-shadow: 0 0 10px #D0DB97, 0 0 15px #D0DB97, 0 0 20px #D0DB97;
+            100% {
+                transform: translateY(200%);
+                opacity: 0;
             }
         }
         .container { text-align: center; max-width: 1100px; width: 100%; margin: 0 auto; padding: 20px; position: relative; z-index: 2; }
@@ -2328,7 +2381,9 @@
     </style>
 </head>
 <body>
-    <div id="matrix-canvas" class="jp-matrix"></div>
+    <div id="matrix-canvas" class="jp-matrix">
+        <div class="matrix-pattern"></div>
+    </div>
 
     <div class="controls" id="controls">
         <button class="hindsight-btn" id="hindsightToggle" data-tooltip="Hindsight Tool" aria-label="View historical analysis and predictions" aria-pressed="false">🔮</button>
@@ -2893,24 +2948,21 @@
         }
         
         const matrixCanvas=document.getElementById('matrix-canvas');
-        // Japanese katakana characters for authentic matrix feel
-        const matrixChars="アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ";
+        const matrixPattern=document.querySelector('.matrix-pattern');
 
-        // Generate matrix grid on load
-        function generateMatrixGrid(){
-            matrixCanvas.innerHTML='';
-            const cellSize=40;
-            const cols=Math.ceil(window.innerWidth/cellSize)+1;
-            const rows=Math.ceil(window.innerHeight/cellSize)+1;
-            const totalCells=cols*rows;
-            for(let i=0;i<totalCells;i++){
-                const span=document.createElement('span');
-                span.textContent=matrixChars[i%matrixChars.length];
-                matrixCanvas.appendChild(span);
+        // Generate matrix columns to fill entire width
+        function generateMatrixColumns(){
+            matrixPattern.innerHTML='';
+            const columnWidth=25;
+            const cols=Math.ceil(window.innerWidth/columnWidth)+5;
+            for(let i=0;i<cols;i++){
+                const column=document.createElement('div');
+                column.className='matrix-column';
+                matrixPattern.appendChild(column);
             }
         }
 
-        generateMatrixGrid();
+        generateMatrixColumns();
 
         // Matrix is OFF by default — toggled by the ✨ button
         let matrixEnabled = false;
@@ -2926,7 +2978,7 @@
         }
 
         window.addEventListener('resize',()=>{
-            generateMatrixGrid();
+            generateMatrixColumns();
         });
         
         function getColorForScore(s){
