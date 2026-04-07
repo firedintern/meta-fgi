@@ -97,7 +97,7 @@
             position: fixed;
             top: 0;
             left: 0;
-            background-color: transparent;
+            background-color: rgba(5, 5, 10, 0);
             width: 100%;
             height: 100%;
             overflow: hidden;
@@ -107,7 +107,7 @@
             min-width: 1920px;
             min-height: 1080px;
             font-size: 32px;
-            color: rgba(106, 181, 120, 0.4);
+            color: rgba(0, 150, 255, 0.4);
             font-family: "Courier New", Courier, monospace;
             justify-content: center;
             align-content: center;
@@ -118,13 +118,13 @@
         }
 
         .jp-matrix.visible {
-            opacity: 0.15;
+            opacity: 1;
             pointer-events: none;
         }
 
         .jp-matrix > span {
             text-align: center;
-            text-shadow: 0 0 5px rgba(106, 181, 120, 0.5);
+            text-shadow: 0 0 5px rgba(0, 150, 255, 0.5);
             user-select: none;
             transition: color 0.5s, text-shadow 0.5s;
             line-height: 1;
