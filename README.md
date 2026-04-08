@@ -1,6 +1,6 @@
 # Fear & Greed Protocol
 
-> Real-time crypto market sentiment tracker with casino-style visualization, portfolio management, Telegram bot alerts, historical backtesting, and Hindsight Score analysis
+> Real-time crypto market sentiment tracker with casino-style visualization, portfolio management, Telegram bot alerts, historical backtesting, and Hindsight Score analysis.
 
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://www.fgichad.xyz)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
