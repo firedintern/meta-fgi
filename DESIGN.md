@@ -1,99 +1,220 @@
-# Design System — FGI CHAD
+# Design System Inspired by Figma
 
-## Product Context
-- **What this is:** Real-time crypto Fear & Greed Index dashboard with slot machine visualization, Telegram alerts, strategy backtester, and viral data sharing.
-- **Who it's for:** Crypto degens — people who want the sentiment edge with a bit of entertainment. The slot machine is the hook; the data is the value.
-- **Space/industry:** Crypto data / sentiment tracking
-- **Project type:** Single-page web app (vanilla JS, no framework)
+## 1. Visual Theme & Atmosphere
 
-## Aesthetic Direction
-- **Direction:** Retro-Futuristic Casino (Vegas degen underground)
-- **Decoration level:** Intentional — the slot machine carries the decoration. Everything else is clean.
-- **Mood:** A real casino floor at 2am. High contrast, amber and gold against near-black. Feels sharp and alive, not generic crypto. The slot machine should feel like the centerpiece of the room; everything else is the felt table it sits on.
-- **Key decision:** Matrix rain stays as a user-toggled Easter egg (✨ button), NOT the default background. The data is the product now — the rain is a treat, not wallpaper.
+Figma's interface is the design tool that designed itself — a masterclass in typographic sophistication where a custom variable font (figmaSans) modulates between razor-thin (weight 320) and bold (weight 700) with stops at unusual intermediates (330, 340, 450, 480, 540) that most type systems never explore. This granular weight control gives every text element a precisely calibrated visual weight, creating hierarchy through micro-differences rather than the blunt instrument of "regular vs bold."
 
-## Typography
-- **Display/Hero:** Bebas Neue — tall, geometric, ALL CAPS. Casino signage energy. Used for page title, section headings, large stat numbers.
-- **Body/data:** Chakra Petch — monospace-adjacent, works for data labels, button text, body copy. Keep as-is.
-- **Numbers/stats:** Chakra Petch with `font-variant-numeric: tabular-nums` on all financial/numeric columns.
-- **Code:** Chakra Petch (already monospace, sufficient)
-- **Loading:** Google Fonts CDN. Add Bebas Neue: `https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Chakra+Petch:wght@400;600;700&display=swap`
-- **Scale:**
-  - Display XL: 3.5–4rem (Bebas Neue) — page title
-  - Display LG: 2.2rem (Bebas Neue) — FGI score number, large stats
-  - Display MD: 1.4rem (Bebas Neue) — section headings
-  - Body: 0.95rem (Chakra Petch) — copy, labels
-  - Caption: 0.75rem (Chakra Petch) — secondary labels, disclaimers
+The page presents a fascinating duality: the interface chrome is strictly black-and-white (literally only `#000000` and `#ffffff` detected as colors), while the hero section and product showcases explode with vibrant multi-color gradients — electric greens, bright yellows, deep purples, hot pinks. This separation means the design system itself is colorless, treating the product's colorful output as the hero content. Figma's marketing page is essentially a white gallery wall displaying colorful art.
 
-## Color
-- **Approach:** Smooth gradient palette — five-color harmony from light to dark.
-- **Background (Shadow Grey):** `#181D27` — Darkest, near-black base. Used for page background.
-- **Surface 1 (Dark Spruce):** `#254D32` — Cards, sections (darker elevation)
-- **Surface 2 (Fern):** `#3A7D44` — Elevated cards, modals (lighter elevation)
-- **Surface 3 (Dark Spruce):** `#254D32` — Borders, subtle separators
-- **Primary Accent (Emerald):** `#69B578` — Medium green. Used for: buttons, CTAs, key accent lines.
-- **Secondary (Vanilla Custard):** `#D0DB97` — Light accent. Section divider lines, highlights. Precious, not loud.
-- **Tertiary (Fern):** `#3A7D44` — Dark green. Used for: positive states, active states.
-- **Text 1:** `#D0DB97` — Primary body text. High contrast on all surface levels.
-- **Text 2:** `#69B578` — Secondary text, labels, subtitles.
-- **Text 3:** `#254D32` — Muted text, disclaimers, placeholders.
-- **Dark mode:** This IS dark mode. No light mode required for this product.
-- **Palette:** All colors are from a single smooth green gradient: Vanilla Custard → Emerald → Fern → Dark Spruce → Shadow Grey.
+What makes Figma distinctive beyond the variable font is its circle-and-pill geometry. Buttons use 50px radius (pill) or 50% (perfect circle for icon buttons), creating an organic, tool-palette-like feel. The dashed-outline focus indicator (`dashed 2px`) is a deliberate design choice that echoes selection handles in the Figma editor itself — the website's UI language references the product's UI language.
 
-### CSS Custom Properties (add to :root in index.html)
-```css
-:root {
-  --color-bg:        #181D27;
-  --color-surface-1: #254D32;
-  --color-surface-2: #3A7D44;
-  --color-surface-3: #254D32;
-  --color-orange:    #69B578;
-  --color-gold:      #D0DB97;
-  --color-green:     #3A7D44;
-  --color-red:       #69B578;
-  --color-text-1:    #D0DB97;
-  --color-text-2:    #69B578;
-  --color-text-3:    #254D32;
-}
-```
+**Key Characteristics:**
+- Custom variable font (figmaSans) with unusual weight stops: 320, 330, 340, 450, 480, 540, 700
+- Strictly black-and-white interface chrome — color exists only in product content
+- figmaMono for uppercase technical labels with wide letter-spacing
+- Pill (50px) and circular (50%) button geometry
+- Dashed focus outlines echoing Figma's editor selection handles
+- Vibrant multi-color hero gradients (green, yellow, purple, pink)
+- OpenType `"kern"` feature enabled globally
+- Negative letter-spacing throughout — even body text at -0.14px to -0.26px
 
-## Spacing
-- **Base unit:** 8px
-- **Density:** Comfortable (crypto degens read fast but also stare at screens for hours)
-- **Scale:** 4 / 8 / 16 / 24 / 32 / 48 / 64px
-- **Section padding:** 30px desktop, 20px mobile (keep current, it works)
+## 2. Color Palette & Roles
 
-## Layout
-- **Approach:** Grid-disciplined — strict single-column layout, no asymmetry. The slot machine and data sections should feel like a focused instrument, not a cluttered dashboard.
-- **Max content width:** 1100px (keep current)
-- **Section separation:** Each major section gets a top border accent line — `2px solid rgba(247, 147, 26, 0.3)` — like a casino table edge. This creates rhythm without adding blank space.
-- **Section backgrounds:** Alternate between `--color-surface-1` (#0f141a) and the base background (#080c10) to give the page visual rhythm. The slot machine card stays orange-bordered; charts and generator get the surface-1 treatment.
-- **Border radius:** Mostly 6–8px. No big bubbly radii. Sharp, precise. (Exception: reel symbols can be more rounded.)
+### Primary
+- **Pure Black** (`#000000`): All text, all solid buttons, all borders. The sole "color" of the interface.
+- **Pure White** (`#ffffff`): All backgrounds, white buttons, text on dark surfaces. The other half of the binary.
 
-## Motion
-- **Approach:** Minimal-functional. The slot machine spin IS the motion story. Everything else should be still so the spin stands out.
-- **Rules:**
-  - Slot reels: keep existing spin animation (it's working)
-  - State transitions (buttons, hover): 150–200ms ease-out, opacity/color only
-  - No layout-affecting animations on data elements (chart updates should be instant)
-  - `prefers-reduced-motion`: respect it. Disable slot spin entirely if set.
-- **Matrix rain:** Default OFF. Toggled by the ✨ button. This preserves it as an Easter egg without letting it compete with the data.
+*Note: Figma's marketing site uses ONLY these two colors for its interface layer. All vibrant colors appear exclusively in product screenshots, hero gradients, and embedded content.*
 
-## Section Structure (implementation guide)
-Apply this treatment to sections in order:
+### Surface & Background
+- **Pure White** (`#ffffff`): Primary page background and card surfaces.
+- **Glass Black** (`rgba(0, 0, 0, 0.08)`): Subtle dark overlay for secondary circular buttons and glass effects.
+- **Glass White** (`rgba(255, 255, 255, 0.16)`): Frosted glass overlay for buttons on dark/colored surfaces.
 
-1. **Slot Machine card** — `background: var(--color-surface-1)`, `border: 2px solid var(--color-orange)`, `box-shadow: 0 0 30px rgba(247,147,26,0.12)`
-2. **Divider accent** — `height: 2px`, `background: linear-gradient(90deg, transparent, var(--color-gold) 20%, var(--color-gold) 80%, transparent)`, `opacity: 0.3`
-3. **History chart** — `background: var(--color-surface-1)`, `border-top: 2px solid var(--color-gold)` (gold top border = data section)
-4. **Sentiment distribution** — same as history chart
-5. **Viral Generator** — `background: var(--color-surface-1)`, `border: 2px solid rgba(39, 174, 96, 0.35)` (green border = shareable/positive feature)
-6. **Footer** — `border-top: 1px solid var(--color-surface-3)`
+### Gradient System
+- **Hero Gradient**: A vibrant multi-stop gradient using electric green, bright yellow, deep purple, and hot pink. This gradient is the visual signature of the hero section — it represents the creative possibilities of the tool.
+- **Product Section Gradients**: Individual product areas (Design, Dev Mode, Prototyping) may use distinct color themes in their showcases.
 
-## Decisions Log
-| Date | Decision | Rationale |
-|------|----------|-----------|
-| 2026-04-07 | Smooth green gradient palette | Replace Vegas casino colors with cohesive 5-color gradient. All colors from one harmonic palette. |
-| 2026-04-07 | Palette: Vanilla → Emerald → Fern → Spruce → Grey | Creates visual flow and consistency. No jarring color clashes. |
-| 2026-04-06 | Bebas Neue as display font | Zero other crypto dashboards use it. Casino signage energy. Gives FGI CHAD a face. |
-| 2026-04-06 | Matrix rain default OFF, toggled | Data is the product now; slot machine is the entertainment. Rain dilutes both. Keep as Easter egg. |
-| 2026-04-06 | Two surface levels | Single flat dark background made all sections look identical. Two levels create rhythm. |
+## 3. Typography Rules
+
+### Font Family
+- **Primary**: `figmaSans`, with fallbacks: `figmaSans Fallback, SF Pro Display, system-ui, helvetica`
+- **Monospace / Labels**: `figmaMono`, with fallbacks: `figmaMono Fallback, SF Mono, menlo`
+
+### Hierarchy
+
+| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
+|------|------|------|--------|-------------|----------------|-------|
+| Display / Hero | figmaSans | 86px (5.38rem) | 400 | 1.00 (tight) | -1.72px | Maximum impact, extreme tracking |
+| Section Heading | figmaSans | 64px (4rem) | 400 | 1.10 (tight) | -0.96px | Feature section titles |
+| Sub-heading | figmaSans | 26px (1.63rem) | 540 | 1.35 | -0.26px | Emphasized section text |
+| Sub-heading Light | figmaSans | 26px (1.63rem) | 340 | 1.35 | -0.26px | Light-weight section text |
+| Feature Title | figmaSans | 24px (1.5rem) | 700 | 1.45 | normal | Bold card headings |
+| Body Large | figmaSans | 20px (1.25rem) | 330–450 | 1.30–1.40 | -0.1px to -0.14px | Descriptions, intros |
+| Body / Button | figmaSans | 16px (1rem) | 330–400 | 1.40–1.45 | -0.14px to normal | Standard body, nav, buttons |
+| Body Light | figmaSans | 18px (1.13rem) | 320 | 1.45 | -0.26px to normal | Light-weight body text |
+| Mono Label | figmaMono | 18px (1.13rem) | 400 | 1.30 (tight) | 0.54px | Uppercase section labels |
+| Mono Small | figmaMono | 12px (0.75rem) | 400 | 1.00 (tight) | 0.6px | Uppercase tiny tags |
+
+### Principles
+- **Variable font precision**: figmaSans uses weights that most systems never touch — 320, 330, 340, 450, 480, 540. This creates hierarchy through subtle weight differences rather than dramatic jumps. The difference between 330 and 340 is nearly imperceptible but structurally significant.
+- **Light as the base**: Most body text uses 320–340 (lighter than typical 400 "regular"), creating an ethereal, airy reading experience that matches the design-tool aesthetic.
+- **Kern everywhere**: Every text element enables OpenType `"kern"` feature — kerning is not optional, it's structural.
+- **Negative tracking by default**: Even body text uses -0.1px to -0.26px letter-spacing, creating universally tight text. Display text compresses further to -0.96px and -1.72px.
+- **Mono for structure**: figmaMono in uppercase with positive letter-spacing (0.54px–0.6px) creates technical signpost labels.
+
+## 4. Component Stylings
+
+### Buttons
+
+**Black Solid (Pill)**
+- Background: Pure Black (`#000000`)
+- Text: Pure White (`#ffffff`)
+- Radius: circle (50%) for icon buttons
+- Focus: dashed 2px outline
+- Maximum emphasis
+
+**White Pill**
+- Background: Pure White (`#ffffff`)
+- Text: Pure Black (`#000000`)
+- Padding: 8px 18px 10px (asymmetric vertical)
+- Radius: pill (50px)
+- Focus: dashed 2px outline
+- Standard CTA on dark/colored surfaces
+
+**Glass Dark**
+- Background: `rgba(0, 0, 0, 0.08)` (subtle dark overlay)
+- Text: Pure Black
+- Radius: circle (50%)
+- Focus: dashed 2px outline
+- Secondary action on light surfaces
+
+**Glass Light**
+- Background: `rgba(255, 255, 255, 0.16)` (frosted glass)
+- Text: Pure White
+- Radius: circle (50%)
+- Focus: dashed 2px outline
+- Secondary action on dark/colored surfaces
+
+### Cards & Containers
+- Background: Pure White
+- Border: none or minimal
+- Radius: 6px (small containers), 8px (images, cards, dialogs)
+- Shadow: subtle to medium elevation effects
+- Product screenshots as card content
+
+### Navigation
+- Clean horizontal nav on white
+- Logo: Figma wordmark in black
+- Product tabs: pill-shaped (50px) tab navigation
+- Links: black text, underline 1px decoration
+- CTA: Black pill button
+- Hover: text color via CSS variable
+
+### Distinctive Components
+
+**Product Tab Bar**
+- Horizontal pill-shaped tabs (50px radius)
+- Each tab represents a Figma product area (Design, Dev Mode, Prototyping, etc.)
+- Active tab highlighted
+
+**Hero Gradient Section**
+- Full-width vibrant multi-color gradient background
+- White text overlay with 86px display heading
+- Product screenshots floating within the gradient
+
+**Dashed Focus Indicators**
+- All interactive elements use `dashed 2px` outline on focus
+- References the selection handles in the Figma editor
+- A meta-design choice connecting website and product
+
+## 5. Layout Principles
+
+### Spacing System
+- Base unit: 8px
+- Scale: 1px, 2px, 4px, 4.5px, 8px, 10px, 12px, 16px, 18px, 24px, 32px, 40px, 46px, 48px, 50px
+
+### Grid & Container
+- Max container width: up to 1920px
+- Hero: full-width gradient with centered content
+- Product sections: alternating showcases
+- Footer: dark full-width section
+- Responsive from 559px to 1920px
+
+### Whitespace Philosophy
+- **Gallery-like pacing**: Generous spacing lets each product section breathe as its own exhibit.
+- **Color sections as visual breathing**: The gradient hero and product showcases provide chromatic relief between the monochrome interface sections.
+
+### Border Radius Scale
+- Minimal (2px): Small link elements
+- Subtle (6px): Small containers, dividers
+- Comfortable (8px): Cards, images, dialogs
+- Pill (50px): Tab buttons, CTAs
+- Circle (50%): Icon buttons, circular elements
+
+## 6. Depth & Elevation
+
+| Level | Treatment | Use |
+|-------|-----------|-----|
+| Flat (Level 0) | No shadow | Page background, most text |
+| Surface (Level 1) | White card on gradient/dark section | Cards, product showcases |
+| Elevated (Level 2) | Subtle shadow | Floating cards, hover states |
+
+**Shadow Philosophy**: Figma uses shadows sparingly. The primary depth mechanisms are **background contrast** (white content on colorful/dark sections) and the inherent dimensionality of the product screenshots themselves.
+
+## 7. Do's and Don'ts
+
+### Do
+- Use figmaSans with precise variable weights (320–540) — the granular weight control IS the design
+- Keep the interface strictly black-and-white — color comes from product content only
+- Use pill (50px) and circular (50%) geometry for all interactive elements
+- Apply dashed 2px focus outlines — the signature accessibility pattern
+- Enable `"kern"` feature on all text
+- Use figmaMono in uppercase with positive letter-spacing for labels
+- Apply negative letter-spacing throughout (-0.1px to -1.72px)
+
+### Don't
+- Don't add interface colors — the monochrome palette is absolute
+- Don't use standard font weights (400, 500, 600, 700) — use the variable font's unique stops (320, 330, 340, 450, 480, 540)
+- Don't use sharp corners on buttons — pill and circular geometry only
+- Don't use solid focus outlines — dashed is the signature
+- Don't increase body font weight above 450 — the light-weight aesthetic is core
+- Don't use positive letter-spacing on body text — it's always negative
+
+## 8. Responsive Behavior
+
+### Breakpoints
+| Name | Width | Key Changes |
+|------|-------|-------------|
+| Small Mobile | <560px | Compact layout, stacked |
+| Tablet | 560–768px | Minor adjustments |
+| Small Desktop | 768–960px | 2-column layouts |
+| Desktop | 960–1280px | Standard layout |
+| Large Desktop | 1280–1440px | Expanded |
+| Ultra-wide | 1440–1920px | Maximum width |
+
+### Collapsing Strategy
+- Hero text: 86px → 64px → 48px
+- Product tabs: horizontal scroll on mobile
+- Feature sections: stacked single column
+- Footer: multi-column → stacked
+
+## 9. Agent Prompt Guide
+
+### Quick Color Reference
+- Everything: "Pure Black (#000000)" and "Pure White (#ffffff)"
+- Glass Dark: "rgba(0, 0, 0, 0.08)"
+- Glass Light: "rgba(255, 255, 255, 0.16)"
+
+### Example Component Prompts
+- "Create a hero on a vibrant multi-color gradient (green, yellow, purple, pink). Headline at 86px figmaSans weight 400, line-height 1.0, letter-spacing -1.72px. White text. White pill CTA button (50px radius, 8px 18px padding)."
+- "Design a product tab bar with pill-shaped buttons (50px radius). Active: Black bg, white text. Inactive: transparent, black text. figmaSans at 20px weight 480."
+- "Build a section label: figmaMono 18px, uppercase, letter-spacing 0.54px, black text. Kern enabled."
+- "Create body text at 20px figmaSans weight 330, line-height 1.40, letter-spacing -0.14px. Pure Black on white."
+
+### Iteration Guide
+1. Use variable font weight stops precisely: 320, 330, 340, 450, 480, 540, 700
+2. Interface is always black + white — never add colors to chrome
+3. Dashed focus outlines, not solid
+4. Letter-spacing is always negative on body, always positive on mono labels
+5. Pill (50px) for buttons/tabs, circle (50%) for icon buttons
