@@ -4343,10 +4343,8 @@
                 modal.setAttribute('aria-hidden', 'false');
                 hindsightBtn.setAttribute('aria-pressed', 'true');
 
-                // Update with current score
-                if (currentScore > 0) {
-                    updateHindsightModal(currentScore);
-                }
+                // Update with current score (fall back to Neutral range if not yet loaded)
+                updateHindsightModal(currentScore > 0 ? currentScore : 50);
             });
 
             const closeModal = function() {
@@ -4772,9 +4770,7 @@
                             modal.style.display = 'block';
                             modal.setAttribute('aria-hidden', 'false');
                             desktopBtn.setAttribute('aria-pressed', 'true');
-                            if (currentScore > 0) {
-                                updateHindsightModal(currentScore);
-                            }
+                            updateHindsightModal(currentScore > 0 ? currentScore : 50);
                         }
                     });
                 }
