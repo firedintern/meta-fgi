@@ -210,9 +210,9 @@
 
         /* Hindsight Button - NEW FEATURE */
         .hindsight-btn {
-            background: linear-gradient(145deg, #69B578 0%, #D0DB97 50%, #69B578 100%);
-            border: 2px solid #d4af37;
-            color: #181D27;
+            background: linear-gradient(145deg, #e8831a 0%, #f7931a 50%, #e8831a 100%);
+            border: 2px solid #f7931a;
+            color: #080c10;
             padding: 10px 15px;
             border-radius: 5px;
             cursor: pointer;
@@ -224,7 +224,7 @@
             box-shadow: 0 0 20px rgba(255, 170, 0, 0.5);
         }
         .hindsight-btn:hover {
-            background: linear-gradient(145deg, #D0DB97 0%, #69B578 50%, #D0DB97 100%);
+            background: linear-gradient(145deg, #f7931a 0%, #ffaa44 50%, #f7931a 100%);
             transform: scale(1.1);
             box-shadow: 0 0 30px rgba(255, 170, 0, 0.8);
         }
@@ -257,12 +257,12 @@
         @keyframes terminal-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.95; } }
         
         .btc-ticker {
-            background: linear-gradient(145deg, #69B578 0%, #D0DB97 50%, #69B578 100%);
+            background: linear-gradient(145deg, #141c24 0%, #0f141a 50%, #141c24 100%);
             padding: 10px 25px;
             border-radius: 10px;
             margin: 0 auto 25px;
             max-width: 400px;
-            border: 3px solid #d97706;
+            border: 3px solid var(--color-orange);
             box-shadow:
                 0 8px 25px rgba(0,0,0,0.6),
                 inset 0 2px 10px rgba(255,255,255,0.5),
@@ -286,11 +286,11 @@
             padding: 12px 20px;
             max-width: 100%;
         }
-        .btc-label { font-size: 0.65em; color: #0a0e14; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
-        .btc-price { font-size: 1.4em; font-weight: bold; color: #0a0e14; margin: 2px 0; }
+        .btc-label { font-size: 0.75em; color: var(--color-text-2); opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+        .btc-price { font-size: 1.4em; font-weight: bold; font-family: 'Chakra Petch', 'Inter', monospace; color: var(--color-orange); margin: 2px 0; }
         .btc-change { font-size: 0.8em; font-weight: bold; margin-top: 2px; color: #a0a0a0; }
-        .positive { color: #3A7D44; }
-        .negative { color: var(--color-gold); }
+        .positive { color: var(--color-green); }
+        .negative { color: var(--color-red); }
 
         /* Left side of slot machine - 50% */
         .slot-left {
@@ -326,16 +326,16 @@
         }
 
         .info-card-inline.btc-card .card-label {
-            color: #69B578;
+            color: var(--color-text-2);
         }
 
         .info-card-inline.btc-card .card-value {
-            color: #69B578;  /* Orange like streak number */
+            color: var(--color-orange);
             text-shadow: 0 0 15px currentColor;
         }
 
         .info-card-inline.btc-card .card-change {
-            color: #69B578;  /* Gray like "Total value" */
+            color: var(--color-text-2);
         }
 
         .info-card-inline .card-label {
@@ -366,51 +366,49 @@
         }
 
         .info-card-inline .card-change {
-            color: #181D27;
+            color: var(--color-text-2);
             font-size: 0.8em;
             font-weight: bold;
             margin-top: 2px;
         }
 
         .info-card-inline .card-desc {
-            color: #69B578;
+            color: var(--color-text-2);
             font-size: 0.7em;
             margin-top: 4px;
         }
 
         .info-card-inline.streak-card .card-desc {
-            color: #69B578;
+            color: var(--color-text-2);
         }
 
         .info-card-inline.dominance-card {
-            /* Use same dark/gold style as streak card */
-            background: rgba(255, 170, 0, 0.1);
-            border: 2px solid rgba(255, 170, 0, 0.3);
+            background: rgba(247, 147, 26, 0.08);
+            border: 2px solid rgba(247, 147, 26, 0.3);
         }
 
         .info-card-inline.dominance-card .card-label {
-            color: #69B578;
+            color: var(--color-text-2);
             font-weight: 600;
         }
 
         .info-card-inline.dominance-card .card-value {
-            color: #69B578;  /* Orange like streak number */
+            color: var(--color-orange);
             text-shadow: 0 0 15px currentColor;
         }
 
         .info-card-inline.marketcap-card {
-            /* Use same dark/gold style as streak card */
-            background: rgba(255, 170, 0, 0.1);
-            border: 2px solid rgba(255, 170, 0, 0.3);
+            background: rgba(247, 147, 26, 0.08);
+            border: 2px solid rgba(247, 147, 26, 0.3);
         }
 
         .info-card-inline.marketcap-card .card-label {
-            color: #69B578;
+            color: var(--color-text-2);
             font-weight: 600;
         }
 
         .info-card-inline.marketcap-card .card-value {
-            color: #69B578;  /* Orange like streak number */
+            color: var(--color-orange);
             text-shadow: 0 0 15px currentColor;
         }
 
@@ -742,13 +740,11 @@
         }
 
         .payout-label {
-            color: #69B578;
+            color: var(--color-text-2);
             font-size: 0.9em;
             margin-bottom: 5px;
             letter-spacing: 2px;
-            text-shadow:
-                0 0 5px #ffaa00,
-                0 0 10px #ffaa00;
+            text-shadow: none;
         }
 
         .payout-score {
@@ -780,23 +776,23 @@
         }
 
         .streak-description {
-            color: #69B578;
+            color: var(--color-text-2);
             font-size: 0.95em;
             margin-top: 10px;
         }
 
         .streak-info {
             font-size: 0.85em;
-            color: #69B578;
+            color: var(--color-text-2);
             margin-top: 12px;
             padding-top: 10px;
-            border-top: 1px solid rgba(255, 170, 0, 0.2);
+            border-top: 1px solid rgba(247, 147, 26, 0.2);
             font-weight: normal;
             letter-spacing: 0.5px;
         }
 
         .streak-info.record {
-            color: #69B578;
+            color: var(--color-orange);
             font-weight: bold;
             animation: pulse 1.5s ease-in-out infinite;
         }
@@ -1066,7 +1062,7 @@
         }
 
         .share-btn { background: var(--color-bg); border: 2px solid #D0DB97; color: #D0DB97; display: inline-flex; align-items: center; gap: 8px; padding: 12px 30px; font-size: 1em; border-radius: 5px; cursor: pointer; font-family: 'Inter', system-ui, sans-serif; font-weight: bold; margin: 0; text-transform: uppercase; letter-spacing: 2px; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(208, 219, 151, 0.2); }
-        .share-btn:hover { box-shadow: 0 0 25px rgba(208, 219, 151, 0.6); background: #254D32; transform: scale(1.05); }
+        .share-btn:hover { box-shadow: 0 0 25px rgba(208, 219, 151, 0.6); background: var(--color-surface-2); transform: scale(1.05); }
         .share-btn:focus-visible { outline: 3px solid #e6e8eb; outline-offset: 3px; box-shadow: 0 0 30px rgba(230, 232, 235, 0.8); }
 
         .btn { background: linear-gradient(135deg, var(--color-green), #2d6b3a); border: 2px solid var(--color-green); color: var(--color-bg); padding: 12px 30px; font-size: 1em; border-radius: 5px; cursor: pointer; font-family: 'Inter', system-ui, sans-serif; font-weight: bold; margin: 0; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 15px rgba(106, 181, 120, 0.3); transition: all 0.3s ease; }
@@ -1401,7 +1397,7 @@
         }
         .vg-share-btn:hover {
             box-shadow: 0 0 22px rgba(230,232,235,0.5);
-            background: #254D32;
+            background: var(--color-surface-2);
             transform: scale(1.04);
         }
         .vg-backtester-link {
@@ -3015,11 +3011,11 @@
         });
         
         function getColorForScore(s){
-            if(s<20)return '#D0DB97';
-            if(s<40)return '#69B578';
-            if(s<60)return '#69B578';
-            if(s<80)return '#3A7D44';
-            return '#3A7D44';
+            if(s<20)return '#c0392b';   // Extreme Fear — red
+            if(s<40)return '#e67e22';   // Fear — amber
+            if(s<60)return '#D0DB97';   // Neutral — gold
+            if(s<80)return '#27ae60';   // Greed — green
+            return '#f7931a';           // Extreme Greed — orange
         }
         
         function getSymbolForScore(s){
