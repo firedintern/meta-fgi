@@ -4802,6 +4802,7 @@
         </a>
         <button class="control-btn" aria-label="Strategy Backtester">♟️</button>
         <button class="control-btn" aria-label="My Portfolio">💼</button>
+        <button class="control-btn" id="matrixToggleBtnMobile" aria-label="Toggle matrix background" aria-pressed="false">✨</button>
     </div>
 
     <!-- Mobile footer button handlers - MUST run after HTML exists -->
@@ -4863,6 +4864,18 @@
                                 renderAllocationChart();
                             }
                         }
+                    });
+                }
+
+                // Matrix toggle button
+                const mobileMatrixBtn = document.getElementById('matrixToggleBtnMobile');
+                if (mobileMatrixBtn) {
+                    mobileMatrixBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const desktopBtn = document.getElementById('matrixToggleBtn');
+                        if (desktopBtn) desktopBtn.click();
+                        mobileMatrixBtn.classList.toggle('active', matrixEnabled);
+                        mobileMatrixBtn.setAttribute('aria-pressed', matrixEnabled ? 'true' : 'false');
                     });
                 }
 
