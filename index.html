@@ -656,9 +656,8 @@
             font-size: 4em;
             height: 120px;
             width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: grid;
+            place-items: center;
             line-height: 1;
             text-shadow: 0 0 30px currentColor;
             transform: translateZ(0);
@@ -1490,8 +1489,6 @@
                 font-size: 3.5em;
                 height: 100px;
                 line-height: 1;
-                padding-top: 10px;
-                box-sizing: border-box;
             }
 
             @keyframes reel-spin {
@@ -3105,7 +3102,9 @@
             // Map symbol to index position (0-4)
             const symbolMap = {'💀':0, '😱':1, '😐':2, '😏':3, '🤑':4};
             const targetIndex = symbolMap[symbol] || 0;
-            const targetPosition = -targetIndex * 120; // Each symbol is 120px tall
+            const firstSymbol = document.querySelector('.symbol');
+            const symbolHeight = firstSymbol ? firstSymbol.offsetHeight : 120;
+            const targetPosition = -targetIndex * symbolHeight;
 
             const reels = document.querySelectorAll('.reel');
             const machine = document.getElementById('slotMachine');
