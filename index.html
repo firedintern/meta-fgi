@@ -1137,6 +1137,11 @@
             transform: scale(1.2);
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
         }
+        input[type="range"]:focus-visible {
+            outline: 2px solid var(--color-orange);
+            outline-offset: 3px;
+            border-radius: 3px;
+        }
 
         /* Timestamp styling */
         .timestamp-container {
@@ -2810,7 +2815,7 @@
                 <div class="slider-section" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 30px; margin: 30px 0;">
                     <label class="slider-label" style="color: #c0c0c0; font-size: 1em; margin-bottom: 15px; display: block;">Investment Amount</label>
                     <div class="slider-value" style="color: #ffd700; font-size: 2.5em; font-weight: bold; text-align: center; margin: 20px 0;">$<span id="investmentValue">1,000</span></div>
-                    <input type="range" id="investmentSlider" min="100" max="10000" step="100" value="1000" style="width: 100%; height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.1); outline: none; -webkit-appearance: none;">
+                    <input type="range" id="investmentSlider" min="100" max="10000" step="100" value="1000" style="width: 100%; height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.1); -webkit-appearance: none;">
                     <div style="display: flex; justify-content: space-between; margin-top: 10px; color: #666; font-size: 0.85em;">
                         <span>$100</span>
                         <span>$10,000</span>
@@ -2827,7 +2832,7 @@
                     <div class="slider-section" style="background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 25px 30px; margin: 25px 0;">
                         <label class="slider-label" style="color: #c0c0c0; font-size: 1em; margin-bottom: 15px; display: block;">Entry Day in Extreme Fear Streak</label>
                         <div class="slider-value" style="color: #ffd700; font-size: 2.5em; font-weight: bold; text-align: center; margin: 20px 0;">Day <span id="dayValue">1</span></div>
-                        <input type="range" id="daySlider" min="1" max="20" step="1" value="1" style="width: 100%; height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.1); outline: none; -webkit-appearance: none;">
+                        <input type="range" id="daySlider" min="1" max="20" step="1" value="1" style="width: 100%; height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.1); -webkit-appearance: none;">
                         <div style="display: flex; justify-content: space-between; margin-top: 10px; color: #666; font-size: 0.85em;">
                             <span>Day 1</span>
                             <span>Day 20</span>
