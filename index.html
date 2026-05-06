@@ -659,10 +659,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* OPTIMIZED: Reduced from 3 to 1 text-shadow, removed filter */
+            line-height: 1;
             text-shadow: 0 0 30px currentColor;
-            /* GPU-accelerated properties only */
-            transform: translateZ(0) translateY(8px);
+            transform: translateZ(0);
             flex-shrink: 0;
         }
 
@@ -1490,7 +1489,7 @@
             .symbol {
                 font-size: 3.5em;
                 height: 100px;
-                transform: translateY(8px);
+                line-height: 1;
             }
 
             @keyframes reel-spin {
@@ -1612,7 +1611,7 @@
             .symbol {
                 font-size: 2.8em;
                 height: 110px;
-                transform: translateY(9px);
+                line-height: 1;
             }
             
             .payout-display { padding: 12px; margin-top: 15px; }
