@@ -2,16 +2,18 @@
 
 ## Project Overview
 
-A production crypto Fear & Greed Index dashboard with casino-style visualization, portfolio management, Telegram bot alerts, and historical backtesting analysis.
+A production crypto Fear & Greed Index dashboard presented as a dark financial terminal, with portfolio management, Telegram bot alerts, and historical backtesting analysis.
 
 - **Live site**: https://www.fgichad.xyz
 - **Deployment**: Vercel (serverless functions + cron jobs)
-- **Tech stack**: Vanilla JS (ES6+), HTML5, CSS3, Chart.js, Web Audio API, Node.js APIs
+- **Tech stack**: Vanilla JS (ES6+), HTML5, CSS3, Chart.js, Node.js APIs
 
 ## Repository Structure
 
 ```
-├── index.html              # Production website (DO NOT break this)
+├── index.html              # Production website markup (DO NOT break this)
+├── styles.css              # Production stylesheet
+├── app.js                  # Production frontend logic
 ├── api/                    # Vercel serverless functions (production)
 │   ├── fgi.js              # FGI proxy API
 │   ├── telegram-webhook.js # Telegram bot webhook
@@ -19,20 +21,19 @@ A production crypto Fear & Greed Index dashboard with casino-style visualization
 │   └── admin-subscribers.js# Admin subscriber endpoint
 ├── vercel.json             # Vercel cron config (production)
 ├── scripts/                # Utility & data processing scripts
-├── data/                   # Backtest results and cached data
-├── drafts/                 # Experimental HTML versions (not production)
+├── data/                   # Backtest results (backtest-results-5.5years.json is fetched at runtime)
 ├── docs/                   # Project documentation
-├── .claude/
-│   ├── commands/           # Custom slash commands (skills)
-│   └── agents/             # Subagent definitions
-└── claude-code-workflows-main/  # Reference workflow templates
+└── .claude/
+    ├── commands/           # Custom slash commands (skills)
+    └── agents/             # Subagent definitions
 ```
 
 ## Critical Rules
 
-1. **Never modify `index.html`, `api/`, or `vercel.json` without explicit approval** — these are live production files
+1. **Never modify `index.html`, `styles.css`, `app.js`, `api/`, or `vercel.json` without explicit approval** — these are live production files
 2. **Never commit secrets** — all tokens/keys live in Vercel environment variables only
 3. **FGI thresholds**: Extreme Fear ≤24, Fear 25-44, Neutral 45-59, Greed 60-79, Extreme Greed ≥80
+4. **`data/backtest-results-5.5years.json` is fetched at runtime by the site** — never delete or rename it
 
 ## External APIs
 
@@ -56,13 +57,12 @@ Always read `DESIGN.md` before making any visual or UI decisions.
 All font choices, colors, spacing, and aesthetic direction are defined there.
 Do not deviate without explicit user approval.
 
-Key rules from DESIGN.md:
-- **Fonts:** Bebas Neue (display/headings) + Chakra Petch (body/data)
-- **Primary accent:** `#f7931a` (orange) — the ONE loud color
-- **Green:** `#27ae60` — NOT neon. Calm, blends in.
-- **Red:** `#c0392b` — deep crimson, not alarming.
-- **Backgrounds:** `#080c10` base, `#0f141a` surface-1, `#141c24` surface-2
-- **Matrix rain:** Default OFF — it's a toggle Easter egg, not wallpaper
+Key rules from DESIGN.md (dark financial terminal):
+- **Fonts:** Inter (UI/labels) + JetBrains Mono (all numerals, tickers, timestamps; `tabular-nums`)
+- **Surfaces:** `#0d1117` base, `#161b22` surface, `#1c2128` raised, `#30363d` borders
+- **Accent:** `#f7931a` (Bitcoin orange) — the ONE accent, interactive/active states only
+- **FGI zone colors:** red → orange → yellow → green across the five sentiment bands; a text label always accompanies color
+- **No gimmicks:** no emoji in UI chrome, no neon/glow, no decorative animations, transitions ≤150ms
 - In QA mode, flag any code that doesn't match DESIGN.md.
 
 When making front-end changes:
@@ -74,7 +74,7 @@ When making front-end changes:
 
 ```bash
 npm install        # Only dependency is axios (for scripts)
-open index.html    # No build step — vanilla JS
+vercel dev         # Serves static files + /api functions locally
 ```
 
 ## Running Backtest
