@@ -1,4 +1,4 @@
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   try {
     const history = req.query.history === 'true';
     const limit = history ? 30 : 1;
