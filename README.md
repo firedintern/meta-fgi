@@ -178,30 +178,20 @@ This fetches 5.5 years of FGI + BTC price data and outputs `data/backtest-result
 
 ```
 meta-fgi/
-├── index.html                    # Production website (DO NOT modify without approval)
+├── index.html                    # Production website markup (DO NOT modify without approval)
+├── styles.css                    # Production stylesheet (dark terminal design system)
+├── app.js                        # Production frontend logic
 ├── api/                          # Vercel serverless functions
 │   ├── fgi.js                    # FGI proxy API
 │   ├── telegram-webhook.js       # Telegram bot webhook handler
 │   ├── check-fgi-cron.js         # Daily cron — checks FGI & sends Telegram alerts
 │   └── admin-subscribers.js      # Admin endpoint for subscriber management
 ├── scripts/                      # Utility & data processing
-│   ├── backtest-hindsight-score.js  # 5.5-year FGI + BTC backtest
-│   ├── create-integration.js     # Integration automation
+│   ├── backtest-hindsight-score.js  # 5.5-year FGI + BTC backtest (writes data/)
 │   ├── explain-overlap.js        # Data overlap analysis
-│   ├── extract-cmc-fgi.js        # CMC data extraction
-│   ├── playwright.config.js      # Playwright test config
-│   ├── test-api-limits.js        # API rate limit testing
-│   ├── test-btc-alternatives.js  # Alternative BTC source testing
-│   └── test-cmc-api.js           # CMC API testing
-├── data/                         # Backtest results & cached data
-│   ├── backtest-results-5.5years.json  # Full 5.5-year backtest output
-│   ├── backtest-results.json     # 1-year backtest output
-│   ├── hindsight-data.csv        # Raw CSV data
-│   └── cmc-page-shared-data.json # CoinMarketCap cached data
-├── drafts/                       # Experimental HTML versions (not production)
-│   ├── hindsight-score-demo.html # Standalone Hindsight Score demo
-│   ├── index-full-integration.html  # Full integration prototype
-│   └── index-with-hindsight.html # Hindsight integration draft
+│   └── playwright.config.js      # Playwright test config
+├── data/                         # Backtest results
+│   └── backtest-results-5.5years.json  # Full 5.5-year backtest output (runtime-fetched)
 ├── docs/                         # Project documentation
 │   ├── DATA-SOURCES.md           # API & data source details
 │   ├── BACKTEST-COMPARISON.md    # 1-year vs 5.5-year analysis

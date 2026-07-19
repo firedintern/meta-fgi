@@ -34,4 +34,4 @@ Review the complete diff above. This contains all code changes in the PR.
 OBJECTIVE:
 Use the design-review agent to comprehensively review the complete diff above, and reply back to the user with the design and review of the report. Your final reply must contain the markdown report and nothing else.
 
-Follow and implement the design principles and style guide located in `claude-code-workflows-main/design-review/design-principles-example.md`.
+Follow and implement the design principles and style guide located in `DESIGN.md` (the repo's design source of truth).

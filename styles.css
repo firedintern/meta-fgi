@@ -295,6 +295,21 @@ button:focus-visible, a:focus-visible, input:focus-visible {
     color: var(--text-muted);
 }
 
+/* Threshold numbers sit at their true positions on the scale */
+.gauge-labels {
+    display: block;
+    position: relative;
+    height: 14px;
+}
+
+.gauge-labels span { position: absolute; transform: translateX(-50%); }
+.gauge-labels span:nth-child(1) { left: 0; transform: none; }
+.gauge-labels span:nth-child(2) { left: 25%; }
+.gauge-labels span:nth-child(3) { left: 45%; }
+.gauge-labels span:nth-child(4) { left: 60%; }
+.gauge-labels span:nth-child(5) { left: 80%; }
+.gauge-labels span:nth-child(6) { left: auto; right: 0; transform: none; }
+
 .gauge-zones {
     margin-top: 4px;
     text-transform: uppercase;
@@ -471,6 +486,9 @@ input[type="range"]::-moz-range-thumb {
     padding: 26px 24px 22px;
     text-align: center;
 }
+
+.vg-result-card.positive { border-color: rgba(63, 185, 80, 0.4); }
+.vg-result-card.negative { border-color: rgba(248, 81, 73, 0.4); }
 
 .vg-result-label { font-size: 13px; color: var(--text-secondary); margin-bottom: 14px; }
 

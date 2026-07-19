@@ -379,7 +379,8 @@ function saveResultsToFile(results, mergedData, insights) {
   };
 
   const years = (mergedData.length / 365).toFixed(1);
-  const filename = `backtest-results-${years}years.json`;
+  // Write into data/ so the runtime-fetched file actually updates regardless of CWD
+  const filename = require('path').join(__dirname, '..', 'data', `backtest-results-${years}years.json`);
   fs.writeFileSync(filename, JSON.stringify(output, null, 2));
   console.log(`💾 Results saved to ${filename}\n`);
 }

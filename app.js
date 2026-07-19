@@ -1,5 +1,5 @@
 // FGI CHAD terminal frontend. Tokens mirror styles.css / DESIGN.md.
-let currentScore = 0;
+let currentScore = null; // null until the first successful FGI fetch
 
 const ZONES = [
     { max: 24,  name: 'Extreme Fear',  cls: 'zone-xfear',   color: '#f85149' },
@@ -58,22 +58,31 @@ function isCacheValid(cacheKey) {
     return cache.data && (Date.now() - cache.timestamp) < CACHE_DURATION;
 }
 
+let globalDataInflight = null;
+
 async function fetchGlobalData() {
     if (isCacheValid('globalData')) {
         return apiCache.globalData.data;
     }
-    try {
-        const response = await fetch('https://api.coingecko.com/api/v3/global', {
-            headers: { 'Accept': 'application/json' }
-        });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data = await response.json();
-        apiCache.globalData = { data: data.data, timestamp: Date.now() };
-        return data.data;
-    } catch (error) {
-        console.error('Error fetching global data:', error);
-        return null;
-    }
+    // Dedup: dominance + market cap both call this on a cold cache
+    if (globalDataInflight) return globalDataInflight;
+    globalDataInflight = (async () => {
+        try {
+            const response = await fetch('https://api.coingecko.com/api/v3/global', {
+                headers: { 'Accept': 'application/json' }
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            apiCache.globalData = { data: data.data, timestamp: Date.now() };
+            return data.data;
+        } catch (error) {
+            console.error('Error fetching global data:', error);
+            return null;
+        } finally {
+            globalDataInflight = null;
+        }
+    })();
+    return globalDataInflight;
 }
 
 function renderBTCPrice(price, change) {
@@ -96,16 +105,20 @@ async function fetchBTCPrice() {
         });
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const d = await r.json();
-        if (!d.bitcoin) throw new Error('Invalid data');
+        if (!d.bitcoin || typeof d.bitcoin.usd !== 'number' || typeof d.bitcoin.usd_24h_change !== 'number') {
+            throw new Error('Invalid data');
+        }
         apiCache.btcPrice = { data: { price: d.bitcoin.usd, change: d.bitcoin.usd_24h_change }, timestamp: Date.now() };
         renderBTCPrice(d.bitcoin.usd, d.bitcoin.usd_24h_change);
     } catch (e) {
         console.error('BTC price error:', e);
         try {
-            const r2 = await fetch('https://api.coincap.io/v2/assets/bitcoin');
+            // Binance public ticker: free, CORS-enabled (CoinCap v2 was sunset)
+            const r2 = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT');
             const d2 = await r2.json();
-            const p = parseFloat(d2.data.priceUsd);
-            const c = parseFloat(d2.data.changePercent24Hr);
+            const p = parseFloat(d2.lastPrice);
+            const c = parseFloat(d2.priceChangePercent);
+            if (!Number.isFinite(p) || !Number.isFinite(c)) throw new Error('Invalid fallback data');
             apiCache.btcPrice = { data: { price: p, change: c }, timestamp: Date.now() };
             renderBTCPrice(p, c);
         } catch (e2) {
@@ -505,7 +518,11 @@ async function fetchData() {
         const d = await r.json();
         if (!d.data || !d.data[0]) { throw new Error('Invalid API response'); }
         const fgiData = d.data[0];
-        currentScore = parseInt(fgiData.value);
+        const parsedScore = parseInt(fgiData.value);
+        if (!Number.isFinite(parsedScore) || parsedScore < 0 || parsedScore > 100) {
+            throw new Error('Invalid FGI value: ' + fgiData.value);
+        }
+        currentScore = parsedScore;
         const zone = getZone(currentScore);
 
         // Score + zone chip
@@ -551,6 +568,7 @@ async function fetchData() {
 }
 
 function shareToX() {
+    if (currentScore === null) return; // no data yet, nothing truthful to share
     const zone = getZone(currentScore);
     const t = 'Crypto Fear & Greed Index: ' + currentScore + '/100 (' + zone.name + ')\n\n' +
         (SIGNAL_MAP[zone.name] || '') + '\n\nLive data:';
@@ -582,10 +600,22 @@ let portfolioData = null;
 let allocationChartInstance = null;
 
 function loadPortfolio() {
-    const saved = localStorage.getItem('portfolio');
-    if (saved) {
-        portfolioData = JSON.parse(saved);
-        return portfolioData;
+    try {
+        const saved = localStorage.getItem('portfolio');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            const crypto = Number(parsed && parsed.crypto);
+            const stablecoins = Number(parsed && parsed.stablecoins);
+            if (!Number.isFinite(crypto) || !Number.isFinite(stablecoins)) {
+                throw new Error('Invalid portfolio data');
+            }
+            portfolioData = { crypto, stablecoins };
+            return portfolioData;
+        }
+    } catch (e) {
+        console.error('Corrupt portfolio in localStorage, clearing:', e);
+        localStorage.removeItem('portfolio');
+        portfolioData = null;
     }
     return null;
 }
@@ -639,7 +669,7 @@ function getPortfolioAdvice(fgiScore, cryptoRatio) {
 
 function updatePortfolioAdvice() {
     const allocation = calculateAllocation();
-    if (!allocation || currentScore === 0) return;
+    if (!allocation || currentScore === null) return;
 
     const advice = getPortfolioAdvice(currentScore, allocation.cryptoRatio);
     const adviceCardElement = document.getElementById('portfolioAdviceCard');
@@ -651,7 +681,7 @@ function updatePortfolioAdvice() {
 }
 
 function renderAllocationChart() {
-    if (!portfolioData) return;
+    if (!portfolioData || typeof Chart === 'undefined') return;
     const allocation = calculateAllocation();
     if (!allocation) return;
 
@@ -1028,7 +1058,7 @@ function initHindsightModal() {
         modal.style.display = 'block';
         modal.setAttribute('aria-hidden', 'false');
         hindsightBtn.setAttribute('aria-pressed', 'true');
-        updateHindsightModal(currentScore > 0 ? currentScore : 50);
+        updateHindsightModal(currentScore !== null ? currentScore : 50);
     });
 
     const closeModal = function () {
@@ -1128,7 +1158,8 @@ document.getElementById('refreshBtn').addEventListener('click', refreshAll);
         if (!backtestData) return;
         var stats = computeStats(vgRange, vgPeriod);
         if (!stats) {
-            resultCard.innerHTML = '<div class="vg-error">No data for this combination.</div>';
+            resultLabel.textContent = 'No data for this combination.';
+            resultMain.textContent = '--';
             return;
         }
 
@@ -1380,7 +1411,7 @@ if (mobileFooter) {
                 modal.style.display = 'block';
                 modal.setAttribute('aria-hidden', 'false');
                 desktopBtn.setAttribute('aria-pressed', 'true');
-                updateHindsightModal(currentScore > 0 ? currentScore : 50);
+                updateHindsightModal(currentScore !== null ? currentScore : 50);
             }
         });
     }
@@ -1418,7 +1449,7 @@ if (mobileFooter) {
     }
 
     // Hide on scroll down, show on scroll up
-    if (window.innerWidth <= 800) {
+    if (window.innerWidth <= 768) {
         window.addEventListener('scroll', function () {
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
             if (scrollTop > lastScrollTop && scrollTop > 100) {
