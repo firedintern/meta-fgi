@@ -1,12 +1,12 @@
-# FGI Terminal — Design System
+# FGI Terminal Design System
 
 ## 1. Visual Theme & Atmosphere
 
-A dark financial terminal in the tradition of Bloomberg and TradingView: dense, calm, data-first. The interface is a neutral dark instrument panel; the data provides all the color. Nothing moves unless it communicates state. Nothing glows. The tone is institutional — a market data product, not a game.
+A dark financial terminal in the tradition of Bloomberg and TradingView: dense, calm, data-first. The interface is a neutral dark instrument panel; the data provides all the color. Nothing moves unless it communicates state. Nothing glows. The tone is institutional: a market data product, not a game.
 
 **Key characteristics:**
 - Dark, low-contrast surface stack; hierarchy via 1px borders and subtle surface steps, never shadows or glows
-- All numerals in monospace with tabular figures — columns of data always align
+- All numerals in monospace with tabular figures so columns of data always align
 - One accent color, used sparingly for interactivity
 - Sentiment (FGI zones) is the only expressive color system, and it always ships with a text label
 - No emoji in interface chrome, no decorative animation, no sound
@@ -16,11 +16,11 @@ A dark financial terminal in the tradition of Bloomberg and TradingView: dense, 
 ### Surfaces
 | Token | Value | Use |
 |---|---|---|
-| `--bg-base` | `#0d1117` | Page background |
-| `--bg-surface` | `#161b22` | Cards, header, modals |
-| `--bg-raised` | `#1c2128` | Hover states, nested panels, inputs |
-| `--border` | `#30363d` | All card/section borders (1px) |
-| `--border-subtle` | `#21262d` | Chart gridlines, dividers |
+| `--bg-base` | `#0b0e14` | Page background, header |
+| `--bg-surface` | `#11151c` | Cards, panels, modals |
+| `--bg-raised` | `#171c24` | Hover states, nested panels, inputs |
+| `--border` | `#2a303a` | All card/section borders (1px) |
+| `--border-subtle` | `#1d222b` | Chart gridlines, hairline dividers inside panels |
 
 ### Text
 | Token | Value | Use |
@@ -42,7 +42,7 @@ Accent is for interaction and emphasis only. It never fills large areas.
 | `--up` | `#3fb950` | Positive 24h change |
 | `--down` | `#f85149` | Negative 24h change |
 
-Deltas only — never used decoratively.
+Deltas only, never used decoratively.
 
 ### FGI zone scale
 Thresholds: Extreme Fear ≤24 · Fear 25–44 · Neutral 45–59 · Greed 60–79 · Extreme Greed ≥80
@@ -74,25 +74,34 @@ Color is never the only signal: every zone-colored element carries the zone name
 
 ## 4. Components
 
-### Cards
-- `--bg-surface`, 1px `--border`, radius 6px, padding 16px
-- Uppercase 11px label top-left; value below in mono
-- Hover (interactive cards only): border shifts to `#8b949e`. No transform, no shadow.
+Geometry is square: global radius 2px. Nothing rounded, nothing pill-shaped.
+
+### Micro-labels (the signature)
+Every label, section header, nav item, and button uses JetBrains Mono, 9-11px, uppercase, letter-spacing 0.08-0.12em. This is what makes the page read as a terminal.
+
+### Header
+Slim (52px), `--bg-base` with bottom border. Brand wordmark in mono. Nav items are text-only mono uppercase links (no borders, no fills); Refresh in accent color; live UTC clock at far right behind a hairline divider.
+
+### Cards & strips
+- Panels: `--bg-surface`, 1px `--border`, radius 2px, padding 20px
+- Panel titles: mono uppercase micro-label with a hairline rule below
+- **Stat strip**: related metrics share ONE bordered container, divided by vertical hairlines (`--border-subtle`), not separate gap-spaced cards. Table-like density over friendly cards.
+- Hover (interactive only): border shifts to `--text-muted`. No transform, no shadow.
 
 ### Buttons
-- **Primary**: `--accent` background, `#0d1117` text, radius 6px, 8px 16px padding
-- **Secondary**: transparent, 1px `--border`, `--text-primary` text; hover raises to `--bg-raised`
-- **Text/link**: `--accent`, no underline until hover
-- Focus: 2px solid `--accent` outline with 2px offset
+- **Primary**: ghost accent: transparent-ish accent tint background (8%), 1px `--accent` border, accent mono uppercase text. Never a solid orange fill.
+- **Secondary**: transparent, 1px `--border`, `--text-secondary` mono uppercase text; hover brightens text and border
+- **Active/selected state**: accent border + accent text + 8% accent tint
+- Focus: 1px solid `--accent` outline with 2px offset
 
 ### Zone chip
-Pill (radius 4px), zone color at 15% opacity background, zone color text, uppercase 12px mono label — e.g. `EXTREME FEAR`.
+Radius 2px, 1px border in zone color at 40% opacity, 8% zone-color tint background, zone color mono uppercase text, e.g. `EXTREME FEAR`.
 
 ### Gauge bar (FGI hero)
-Horizontal 5-segment bar, one segment per zone in zone colors at 35% opacity; the active zone segment at full opacity; a marker line at the exact score position.
+Horizontal 5-segment bar (6px tall, square ends), one segment per zone in zone colors at 30% opacity; the active zone segment at full opacity; segments separated by 2px background gaps; a marker line at the exact score position. Threshold numbers and zone names in mono micro-labels beneath.
 
 ### Modals
-`--bg-surface`, 1px `--border`, radius 8px, backdrop `rgba(1,4,9,0.8)`. Header with title + close button. Max-width 560px, full-screen sheet under 768px.
+`--bg-surface`, 1px `--border`, radius 2px, backdrop `rgba(2,4,8,0.85)`. Header title is a mono uppercase micro-label. Max-width 560px, full-screen sheet under 768px.
 
 ### Charts (Chart.js)
 - Gridlines `--border-subtle`, ticks in JetBrains Mono 11px `--text-secondary`
@@ -116,23 +125,28 @@ Horizontal 5-segment bar, one segment per zone in zone colors at 35% opacity; th
 ## 7. Voice & Copy
 
 - Professional market commentary. Statements, not exclamations.
-- Zone descriptions: "Extreme fear — historically an accumulation zone", "Greed — sentiment elevated", etc.
-- No slang in UI chrome ("degen", "chad", "moon"), no ALL-CAPS hype, no emoji in buttons/labels.
+- **No em dashes anywhere in UI copy.** Use periods, colons, commas, or middle dots (·) instead.
+- Zone descriptions: "Historically an accumulation zone", "Sentiment elevated above average", etc.
+- Timestamps in UTC: "Updated 2026-07-19 00:00 UTC". The header shows a live UTC clock.
+- No slang in UI chrome ("degen", "chad", "moon"), no ALL-CAPS hype outside mono micro-labels, no emoji in buttons/labels.
 - Errors are plain: "Data unavailable. Retry."
+- Feature names are analytical, not viral: "Historical Scenario Analysis", not "What Would $1,000 Become?"
 
 ## 8. Do / Don't
 
 ### Do
 - Use mono + tabular-nums for every number
 - Use 1px borders and surface steps for hierarchy
-- Keep accent usage rare — if a screen has more than ~3 orange elements, remove some
+- Keep accent usage rare: if a screen has more than ~3 orange elements, remove some
 - Pair every zone color with its text label
 - Keep the interface still: data changes, chrome doesn't
 
 ### Don't
 - No emoji in interface chrome
+- No em dashes in UI copy
 - No glows, neon, text-shadows, or gradients on chrome
 - No decorative animations (rain, confetti, flicker, spin)
 - No sound
-- No rounded pills >8px radius except the zone chip
+- No radius above 2px, no pills, no circles (except chart doughnuts)
+- No solid accent-filled buttons; accent appears as border + text + subtle tint
 - No color outside the tokens above

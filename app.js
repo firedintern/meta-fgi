@@ -1,4 +1,4 @@
-// FGI CHAD — dark terminal frontend. Tokens mirror styles.css / DESIGN.md.
+// FGI CHAD terminal frontend. Tokens mirror styles.css / DESIGN.md.
 let currentScore = 0;
 
 const ZONES = [
@@ -13,10 +13,10 @@ const COLORS = {
     text: '#e6edf3',
     secondary: '#8b949e',
     muted: '#484f58',
-    grid: '#21262d',
-    border: '#30363d',
-    surface: '#161b22',
-    raised: '#1c2128',
+    grid: '#1d222b',
+    border: '#2a303a',
+    surface: '#11151c',
+    raised: '#171c24',
     accent: '#f7931a',
     up: '#3fb950',
     down: '#f85149'
@@ -39,11 +39,11 @@ function getSentimentCategory(score) {
 
 // Professional signal copy per zone (replaces the old degen strings)
 const SIGNAL_MAP = {
-    'Extreme Fear': 'Extreme fear — historically an accumulation zone',
-    'Fear': 'Fear — sentiment below average',
-    'Neutral': 'Neutral — no directional signal',
-    'Greed': 'Greed — sentiment elevated',
-    'Extreme Greed': 'Extreme greed — historically a distribution zone'
+    'Extreme Fear': 'Historically an accumulation zone',
+    'Fear': 'Sentiment below the historical average',
+    'Neutral': 'No directional signal',
+    'Greed': 'Sentiment elevated above average',
+    'Extreme Greed': 'Historically a distribution zone'
 };
 
 // Simple cache to reduce API calls and avoid rate limiting
@@ -154,7 +154,7 @@ async function fetchHistoricalData() {
             throw new Error('No historical data available');
         }
 
-        // BTC overlay is optional — the FGI charts render even if this fails
+        // BTC overlay is optional: the FGI charts render even if this fails
         let btcHistory = [];
         try {
             const btcResponse = await fetch('https://min-api.cryptocompare.com/data/v2/histoday?fsym=BTC&tsym=USD&limit=30');
@@ -182,7 +182,7 @@ async function fetchHistoricalData() {
     } catch (e) {
         console.error('History error:', e);
         document.getElementById('chartTitle').innerHTML =
-            '30-Day Sentiment History — <span style="color:#f85149">connection error</span>';
+            '30-Day Sentiment History <span style="color:#f85149">(connection error)</span>';
     }
 }
 
@@ -415,7 +415,7 @@ function calculateHistoricalStats(historicalData) {
         if (category === currentCat) {
             currentStreakLen++;
         } else {
-            // The final (ongoing) streak is intentionally never saved — only completed streaks count
+            // The final (ongoing) streak is intentionally never saved; only completed streaks count
             if (currentCat && currentStreakLen > 0) {
                 if (currentStreakLen > stats[currentCat].longestStreak) {
                     stats[currentCat].longestStreak = currentStreakLen;
@@ -484,7 +484,7 @@ async function updateStreakDisplay(currentScore) {
         const streakInfoEl = document.getElementById('streakInfo');
         const recordDateStr = recordDate ? ` in ${formatRecordDate(recordDate)}` : '';
         if (currentStreak > record) {
-            streakInfoEl.textContent = `Day ${currentStreak} of ${currentCategory} — new record${record > 0 ? ` (previous: ${record} days${recordDateStr})` : ''}`;
+            streakInfoEl.textContent = `Day ${currentStreak} of ${currentCategory}, a new record${record > 0 ? ` (previous: ${record} days${recordDateStr})` : ''}`;
         } else if (currentStreak === 1) {
             streakInfoEl.textContent = `Day 1 of ${currentCategory}`;
         } else {
@@ -531,10 +531,11 @@ async function fetchData() {
         const activeSeg = document.querySelector('.gauge-seg.seg-' + zone.cls.replace('zone-', ''));
         if (activeSeg) activeSeg.classList.add('active');
 
-        // Signal + timestamp
+        // Signal + timestamp (FGI updates daily at 00:00 UTC)
         document.getElementById('degenStatus').textContent = SIGNAL_MAP[zone.name] || zone.name;
+        const updated = new Date(fgiData.timestamp * 1000);
         document.getElementById('timestamp').textContent =
-            'Last updated ' + new Date(fgiData.timestamp * 1000).toLocaleTimeString();
+            'Updated ' + updated.toISOString().slice(0, 10) + ' ' + updated.toISOString().slice(11, 16) + ' UTC';
 
         await updateStreakDisplay(currentScore);
 
@@ -551,10 +552,19 @@ async function fetchData() {
 
 function shareToX() {
     const zone = getZone(currentScore);
-    const t = 'Crypto Fear & Greed Index: ' + currentScore + '/100 — ' + zone.name + '\n\n' +
+    const t = 'Crypto Fear & Greed Index: ' + currentScore + '/100 (' + zone.name + ')\n\n' +
         (SIGNAL_MAP[zone.name] || '') + '\n\nLive data:';
     window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(t) + '&url=' + encodeURIComponent(window.location.href), '_blank', 'width=550,height=420');
 }
+
+// Header UTC clock
+function tickClock() {
+    const el = document.getElementById('utcClock');
+    if (!el) return;
+    el.textContent = new Date().toISOString().slice(11, 19) + ' UTC';
+}
+tickClock();
+setInterval(tickClock, 1000);
 
 function refreshAll() {
     fetchData();
@@ -564,7 +574,7 @@ function refreshAll() {
     fetchHistoricalData();
 }
 
-// Initial load — all data fetches immediately (no spin gate)
+// Initial load: all data fetches immediately (no spin gate)
 refreshAll();
 
 // ── Portfolio ────────────────────────────────────────────────────
@@ -613,16 +623,16 @@ function calculateAllocation() {
 
 function getPortfolioAdvice(fgiScore, cryptoRatio) {
     if (fgiScore <= 24 && cryptoRatio < 0.3) {
-        return { text: 'Sentiment is at extreme fear while your cash allocation is high — historically an attractive entry point.', color: COLORS.up };
+        return { text: 'Sentiment is at extreme fear while your cash allocation is high. Historically an attractive entry point.', color: COLORS.up };
     }
     if (fgiScore >= 80 && cryptoRatio > 0.7) {
-        return { text: 'Sentiment is at extreme greed while your crypto exposure is high — consider reducing risk.', color: COLORS.down };
+        return { text: 'Sentiment is at extreme greed while your crypto exposure is high. Consider reducing risk.', color: COLORS.down };
     }
     if (fgiScore <= 44 && cryptoRatio < 0.4) {
-        return { text: 'Sentiment is fearful and your crypto allocation is low — a measured increase may be reasonable.', color: COLORS.up };
+        return { text: 'Sentiment is fearful and your crypto allocation is low. A measured increase may be reasonable.', color: COLORS.up };
     }
     if (fgiScore >= 60 && cryptoRatio > 0.6) {
-        return { text: 'Sentiment is elevated and your crypto exposure is above 60% — consider taking some profits.', color: '#d29922' };
+        return { text: 'Sentiment is elevated and your crypto exposure is above 60%. Consider taking some profits.', color: '#d29922' };
     }
     return { text: 'Your allocation is balanced for current sentiment.', color: COLORS.secondary };
 }
@@ -969,7 +979,7 @@ function updateHindsightInsight(range, data) {
     } else if (range === 'Fear') {
         insight = `Fear levels have historically been solid entry points, averaging +4.54% over 30 days with a 56.8% win rate. This range offers good risk/reward with less downside than Extreme Fear. Consider gradual accumulation.`;
     } else if (range === 'Neutral') {
-        insight = `Neutral sentiment has performed surprisingly well, averaging +6.82% over 30 days (59.6% win rate). This contradicts the "buy fear" narrative — stable sentiment often leads to steady gains. Second-best performer overall.`;
+        insight = `Neutral sentiment has performed surprisingly well, averaging +6.82% over 30 days (59.6% win rate). This contradicts the "buy fear" narrative: stable sentiment often leads to steady gains. Second-best performer overall.`;
     } else if (range === 'Greed') {
         insight = `Greed has shown moderate returns (+3.97% avg, 50.8% win rate). While not as strong as Neutral or Extreme Greed, it is still positive. Momentum strategies have historically outperformed contrarian approaches in this range.`;
     } else if (range === 'Extreme Greed') {
@@ -1092,7 +1102,7 @@ document.getElementById('refreshBtn').addEventListener('click', refreshAll);
             updateResult();
         })
         .catch(function () {
-            resultCard.innerHTML = '<div class="vg-error">Data unavailable — try refreshing the page.</div>';
+            resultCard.innerHTML = '<div class="vg-error">Data unavailable. Try refreshing the page.</div>';
             shareBtn.disabled = true;
             shareBtn.style.opacity = '0.4';
         });
@@ -1142,7 +1152,7 @@ document.getElementById('refreshBtn').addEventListener('click', refreshAll);
         callout.className = 'vg-callout' + (vgRange === 'Extreme Greed' ? '' : ' hidden');
 
         if (stats.n < LOW_SAMPLE_THRESHOLD) {
-            lowSample.textContent = 'Low sample size (n=' + stats.n + ') — treat with caution';
+            lowSample.textContent = 'Low sample size (n=' + stats.n + '). Treat with caution.';
             lowSample.className = 'vg-low-sample';
         } else {
             lowSample.className = 'vg-low-sample hidden';
@@ -1274,7 +1284,7 @@ document.getElementById('refreshBtn').addEventListener('click', refreshAll);
                 ctx.strokeRect(60, 290, W - 120, 30);
                 ctx.fillStyle = '#f7931a';
                 ctx.font = "12px 'Inter', system-ui, sans-serif";
-                ctx.fillText('Extreme Greed beats Extreme Fear by 22.7% — not what most people expect', W / 2, 310);
+                ctx.fillText('Extreme Greed has outperformed Extreme Fear by 22.7%', W / 2, 310);
             }
 
             canvas.toBlob(function (blob) { callback(blob, canvas); }, 'image/png');

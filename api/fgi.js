@@ -16,13 +16,13 @@ module.exports = async (req, res) => {
     } else {
       const item = apiData.data[0];
       const score = parseInt(item.value, 10);
-      // Canonical thresholds: ≤24 / 25–44 / 45–59 / 60–79 / ≥80
+      // Canonical thresholds: <=24 / 25-44 / 45-59 / 60-79 / >=80
       let degen_status;
-      if (score <= 24) degen_status = 'Extreme fear — historically an accumulation zone';
-      else if (score <= 44) degen_status = 'Fear — sentiment below average';
-      else if (score <= 59) degen_status = 'Neutral — no directional signal';
-      else if (score <= 79) degen_status = 'Greed — sentiment elevated';
-      else degen_status = 'Extreme greed — historically a distribution zone';
+      if (score <= 24) degen_status = 'Extreme fear: historically an accumulation zone';
+      else if (score <= 44) degen_status = 'Fear: sentiment below the historical average';
+      else if (score <= 59) degen_status = 'Neutral: no directional signal';
+      else if (score <= 79) degen_status = 'Greed: sentiment elevated above average';
+      else degen_status = 'Extreme greed: historically a distribution zone';
       result = {
         meta_score: score,
         status: item.value_classification,

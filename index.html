@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Real-time crypto Fear & Greed Index terminal — market sentiment, BTC metrics, and 5.5 years of backtested history">
-    <title>FGI CHAD — Crypto Fear &amp; Greed Index</title>
+    <meta name="description" content="Real-time crypto Fear & Greed Index terminal. Market sentiment, BTC metrics, and 5.5 years of backtested history.">
+    <title>FGI CHAD | Crypto Fear &amp; Greed Index</title>
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="FGI CHAD — Crypto Fear & Greed Index">
+    <meta name="twitter:title" content="FGI CHAD | Crypto Fear & Greed Index">
     <meta name="twitter:description" content="Real-time crypto market sentiment terminal with 5.5 years of backtested history">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="FGI CHAD — Crypto Fear & Greed Index">
+    <meta property="og:title" content="FGI CHAD | Crypto Fear & Greed Index">
     <meta property="og:description" content="Real-time crypto market sentiment terminal with 5.5 years of backtested history">
     <meta property="og:url" content="https://www.fgichad.xyz">
     <meta property="og:type" content="website">
@@ -22,7 +22,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <link rel="stylesheet" href="/styles.css?v=1">
+    <link rel="stylesheet" href="/styles.css?v=2">
 </head>
 <body>
     <header class="site-header">
@@ -37,6 +37,7 @@
                 <button class="nav-btn" id="portfolioToggle" aria-label="View and manage your portfolio" aria-pressed="false">Portfolio</button>
                 <a href="https://t.me/fgichadbot" target="_blank" rel="noopener noreferrer" class="nav-btn nav-link" aria-label="Subscribe to Telegram alerts">Alerts</a>
                 <button class="nav-btn nav-btn-accent" id="refreshBtn" aria-label="Refresh all market data">Refresh</button>
+                <span class="header-clock" id="utcClock" aria-hidden="true"></span>
             </nav>
         </div>
     </header>
@@ -124,8 +125,8 @@
 
         <!-- Historical scenario tool -->
         <section class="panel vg-panel">
-            <div class="panel-title">What Would $1,000 Become?</div>
-            <div class="panel-sub">5.5 years of BTC data — pick a sentiment band, see the history</div>
+            <div class="panel-title">Historical Scenario Analysis</div>
+            <div class="panel-sub">$1,000 invested at each sentiment band, backtested on 5.5 years of BTC data</div>
 
             <div class="vg-range-buttons">
                 <button class="vg-range-btn" data-range="Extreme Fear">Extreme Fear</button>
@@ -152,11 +153,11 @@
             </div>
 
             <div class="vg-callout" id="vgCallout">
-                Extreme Greed beats Extreme Fear by 22.7% — not what most people expect
+                Extreme Greed has outperformed Extreme Fear by 22.7%, contrary to common expectation
             </div>
 
             <div class="vg-low-sample hidden" id="vgLowSample">
-                Low sample size — treat with caution
+                Low sample size. Treat with caution.
             </div>
 
             <div class="vg-result-card" id="vgResultCard">
@@ -190,15 +191,18 @@
             </div>
 
             <div class="vg-backtester-link">
-                Want to optimize your entry day? <a id="vgBacktesterLink">Open Strategy Backtester</a>
+                Optimize entry timing in the <a id="vgBacktesterLink">Strategy Backtester</a>
             </div>
         </section>
 
         <div class="vg-toast" id="vgToast"></div>
 
         <footer class="footer">
-            <span>Made by <a href="https://x.com/firedintern" target="_blank" rel="noopener noreferrer">firedintern</a></span>
-            <span class="footer-note">Data: Alternative.me · CoinGecko · CryptoCompare</span>
+            <div class="footer-row">
+                <span>Made by <a href="https://x.com/firedintern" target="_blank" rel="noopener noreferrer">firedintern</a></span>
+                <span class="footer-note">Data: Alternative.me · CoinGecko · CryptoCompare</span>
+            </div>
+            <div class="footer-disclaimer">For informational purposes only. Nothing on this site constitutes investment advice. Past performance does not guarantee future results.</div>
         </footer>
     </main>
 
@@ -404,6 +408,6 @@
         <a href="https://t.me/fgichadbot" target="_blank" rel="noopener noreferrer" class="mobile-nav-btn" aria-label="Telegram Alerts">Alerts</a>
     </nav>
 
-    <script src="/app.js?v=1"></script>
+    <script src="/app.js?v=2"></script>
 </body>
 </html>

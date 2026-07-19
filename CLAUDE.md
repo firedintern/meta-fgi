@@ -1,4 +1,4 @@
-# Fear & Greed Protocol — Project Instructions
+# Fear & Greed Protocol: Project Instructions
 
 ## Project Overview
 
@@ -30,10 +30,10 @@ A production crypto Fear & Greed Index dashboard presented as a dark financial t
 
 ## Critical Rules
 
-1. **Never modify `index.html`, `styles.css`, `app.js`, `api/`, or `vercel.json` without explicit approval** — these are live production files
-2. **Never commit secrets** — all tokens/keys live in Vercel environment variables only
+1. **Never modify `index.html`, `styles.css`, `app.js`, `api/`, or `vercel.json` without explicit approval**. These are live production files
+2. **Never commit secrets**. All tokens/keys live in Vercel environment variables only
 3. **FGI thresholds**: Extreme Fear ≤24, Fear 25-44, Neutral 45-59, Greed 60-79, Extreme Greed ≥80
-4. **`data/backtest-results-5.5years.json` is fetched at runtime by the site** — never delete or rename it
+4. **`data/backtest-results-5.5years.json` is fetched at runtime by the site**. Never delete or rename it
 
 ## External APIs
 
@@ -43,13 +43,13 @@ A production crypto Fear & Greed Index dashboard presented as a dark financial t
 | CryptoCompare | BTC price history | `https://min-api.cryptocompare.com/data/v2/histoday` | Free (100k/mo) |
 | CoinGecko | Real-time BTC price | `https://api.coingecko.com/api/v3/` | Free |
 
-## Environment Variables (Vercel only — never commit)
+## Environment Variables (Vercel only, never commit)
 
-- `TELEGRAM_BOT_TOKEN` — from @BotFather
-- `KV_REST_API_URL` — Vercel KV database
-- `KV_REST_API_TOKEN` — Vercel KV auth
-- `CRON_SECRET` — protects manual cron triggers
-- `ADMIN_SECRET` — protects admin endpoints
+- `TELEGRAM_BOT_TOKEN`: from @BotFather
+- `KV_REST_API_URL`: Vercel KV database
+- `KV_REST_API_TOKEN`: Vercel KV auth
+- `CRON_SECRET`: protects manual cron triggers
+- `ADMIN_SECRET`: protects admin endpoints
 
 ## Design System
 
@@ -59,8 +59,8 @@ Do not deviate without explicit user approval.
 
 Key rules from DESIGN.md (dark financial terminal):
 - **Fonts:** Inter (UI/labels) + JetBrains Mono (all numerals, tickers, timestamps; `tabular-nums`)
-- **Surfaces:** `#0d1117` base, `#161b22` surface, `#1c2128` raised, `#30363d` borders
-- **Accent:** `#f7931a` (Bitcoin orange) — the ONE accent, interactive/active states only
+- **Surfaces:** `#0b0e14` base, `#11151c` surface, `#171c24` raised, `#2a303a` borders
+- **Accent:** `#f7931a` (Bitcoin orange): the ONE accent, interactive/active states only
 - **FGI zone colors:** red → orange → yellow → green across the five sentiment bands; a text label always accompanies color
 - **No gimmicks:** no emoji in UI chrome, no neon/glow, no decorative animations, transitions ≤150ms
 - In QA mode, flag any code that doesn't match DESIGN.md.
