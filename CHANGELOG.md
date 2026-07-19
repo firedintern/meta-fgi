@@ -3,6 +3,11 @@
 All notable changes to FGI CHAD are documented here.
 Format: [MAJOR.MINOR.PATCH.MICRO] - YYYY-MM-DD
 
+## [1.0.0.1] - 2026-07-19
+
+### Fixed
+- /api/fgi endpoint crashed on freshly built deployments (CommonJS export in an ESM package); converted to export default
+
 ## [1.0.0.0] - 2026-07-19
 
 ### Changed
