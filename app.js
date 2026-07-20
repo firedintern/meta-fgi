@@ -873,13 +873,13 @@ function ensurePortfolioData() {
 function savePortfolio() {
     const stablecoins = parseFloat(document.getElementById('stablesInput').value) || 0;
     if (stablecoins < 0) {
-        alert('Please enter a positive value for stablecoins.');
+        alert('Please enter a positive value for cash.');
         return;
     }
 
     const data = ensurePortfolioData();
     if (data.holdings.length === 0 && stablecoins === 0) {
-        alert('Add at least one holding or a stablecoin balance.');
+        alert('Add at least one holding or a cash balance.');
         return;
     }
 
@@ -975,7 +975,7 @@ function renderAllocationChart() {
     const data = allocation.holdingValues.map(h => h.value);
     const colors = allocation.holdingValues.map((_, i) => PORTFOLIO_SLICE_COLORS[i % PORTFOLIO_SLICE_COLORS.length]);
     if (portfolioData.stablecoins > 0) {
-        labels.push('Stablecoins');
+        labels.push('Cash');
         data.push(portfolioData.stablecoins);
         colors.push(COLORS.border);
     }
@@ -1017,7 +1017,7 @@ function renderAllocationChart() {
     `).join('');
     const stableRow = portfolioData.stablecoins > 0 ? `
         <div class="stat-item">
-            <span class="stat-label">Stablecoins</span>
+            <span class="stat-label">Cash</span>
             <span class="stat-value">$${portfolioData.stablecoins.toLocaleString()} (${(allocation.stablesRatio * 100).toFixed(1)}%)</span>
         </div>
     ` : '';
