@@ -22,7 +22,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" integrity="sha384-e6nUZLBkQ86NJ6TVVKAeSaK8jWa3NhkYWZFomE39AvDbQWeie9PlQqM3pmYW5d1g" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="/styles.css?v=5">
+    <link rel="stylesheet" href="/styles.css?v=6">
 </head>
 <body>
     <header class="site-header">
@@ -118,10 +118,10 @@
                 <div class="card-value" id="streakValueInline">--</div>
                 <div class="card-sub" id="streakDescInline">Consecutive days</div>
             </div>
-            <div class="stat-card entrance-item">
+            <div class="stat-card entrance-item" title="Deribit DVOL: annualized implied volatility priced into BTC options. Not on a fixed 0-100 scale like the Fear &amp; Greed Index.">
                 <div class="card-label">BTC Volatility Index</div>
                 <div class="card-value" id="btcVolatility">--</div>
-                <div class="card-sub">Deribit DVOL, 30D implied</div>
+                <div class="card-sub" id="btcVolatilityDesc">Deribit DVOL, annualized</div>
             </div>
         </section>
 
@@ -452,6 +452,6 @@
         <a href="https://t.me/fgichadbot" target="_blank" rel="noopener noreferrer" class="mobile-nav-btn" aria-label="Telegram Alerts">Alerts</a>
     </nav>
 
-    <script src="/app.js?v=5"></script>
+    <script src="/app.js?v=6"></script>
 </body>
 </html>

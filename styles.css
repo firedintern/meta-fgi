@@ -382,6 +382,7 @@ button:focus-visible, a:focus-visible, input:focus-visible {
 
 .card-sub.up { color: var(--up); }
 .card-sub.down { color: var(--down); }
+.card-sub.warn { color: var(--zone-neutral); }
 
 /* ── Sentiment poll ─────────────────────────────────── */
 .poll-buttons {

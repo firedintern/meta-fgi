@@ -204,8 +204,23 @@ async function fetchBTCMarketCap() {
     }
 }
 
+// DVOL is an annualized % with no fixed ceiling (unlike the 0-100 FGI scale).
+// Bands reflect BTC's typical historical DVOL behavior: calm markets sit in
+// the 30s-40s, 50-70 is normal-to-elevated crypto volatility, 80+ has
+// historically coincided with crisis conditions (e.g. FTX collapse, Mar 2020).
+function getDVOLQualifier(value) {
+    if (value < 40) return { label: 'Calm', cls: 'up' };
+    if (value < 60) return { label: 'Normal', cls: '' };
+    if (value < 80) return { label: 'Elevated', cls: 'warn' };
+    return { label: 'Turbulent', cls: 'down' };
+}
+
 function renderDVOL(value) {
-    document.getElementById('btcVolatility').textContent = value.toFixed(1);
+    document.getElementById('btcVolatility').textContent = value.toFixed(1) + '%';
+    const qualifier = getDVOLQualifier(value);
+    const descEl = document.getElementById('btcVolatilityDesc');
+    descEl.textContent = qualifier.label + ' · implied vol';
+    descEl.className = 'card-sub' + (qualifier.cls ? ' ' + qualifier.cls : '');
 }
 
 async function fetchDVOL() {
@@ -229,6 +244,7 @@ async function fetchDVOL() {
     } catch (e) {
         console.error('DVOL fetch error:', e);
         document.getElementById('btcVolatility').textContent = 'Unavailable';
+        document.getElementById('btcVolatilityDesc').textContent = 'Deribit DVOL, annualized';
     }
 }
 
