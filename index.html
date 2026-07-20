@@ -22,7 +22,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" integrity="sha384-e6nUZLBkQ86NJ6TVVKAeSaK8jWa3NhkYWZFomE39AvDbQWeie9PlQqM3pmYW5d1g" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="/styles.css?v=4">
+    <link rel="stylesheet" href="/styles.css?v=5">
 </head>
 <body>
     <header class="site-header">
@@ -81,6 +81,21 @@
             </div>
         </section>
 
+        <!-- Sentiment poll -->
+        <section class="panel poll-panel" aria-label="Community sentiment poll">
+            <div class="panel-title">Sentiment Poll</div>
+            <div class="panel-sub" id="pollQuestion">Where do you think BTC is headed in the next 24h?</div>
+            <div class="poll-buttons">
+                <button class="poll-btn poll-btn-bullish" id="pollBullishBtn" aria-pressed="false">Bullish</button>
+                <button class="poll-btn poll-btn-bearish" id="pollBearishBtn" aria-pressed="false">Bearish</button>
+            </div>
+            <div class="poll-bar" id="pollBar" aria-hidden="true">
+                <div class="poll-bar-bullish" id="pollBarBullish" style="width:50%"></div>
+                <div class="poll-bar-bearish" id="pollBarBearish" style="width:50%"></div>
+            </div>
+            <div class="poll-result" id="pollResult">Loading votes...</div>
+        </section>
+
         <!-- Stat cards -->
         <section class="stat-grid" id="statGrid" aria-label="Bitcoin market statistics">
             <div class="stat-card entrance-item">
@@ -102,6 +117,11 @@
                 <div class="card-label" id="streakLabelInline">Sentiment Streak</div>
                 <div class="card-value" id="streakValueInline">--</div>
                 <div class="card-sub" id="streakDescInline">Consecutive days</div>
+            </div>
+            <div class="stat-card entrance-item">
+                <div class="card-label">BTC Volatility Index</div>
+                <div class="card-value" id="btcVolatility">--</div>
+                <div class="card-sub">Deribit DVOL, 30D implied</div>
             </div>
         </section>
 
@@ -282,16 +302,40 @@
 
     <!-- Portfolio Modal -->
     <div id="portfolioModal" class="modal" role="dialog" aria-labelledby="portfolioTitle" aria-hidden="true">
-        <div class="modal-content" role="document">
+        <div class="modal-content modal-wide" role="document">
             <div class="modal-header">
                 <h2 id="portfolioTitle">My Portfolio</h2>
                 <span class="close" role="button" aria-label="Close portfolio modal" tabindex="0">&times;</span>
             </div>
             <div class="modal-body">
-                <div class="input-group">
-                    <label for="cryptoInput">Crypto Holdings ($)</label>
-                    <input type="number" id="cryptoInput" placeholder="5000" min="0" step="100">
+                <div class="modal-desc" id="portfolioMigrationNotice" style="display:none;">
+                    Portfolio format updated. Please re-add your crypto holdings below.
                 </div>
+
+                <div class="coin-search-row">
+                    <input type="text" id="coinSearchInput" class="coin-search-input" placeholder="Search a coin to add (e.g. Bitcoin, ETH)" autocomplete="off">
+                    <div id="coinSearchResults" class="coin-search-results" style="display:none;"></div>
+                </div>
+
+                <div class="holdings-table-wrap">
+                    <table class="data-table holdings-table">
+                        <thead>
+                            <tr>
+                                <th>Coin</th>
+                                <th>Amount</th>
+                                <th>Price</th>
+                                <th>Value</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="holdingsTableBody">
+                            <tr id="holdingsEmptyRow">
+                                <td colspan="5" class="holdings-empty">No holdings added yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
                 <div class="input-group">
                     <label for="stablesInput">Stablecoins ($)</label>
                     <input type="number" id="stablesInput" placeholder="5000" min="0" step="100">
@@ -408,6 +452,6 @@
         <a href="https://t.me/fgichadbot" target="_blank" rel="noopener noreferrer" class="mobile-nav-btn" aria-label="Telegram Alerts">Alerts</a>
     </nav>
 
-    <script src="/app.js?v=4"></script>
+    <script src="/app.js?v=5"></script>
 </body>
 </html>

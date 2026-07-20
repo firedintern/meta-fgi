@@ -94,7 +94,8 @@ const SIGNAL_MAP = {
 // Simple cache to reduce API calls and avoid rate limiting
 const apiCache = {
     btcPrice: { data: null, timestamp: 0 },
-    globalData: { data: null, timestamp: 0 }
+    globalData: { data: null, timestamp: 0 },
+    dvol: { data: null, timestamp: 0 }
 };
 const CACHE_DURATION = 60000; // 60 seconds
 
@@ -200,6 +201,34 @@ async function fetchBTCMarketCap() {
     } else {
         console.error('Invalid market cap data');
         document.getElementById('btcMarketCap').textContent = 'N/A';
+    }
+}
+
+function renderDVOL(value) {
+    document.getElementById('btcVolatility').textContent = value.toFixed(1);
+}
+
+async function fetchDVOL() {
+    if (isCacheValid('dvol')) {
+        renderDVOL(apiCache.dvol.data);
+        return;
+    }
+    try {
+        const now = Date.now();
+        const oneHourAgo = now - (60 * 60 * 1000);
+        const r = await fetch(`https://www.deribit.com/api/v2/public/get_volatility_index_data?currency=BTC&start_timestamp=${oneHourAgo}&end_timestamp=${now}&resolution=3600`);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const d = await r.json();
+        const rows = d.result && d.result.data;
+        if (!Array.isArray(rows) || rows.length === 0) throw new Error('No DVOL data');
+        const latest = rows[rows.length - 1];
+        const close = latest[4]; // [timestamp, open, high, low, close]
+        if (!Number.isFinite(close)) throw new Error('Invalid DVOL value');
+        apiCache.dvol = { data: close, timestamp: Date.now() };
+        renderDVOL(close);
+    } catch (e) {
+        console.error('DVOL fetch error:', e);
+        document.getElementById('btcVolatility').textContent = 'Unavailable';
     }
 }
 
@@ -643,27 +672,169 @@ function refreshAll() {
     fetchBTCPrice();
     fetchBTCDominance();
     fetchBTCMarketCap();
+    fetchDVOL();
     fetchHistoricalData();
 }
 
 // Initial load: all data fetches immediately (no spin gate)
 refreshAll();
 
+// ── Sentiment poll ─────────────────────────────────────────────────
+(function () {
+    const VOTE_STORAGE_KEY = 'fgi_last_vote';
+    const VISITOR_ID_KEY = 'fgi_visitor_id';
+
+    const bullishBtn = document.getElementById('pollBullishBtn');
+    const bearishBtn = document.getElementById('pollBearishBtn');
+    const barBullish = document.getElementById('pollBarBullish');
+    const barBearish = document.getElementById('pollBarBearish');
+    const resultEl = document.getElementById('pollResult');
+
+    if (!bullishBtn || !bearishBtn) return; // panel not on this page
+
+    function getVisitorId() {
+        let id = localStorage.getItem(VISITOR_ID_KEY);
+        if (!id) {
+            id = (window.crypto && crypto.randomUUID)
+                ? crypto.randomUUID()
+                : 'v-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2);
+            localStorage.setItem(VISITOR_ID_KEY, id);
+        }
+        return id;
+    }
+
+    function todayUTC() {
+        return new Date().toISOString().slice(0, 10);
+    }
+
+    function getStoredVote() {
+        try {
+            const raw = localStorage.getItem(VOTE_STORAGE_KEY);
+            if (!raw) return null;
+            const parsed = JSON.parse(raw);
+            if (parsed.date !== todayUTC()) return null; // stored vote is stale
+            return parsed.vote === 'bullish' || parsed.vote === 'bearish' ? parsed.vote : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function storeVote(vote) {
+        localStorage.setItem(VOTE_STORAGE_KEY, JSON.stringify({ date: todayUTC(), vote }));
+    }
+
+    function renderCounts(bullish, bearish) {
+        const total = bullish + bearish;
+        const bullishPct = total > 0 ? Math.round((bullish / total) * 100) : 50;
+        const bearishPct = total > 0 ? 100 - bullishPct : 50;
+        barBullish.style.width = bullishPct + '%';
+        barBearish.style.width = bearishPct + '%';
+        resultEl.textContent = total > 0
+            ? bullishPct + '% Bullish · ' + bearishPct + '% Bearish · ' + total.toLocaleString() + ' votes today'
+            : 'No votes yet today — be the first';
+    }
+
+    function markVoted(vote) {
+        bullishBtn.classList.toggle('active', vote === 'bullish');
+        bearishBtn.classList.toggle('active', vote === 'bearish');
+        bullishBtn.setAttribute('aria-pressed', String(vote === 'bullish'));
+        bearishBtn.setAttribute('aria-pressed', String(vote === 'bearish'));
+    }
+
+    async function submitVote(vote) {
+        bullishBtn.disabled = true;
+        bearishBtn.disabled = true;
+        try {
+            const r = await fetch('/api/sentiment-poll', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ vote, deviceId: getVisitorId() })
+            });
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            const data = await r.json();
+            renderCounts(data.bullish, data.bearish);
+            storeVote(vote);
+            markVoted(vote);
+        } catch (e) {
+            console.error('Poll vote error:', e);
+            resultEl.textContent = 'Vote unavailable. Try again later.';
+        } finally {
+            bullishBtn.disabled = false;
+            bearishBtn.disabled = false;
+        }
+    }
+
+    async function loadPollResults() {
+        try {
+            const r = await fetch('/api/sentiment-poll');
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            const data = await r.json();
+            renderCounts(data.bullish, data.bearish);
+        } catch (e) {
+            console.error('Poll load error:', e);
+            resultEl.textContent = 'Votes unavailable.';
+        }
+        const existingVote = getStoredVote();
+        if (existingVote) markVoted(existingVote);
+    }
+
+    bullishBtn.addEventListener('click', () => submitVote('bullish'));
+    bearishBtn.addEventListener('click', () => submitVote('bearish'));
+
+    loadPollResults();
+})();
+
 // ── Portfolio ────────────────────────────────────────────────────
+// Schema v2: { schemaVersion: 2, holdings: [{coinId, symbol, name, image, amount}], stablecoins }
 let portfolioData = null;
 let allocationChartInstance = null;
+let showMigrationNoticeOnOpen = false;
+const PORTFOLIO_SLICE_COLORS = [COLORS.accent, '#8b5cf6', '#3fb950', '#58a6ff', '#d29922', '#f85149', '#2ea043', '#db6d28'];
+
+function migrateLegacyPortfolio(parsed) {
+    // Old shape: {crypto, stablecoins} — a lump dollar total with no coin identity.
+    // Can't be un-mixed into real holdings, so it's dropped; stablecoins carries over.
+    const stablecoins = Number(parsed.stablecoins);
+    showMigrationNoticeOnOpen = true;
+    return {
+        schemaVersion: 2,
+        holdings: [],
+        stablecoins: Number.isFinite(stablecoins) ? stablecoins : 0
+    };
+}
 
 function loadPortfolio() {
     try {
         const saved = localStorage.getItem('portfolio');
         if (saved) {
             const parsed = JSON.parse(saved);
-            const crypto = Number(parsed && parsed.crypto);
-            const stablecoins = Number(parsed && parsed.stablecoins);
-            if (!Number.isFinite(crypto) || !Number.isFinite(stablecoins)) {
-                throw new Error('Invalid portfolio data');
+            if (!parsed || typeof parsed !== 'object') throw new Error('Invalid portfolio data');
+
+            if (parsed.schemaVersion !== 2 || !Array.isArray(parsed.holdings)) {
+                if (typeof parsed.crypto === 'number' && !parsed.holdings) {
+                    portfolioData = migrateLegacyPortfolio(parsed);
+                    localStorage.setItem('portfolio', JSON.stringify(portfolioData));
+                    return portfolioData;
+                }
+                throw new Error('Unrecognized portfolio schema');
             }
-            portfolioData = { crypto, stablecoins };
+
+            const stablecoins = Number(parsed.stablecoins);
+            const holdings = parsed.holdings
+                .filter(h => h && typeof h.coinId === 'string' && Number.isFinite(Number(h.amount)))
+                .map(h => ({
+                    coinId: h.coinId,
+                    symbol: String(h.symbol || '').slice(0, 12),
+                    name: String(h.name || h.coinId).slice(0, 60),
+                    image: typeof h.image === 'string' ? h.image : null,
+                    amount: Number(h.amount)
+                }));
+
+            portfolioData = {
+                schemaVersion: 2,
+                holdings,
+                stablecoins: Number.isFinite(stablecoins) ? stablecoins : 0
+            };
             return portfolioData;
         }
     } catch (e) {
@@ -674,34 +845,72 @@ function loadPortfolio() {
     return null;
 }
 
-function savePortfolio() {
-    const crypto = parseFloat(document.getElementById('cryptoInput').value) || 0;
-    const stablecoins = parseFloat(document.getElementById('stablesInput').value) || 0;
-
-    if (crypto < 0 || stablecoins < 0) {
-        alert('Please enter positive values only.');
-        return;
-    }
-    if (crypto === 0 && stablecoins === 0) {
-        alert('Please enter at least one value');
-        return;
-    }
-
-    portfolioData = { crypto, stablecoins };
+function savePortfolioState() {
     localStorage.setItem('portfolio', JSON.stringify(portfolioData));
+}
+
+function ensurePortfolioData() {
+    if (!portfolioData) portfolioData = { schemaVersion: 2, holdings: [], stablecoins: 0 };
+    return portfolioData;
+}
+
+function savePortfolio() {
+    const stablecoins = parseFloat(document.getElementById('stablesInput').value) || 0;
+    if (stablecoins < 0) {
+        alert('Please enter a positive value for stablecoins.');
+        return;
+    }
+
+    const data = ensurePortfolioData();
+    if (data.holdings.length === 0 && stablecoins === 0) {
+        alert('Add at least one holding or a stablecoin balance.');
+        return;
+    }
+
+    data.stablecoins = stablecoins;
+    savePortfolioState();
 
     renderAllocationChart();
     updatePortfolioAdvice();
 }
 
+// Live prices keyed by coinId, populated by fetchPortfolioPrices()
+let portfolioPrices = {};
+
+async function fetchPortfolioPrices(coinIds) {
+    if (coinIds.length === 0) return {};
+    try {
+        const r = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${coinIds.join(',')}&order=market_cap_desc&per_page=250&page=1&sparkline=false`, {
+            headers: { 'Accept': 'application/json' }
+        });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const rows = await r.json();
+        const prices = {};
+        rows.forEach(row => { prices[row.id] = row.current_price; });
+        portfolioPrices = prices;
+        return prices;
+    } catch (e) {
+        console.error('Portfolio price fetch error:', e);
+        return portfolioPrices; // keep last-known prices rather than zeroing everything out
+    }
+}
+
 function calculateAllocation() {
     if (!portfolioData) return null;
-    const total = portfolioData.crypto + portfolioData.stablecoins;
+    const holdingValues = portfolioData.holdings.map(h => ({
+        ...h,
+        price: portfolioPrices[h.coinId] || 0,
+        value: h.amount * (portfolioPrices[h.coinId] || 0)
+    }));
+    const cryptoTotal = holdingValues.reduce((sum, h) => sum + h.value, 0);
+    const total = cryptoTotal + portfolioData.stablecoins;
     if (total === 0) return null;
     return {
-        cryptoRatio: portfolioData.crypto / total,
+        holdingValues,
+        cryptoTotal,
+        cryptoRatio: cryptoTotal / total,
         stablesRatio: portfolioData.stablecoins / total,
-        total: total
+        total
     };
 }
 
@@ -746,13 +955,22 @@ function renderAllocationChart() {
         allocationChartInstance.destroy();
     }
 
+    const labels = allocation.holdingValues.map(h => h.symbol.toUpperCase() || h.name);
+    const data = allocation.holdingValues.map(h => h.value);
+    const colors = allocation.holdingValues.map((_, i) => PORTFOLIO_SLICE_COLORS[i % PORTFOLIO_SLICE_COLORS.length]);
+    if (portfolioData.stablecoins > 0) {
+        labels.push('Stablecoins');
+        data.push(portfolioData.stablecoins);
+        colors.push(COLORS.border);
+    }
+
     allocationChartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Crypto', 'Stablecoins'],
+            labels,
             datasets: [{
-                data: [portfolioData.crypto, portfolioData.stablecoins],
-                backgroundColor: [COLORS.accent, COLORS.border],
+                data,
+                backgroundColor: colors,
                 borderColor: COLORS.surface,
                 borderWidth: 2
             }]
@@ -775,21 +993,204 @@ function renderAllocationChart() {
         }
     });
 
-    const statsHTML = `
+    const rows = allocation.holdingValues.map(h => `
         <div class="stat-item">
-            <span class="stat-label">Crypto</span>
-            <span class="stat-value">$${portfolioData.crypto.toLocaleString()} (${(allocation.cryptoRatio * 100).toFixed(1)}%)</span>
+            <span class="stat-label">${h.symbol.toUpperCase() || h.name}</span>
+            <span class="stat-value">$${h.value.toLocaleString(undefined, { maximumFractionDigits: 0 })} (${((h.value / allocation.total) * 100).toFixed(1)}%)</span>
         </div>
+    `).join('');
+    const stableRow = portfolioData.stablecoins > 0 ? `
         <div class="stat-item">
             <span class="stat-label">Stablecoins</span>
             <span class="stat-value">$${portfolioData.stablecoins.toLocaleString()} (${(allocation.stablesRatio * 100).toFixed(1)}%)</span>
         </div>
+    ` : '';
+    const statsHTML = rows + stableRow + `
         <div class="stat-item" style="border-top:1px solid #30363d;padding-top:8px;">
             <span class="stat-label">Total</span>
-            <span class="stat-value">$${allocation.total.toLocaleString()}</span>
+            <span class="stat-value">$${allocation.total.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
         </div>
     `;
     document.getElementById('allocationStats').innerHTML = statsHTML;
+}
+
+// ── Holdings table + coin search ──────────────────────────────────
+function coinLogoHTML(coin) {
+    const badge = (coin.symbol || '?').slice(0, 4);
+    if (coin.image) {
+        // data-badge lets a delegated 'error' listener swap in the fallback
+        // without building nested HTML inside an inline onerror attribute
+        // (that quoting collision is a real bug — see handleCoinLogoError).
+        return `<img class="coin-logo" src="${coin.image}" alt="" loading="lazy" data-badge="${badge}">`;
+    }
+    return `<span class="coin-logo-fallback">${badge}</span>`;
+}
+
+// Delegated fallback for broken/missing coin logos (capture phase: 'error'
+// on <img> doesn't bubble, so it must be caught during capture).
+document.addEventListener('error', function (e) {
+    const img = e.target;
+    if (!(img instanceof HTMLImageElement) || !img.classList.contains('coin-logo')) return;
+    const span = document.createElement('span');
+    span.className = 'coin-logo-fallback';
+    span.textContent = img.dataset.badge || '?';
+    img.replaceWith(span);
+}, true);
+
+function renderHoldingsTable() {
+    const tbody = document.getElementById('holdingsTableBody');
+    const data = ensurePortfolioData();
+
+    if (data.holdings.length === 0) {
+        tbody.innerHTML = '<tr id="holdingsEmptyRow"><td colspan="5" class="holdings-empty">No holdings added yet</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = data.holdings.map((h, i) => {
+        const price = portfolioPrices[h.coinId];
+        const priceText = typeof price === 'number' ? '$' + price.toLocaleString(undefined, { maximumFractionDigits: price < 1 ? 4 : 2 }) : '--';
+        const value = typeof price === 'number' ? h.amount * price : null;
+        const valueText = value !== null ? '$' + value.toLocaleString(undefined, { maximumFractionDigits: 0 }) : '--';
+        return `
+            <tr data-index="${i}">
+                <td><div class="coin-cell">${coinLogoHTML(h)}<span>${h.name}<br><span class="coin-symbol">${h.symbol.toUpperCase()}</span></span></div></td>
+                <td><input type="number" class="holdings-amount-input" data-index="${i}" value="${h.amount}" min="0" step="any"></td>
+                <td>${priceText}</td>
+                <td>${valueText}</td>
+                <td><button class="holdings-remove-btn" data-index="${i}" aria-label="Remove ${h.name}">&times;</button></td>
+            </tr>
+        `;
+    }).join('');
+}
+
+async function refreshHoldingsPricesAndRender() {
+    const data = ensurePortfolioData();
+    const coinIds = data.holdings.map(h => h.coinId);
+    await fetchPortfolioPrices(coinIds);
+    renderHoldingsTable();
+    renderAllocationChart();
+    updatePortfolioAdvice();
+}
+
+function addHolding(coin) {
+    const data = ensurePortfolioData();
+    if (data.holdings.some(h => h.coinId === coin.id)) {
+        // Already added — just focus its amount input instead of duplicating
+        const idx = data.holdings.findIndex(h => h.coinId === coin.id);
+        renderHoldingsTable();
+        const input = document.querySelector(`.holdings-amount-input[data-index="${idx}"]`);
+        if (input) input.focus();
+        return;
+    }
+    data.holdings.push({
+        coinId: coin.id,
+        symbol: coin.symbol,
+        name: coin.name,
+        image: coin.image || coin.thumb || null,
+        amount: 0
+    });
+    savePortfolioState();
+    refreshHoldingsPricesAndRender();
+}
+
+function removeHolding(index) {
+    const data = ensurePortfolioData();
+    data.holdings.splice(index, 1);
+    savePortfolioState();
+    refreshHoldingsPricesAndRender();
+}
+
+function updateHoldingAmount(index, amount) {
+    const data = ensurePortfolioData();
+    if (!data.holdings[index]) return;
+    data.holdings[index].amount = Number.isFinite(amount) && amount >= 0 ? amount : 0;
+    savePortfolioState();
+    renderHoldingsTable();
+    renderAllocationChart();
+    updatePortfolioAdvice();
+}
+
+// Coin search: debounced CoinGecko /search, results shown in a dropdown
+let coinSearchDebounce = null;
+async function searchCoins(query) {
+    try {
+        const r = await fetch(`https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(query)}`, {
+            headers: { 'Accept': 'application/json' }
+        });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const data = await r.json();
+        return Array.isArray(data.coins) ? data.coins.slice(0, 8) : [];
+    } catch (e) {
+        console.error('Coin search error:', e);
+        return [];
+    }
+}
+
+function initCoinSearch() {
+    const input = document.getElementById('coinSearchInput');
+    const results = document.getElementById('coinSearchResults');
+    if (!input || !results) return;
+
+    input.addEventListener('input', () => {
+        const query = input.value.trim();
+        clearTimeout(coinSearchDebounce);
+        if (query.length < 2) {
+            results.style.display = 'none';
+            results.innerHTML = '';
+            return;
+        }
+        coinSearchDebounce = setTimeout(async () => {
+            const coins = await searchCoins(query);
+            if (coins.length === 0) {
+                results.innerHTML = '<div class="coin-search-empty">No coins found</div>';
+            } else {
+                results.innerHTML = coins.map(c => `
+                    <div class="coin-search-result" data-id="${c.id}" data-symbol="${c.symbol}" data-name="${c.name.replace(/"/g, '&quot;')}" data-image="${c.thumb || ''}">
+                        ${coinLogoHTML({ image: c.thumb, symbol: c.symbol })}
+                        <span>${c.name} <span class="coin-symbol">${c.symbol.toUpperCase()}</span></span>
+                    </div>
+                `).join('');
+            }
+            results.style.display = 'block';
+        }, 300);
+    });
+
+    results.addEventListener('click', (e) => {
+        const row = e.target.closest('.coin-search-result');
+        if (!row) return;
+        addHolding({
+            id: row.dataset.id,
+            symbol: row.dataset.symbol,
+            name: row.dataset.name,
+            image: row.dataset.image
+        });
+        input.value = '';
+        results.style.display = 'none';
+        results.innerHTML = '';
+    });
+
+    document.addEventListener('click', (e) => {
+        if (e.target !== input && !results.contains(e.target)) {
+            results.style.display = 'none';
+        }
+    });
+}
+
+function initHoldingsTableEvents() {
+    const tbody = document.getElementById('holdingsTableBody');
+    if (!tbody) return;
+
+    tbody.addEventListener('click', (e) => {
+        const btn = e.target.closest('.holdings-remove-btn');
+        if (!btn) return;
+        removeHolding(parseInt(btn.dataset.index, 10));
+    });
+
+    tbody.addEventListener('change', (e) => {
+        if (!e.target.classList.contains('holdings-amount-input')) return;
+        const index = parseInt(e.target.dataset.index, 10);
+        updateHoldingAmount(index, parseFloat(e.target.value));
+    });
 }
 
 function initPortfolioModal() {
@@ -803,17 +1204,27 @@ function initPortfolioModal() {
         return;
     }
 
-    portfolioBtn.addEventListener('click', function () {
+    initCoinSearch();
+    initHoldingsTableEvents();
+
+    portfolioBtn.addEventListener('click', async function () {
         modal.style.display = 'block';
         modal.setAttribute('aria-hidden', 'false');
         portfolioBtn.setAttribute('aria-pressed', 'true');
+
+        const notice = document.getElementById('portfolioMigrationNotice');
+        if (notice) notice.style.display = showMigrationNoticeOnOpen ? 'block' : 'none';
+        showMigrationNoticeOnOpen = false;
+
         const saved = loadPortfolio();
         if (saved) {
-            document.getElementById('cryptoInput').value = saved.crypto;
-            document.getElementById('stablesInput').value = saved.stablecoins;
-            renderAllocationChart();
+            document.getElementById('stablesInput').value = saved.stablecoins || '';
+            renderHoldingsTable();
+            await refreshHoldingsPricesAndRender();
+        } else {
+            renderHoldingsTable();
         }
-        document.getElementById('cryptoInput').focus();
+        document.getElementById('coinSearchInput').focus();
     });
 
     const closeModal = function () {
@@ -1486,19 +1897,10 @@ if (mobileFooter) {
     if (mobilePortfolioBtn) {
         mobilePortfolioBtn.addEventListener('click', function (e) {
             e.preventDefault();
-            const modal = document.getElementById('portfolioModal');
+            // Reuse the desktop button's full open handler (migration notice,
+            // holdings table render, live price refresh) instead of duplicating it.
             const desktopBtn = document.getElementById('portfolioToggle');
-            if (modal && desktopBtn) {
-                modal.style.display = 'block';
-                modal.setAttribute('aria-hidden', 'false');
-                desktopBtn.setAttribute('aria-pressed', 'true');
-                const saved = loadPortfolio();
-                if (saved) {
-                    document.getElementById('cryptoInput').value = saved.crypto;
-                    document.getElementById('stablesInput').value = saved.stablecoins;
-                    renderAllocationChart();
-                }
-            }
+            if (desktopBtn) desktopBtn.click();
         });
     }
 
