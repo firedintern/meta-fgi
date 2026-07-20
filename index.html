@@ -22,7 +22,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" integrity="sha384-e6nUZLBkQ86NJ6TVVKAeSaK8jWa3NhkYWZFomE39AvDbQWeie9PlQqM3pmYW5d1g" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="/styles.css?v=3">
+    <link rel="stylesheet" href="/styles.css?v=4">
 </head>
 <body>
     <header class="site-header">
@@ -44,7 +44,7 @@
 
     <main class="container">
         <!-- FGI Hero -->
-        <section class="fgi-hero" aria-label="Current Fear and Greed Index">
+        <section class="fgi-hero entrance-item" id="fgiHero" aria-label="Current Fear and Greed Index">
             <div class="fgi-hero-top">
                 <div class="fgi-reading">
                     <div class="card-label">Fear &amp; Greed Index</div>
@@ -82,23 +82,23 @@
         </section>
 
         <!-- Stat cards -->
-        <section class="stat-grid" aria-label="Bitcoin market statistics">
-            <div class="stat-card">
+        <section class="stat-grid" id="statGrid" aria-label="Bitcoin market statistics">
+            <div class="stat-card entrance-item">
                 <div class="card-label">BTC Price</div>
                 <div class="card-value" id="btcPrice">--</div>
                 <div class="card-sub" id="btcChange"></div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card entrance-item">
                 <div class="card-label">BTC Dominance</div>
                 <div class="card-value" id="btcDominance">--%</div>
                 <div class="card-sub">Market share</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card entrance-item">
                 <div class="card-label">BTC Market Cap</div>
                 <div class="card-value" id="btcMarketCap">$--</div>
                 <div class="card-sub">Total value</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card entrance-item">
                 <div class="card-label" id="streakLabelInline">Sentiment Streak</div>
                 <div class="card-value" id="streakValueInline">--</div>
                 <div class="card-sub" id="streakDescInline">Consecutive days</div>
@@ -408,6 +408,6 @@
         <a href="https://t.me/fgichadbot" target="_blank" rel="noopener noreferrer" class="mobile-nav-btn" aria-label="Telegram Alerts">Alerts</a>
     </nav>
 
-    <script src="/app.js?v=3"></script>
+    <script src="/app.js?v=4"></script>
 </body>
 </html>

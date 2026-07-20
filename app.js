@@ -1,6 +1,51 @@
 // FGI CHAD terminal frontend. Tokens mirror styles.css / DESIGN.md.
 let currentScore = null; // null until the first successful FGI fetch
 
+// ── Entrance sequence (first load only, never on manual Refresh) ─────────
+const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let entranceDone = false;
+
+function revealEntrance() {
+    if (entranceDone) return;
+    entranceDone = true;
+    const items = document.querySelectorAll('.entrance-item');
+    items.forEach((el, i) => {
+        if (prefersReducedMotion) {
+            el.classList.add('in');
+            return;
+        }
+        setTimeout(() => el.classList.add('in'), i * 60);
+    });
+}
+
+function animateGaugeEntrance() {
+    const marker = document.getElementById('gaugeMarker');
+    if (!marker || prefersReducedMotion) return;
+    marker.classList.add('entrance-sweep');
+    // Drop the slow transition after the sweep completes so later refreshes
+    // use the normal 300ms snap, not another 900ms sweep.
+    setTimeout(() => marker.classList.remove('entrance-sweep'), 1000);
+}
+
+function animateScoreCountUp(target) {
+    const el = document.getElementById('fgiScore');
+    if (!el) return;
+    if (prefersReducedMotion) {
+        el.textContent = target;
+        return;
+    }
+    const duration = 700;
+    const start = performance.now();
+    function tick(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3); // ease-out-cubic
+        el.textContent = Math.round(target * eased);
+        if (progress < 1) requestAnimationFrame(tick);
+        else el.textContent = target;
+    }
+    requestAnimationFrame(tick);
+}
+
 const ZONES = [
     { max: 24,  name: 'Extreme Fear',  cls: 'zone-xfear',   color: '#f85149' },
     { max: 44,  name: 'Fear',          cls: 'zone-fear',    color: '#db6d28' },
@@ -522,11 +567,16 @@ async function fetchData() {
         if (!Number.isFinite(parsedScore) || parsedScore < 0 || parsedScore > 100) {
             throw new Error('Invalid FGI value: ' + fgiData.value);
         }
+        const isFirstLoad = currentScore === null;
         currentScore = parsedScore;
         const zone = getZone(currentScore);
 
-        // Score + zone chip
-        document.getElementById('fgiScore').textContent = currentScore;
+        // Score + zone chip. First load counts up; subsequent refreshes set directly.
+        if (isFirstLoad) {
+            animateScoreCountUp(currentScore);
+        } else {
+            document.getElementById('fgiScore').textContent = currentScore;
+        }
         const statusEl = document.getElementById('fgiStatus');
         statusEl.textContent = zone.name;
         statusEl.className = 'zone-chip ' + zone.cls;
@@ -542,7 +592,8 @@ async function fetchData() {
             deltaEl.textContent = '';
         }
 
-        // Gauge
+        // Gauge: slow deliberate sweep on first load, normal snap on refresh
+        if (isFirstLoad) animateGaugeEntrance();
         document.getElementById('gaugeMarker').style.left = currentScore + '%';
         document.querySelectorAll('.gauge-seg').forEach(seg => seg.classList.remove('active'));
         const activeSeg = document.querySelector('.gauge-seg.seg-' + zone.cls.replace('zone-', ''));
@@ -554,6 +605,8 @@ async function fetchData() {
         document.getElementById('timestamp').textContent =
             'Updated ' + updated.toISOString().slice(0, 10) + ' ' + updated.toISOString().slice(11, 16) + ' UTC';
 
+        if (isFirstLoad) revealEntrance();
+
         await updateStreakDisplay(currentScore);
 
         if (portfolioData) {
@@ -564,6 +617,7 @@ async function fetchData() {
         document.getElementById('fgiStatus').textContent = 'Connection error';
         document.getElementById('fgiStatus').className = 'zone-chip';
         document.getElementById('degenStatus').textContent = 'Data unavailable. Retry.';
+        revealEntrance(); // don't leave the page invisible on a failed first load
     }
 }
 
